@@ -1,0 +1,74 @@
+To do:  
+
+In SigClust:  Update to Generation 3, which takes max of hard and soft 
+thresholded p-values
+
+In MargDistPlot:
+Line 488 Change 
+    viplot = (1:np)' ;
+to:
+    viplot = (1:np-1)' ;
+(for some cases, e.g. small d?)
+
+
+Write Transformation Explorer (either Box-Cox, or Shifted log), which allows looking through candidates
+Univariate:  works like MargDistPlot, only on transformed variables
+Multivariate:  Apply common transform, and have different page for different transforms, and look at MargDistPlot type display, but keep variables same accross trans's.
+
+
+
+Delete scatplot-ori.m?  (move to "old")
+
+Checkout BatchAdjust stuff
+
+DiProPerm
+
+
+Test & Incorporate Lingsong's L1 DWD
+
+Test & Incorporate Hanwen Huang's BDD
+
+Test & Incorporate Hanwen Huang's MultiDWD
+
+Test & Incorporate Hanwen Huang's Improved SigClust
+
+
+
+Future Projects:
+
+Redo vec2matSM.m, using repmat
+
+Explore Di Cook's graphics ideas (summarized in Hadley 
+    Wickham's thesis):    http://had.co.nz/thesis
+- Light gray background (for color plots)
+- axes in white
+- allow square aspect ratios
+All of these need some careful experimentation, and
+    investigation, including printing checks.
+- allow filesaves as .png files
+
+Solve problem of increasing level of {{{  }}}s
+needed when passing cell strings, such as
+titlecellstr, using paramstruct.
+Problem seems related to:
+"titlecellstr{1}" when passing structures
+
+-  Explore use of gplotmatrix.m in scatplotSM & curvdatSM
+        (big plus is can use cursor to identify individuals)
+
+-  Modify pcaSM (or write new routine???)to:
+  - Use SVD as its engine
+  - do proper analysis of dual problem
+  - allow mean recentering to be any of none, row mean, or
+       col mean
+  - allow full matrix data view as mesh plot (probably will need 
+       suitable decimation) and (red-blue) image plot
+
+-  Update SizerSM, and that part of curvdatSM, to allow 
+     current offerings of kdeSM:
+       -  current color schemes
+       -  markers
+       -  dolhtseed everywhere to be:
+          empty - use input data ordering
+          0     - use current seed random ordering
+          seed  - use that for random ordering

@@ -1,0 +1,15 @@
+Some comments:
+
+1.  Please delete all "path" commands.  I prefer to require these be set before 
+running.
+
+2.  When I ran the first test (itest == 1), it gave dots in the PCA plots, but 
+that is not listed as the default marker.  The default sounds better, so let's 
+make that happen.
+
+3.  itest = 101 gives an error
+
+4.  itest = 103 & 106   generates an unexpected warning about legends
+
+5.  
+

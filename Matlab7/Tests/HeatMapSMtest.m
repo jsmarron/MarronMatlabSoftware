@@ -3,7 +3,7 @@ disp('Running MATLAB script file HeatMapSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION HeatMapSM,
 %    Heat Map visualization of data
 
-itest = 22 ;     %  1,...,23  Simple parameter tests
+itest = 23 ;     %  1,...,23  Simple parameter tests
                 %      Take careful look at color specific data sets
 
 
@@ -174,10 +174,14 @@ if (itest == 1) | ...
                          'savestr',123) ;
     HeatMapSM(mdata,paramstruct) ;
   elseif itest == 22 ;
-    disp('  Check ') ;
-    paramstruct = struct('icolor',0, ...
-                         'titlestr','Check bad savestr', ...
-                         'savestr',123) ;
+    disp('  Check bad icolor = 5') ;
+    paramstruct = struct('icolor',5, ...
+                         'titlestr','Check bad icolor') ;
+    HeatMapSM(mdata,paramstruct) ;
+  elseif itest == 23 ;
+    disp('  Check bad icolor size') ;
+    paramstruct = struct('icolor',[1 2], ...
+                         'titlestr','Check bad icolor') ;
     HeatMapSM(mdata,paramstruct) ;
   end ;
 

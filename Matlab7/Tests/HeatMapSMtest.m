@@ -3,8 +3,8 @@ disp('Running MATLAB script file HeatMapSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION HeatMapSM,
 %    Heat Map visualization of data
 
-itest = 23 ;     %  1,...,23  Simple parameter tests
-                %      Take careful look at color specific data sets
+itest = 25 ;     %  1,...,25  Simple parameter tests
+                 %      Take careful look at color specific data sets
 
 
 disp(' ') ;
@@ -33,7 +33,9 @@ if (itest == 1) | ...
    (itest == 20) | ...
    (itest == 21) | ...
    (itest == 22) | ...
-   (itest == 23) ;     %  Simple paramter tests
+   (itest == 23) | ...
+   (itest == 24) | ...
+   (itest == 25) ;     %  Simple paramter tests
 
   %  Generate generic data similar to that in OODAbookChpPFigAToyCentering.m
   %
@@ -182,6 +184,19 @@ if (itest == 1) | ...
     disp('  Check bad icolor size') ;
     paramstruct = struct('icolor',[1 2], ...
                          'titlestr','Check bad icolor') ;
+    HeatMapSM(mdata,paramstruct) ;
+  elseif itest == 24 ;
+    disp('  Check cdonlyflag = 1') ;
+    figure(1) ;
+    clf ;
+    subplot(2,2,4) ;
+    paramstruct = struct('cdonlyflag',1) ;
+    HeatMapSM(mdata,paramstruct) ;
+  elseif itest == 25 ;
+    disp('  Test icolor = 2 and ncolor = 9') ;
+    paramstruct = struct('icolor',2, ...
+                         'ncolor',9, ...
+                         'titlestr','Test icolor = 2 & ncolor = 9') ;
     HeatMapSM(mdata,paramstruct) ;
   end ;
 

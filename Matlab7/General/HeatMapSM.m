@@ -61,6 +61,11 @@ function HeatMapSM(mdata,paramstruct)
 %                      1 - (default) Add new figure with color distribution plot
 %                      int > 1 - Put color distribution plot in figure(int)
 %
+%    cdonlyflag        0 - (default) Create new figure as specified by
+%                                       icolordist
+%                      1 - only make color distribution plot in current figure
+%                              (makes no heat map and ignores icolordist)
+%
 %    titlestr          string for plot title
 %                      '' for no title (default)
 %
@@ -78,7 +83,7 @@ function HeatMapSM(mdata,paramstruct)
 %                          or
 %                              color postscript (otherwise)
 %                          unspecified:  results only appear on screen
-%                     When making color distribution plot, will add
+%                      When making color distribution plot, will add
 %                          "ColorDist" to file name
 %
 %
@@ -93,6 +98,9 @@ function HeatMapSM(mdata,paramstruct)
 %
 % Assumes path can find personal functions:
 %    vec2matSM.m
+%    cquantSM.m
+%    RainbowColorsQY.m
+%    HeatColorsSM.m
 
 %    Copyright (c) J. S. Marron 2019
 
@@ -104,6 +112,7 @@ icolor = 0 ;
 alpha = 0.05 ;
 ncolor = 64 ;
 icolordist = 1 ;
+cdonlyflag = 0 ;
 titlestr = '' ;
 xlabelstr = '' ;
 ylabelstr = '' ;
@@ -129,6 +138,10 @@ if nargin > 1 ;   %  then paramstruct is an argument
 
   if isfield(paramstruct,'icolordist') ;    %  then change to input value
     icolordist = getfield(paramstruct,'icolordist') ; 
+  end ;
+
+  if isfield(paramstruct,'cdonlyflag') ;    %  then change to input value
+    cdonlyflag = getfield(paramstruct,'cdonlyflag') ; 
   end ;
 
   if isfield(paramstruct,'titlestr') ;    %  then change to input value
@@ -172,7 +185,8 @@ if nargin > 1 ;   %  then paramstruct is an argument
 
   if isfield(paramstruct,'savestr') ;    %  then use input value
     savestr = getfield(paramstruct,'savestr') ; 
-    if ~(ischar(savestr) | isempty(savestr)) ;    %  then invalid input, so give warning
+    if ~(ischar(savestr) | isempty(savestr)) ;    %  then invalid input, 
+                                                  %  so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from HeatMapSM.m:    !!!') ;
       disp('!!!   Invalid savestr,             !!!') ;
@@ -226,6 +240,12 @@ if max(size(icolor)) == 1 ;    %  have scalar icolor
     if round(ncolor / 2) == ncolor / 2 ;    %  if ncolor is even 
       cmap = [ones(ncolor / 2,1) (linspace(0,1,ncolor / 2)' * ones(1,2))] ;
       cmap = [cmap; [(linspace(1,0,ncolor / 2)' * ones(1,2)) ones(ncolor / 2,1)]] ;
+    else ;    %  ncolor is odd
+      cmap = [ones((ncolor + 1) / 2,1) ...
+                      (linspace(0,1,(ncolor + 1) / 2)' * ones(1,2))] ;
+      cmap = [cmap(1:((ncolor - 1) / 2),:); ...
+                       [(linspace(1,0,(ncolor + 1) / 2)' * ones(1,2)) ...
+                            ones((ncolor + 1) / 2,1)]] ;
     end ;
 
   elseif icolor == 3 ;    %  Use Rainbow Colors, data driven range
@@ -293,18 +313,20 @@ mdatasc = 0 + ncolor * ((mdata - lovalue) / (hivalue - lovalue)) ;
 
 %  Construct Main Image Heat Map
 %
-colormap(cmap) ;
-image(mdatasc) ;
-title(titlestr) ;
-xlabel(xlabelstr) ;
-ylabel(ylabelstr) ;
+if ~(cdonlyflag == 1) ;
+  colormap(cmap) ;
+  image(mdatasc) ;
+  title(titlestr) ;
+  xlabel(xlabelstr) ;
+  ylabel(ylabelstr) ;
 
-if ~isempty(savestr) ;   %  then create postscript file
-  orient landscape ;
-  if (icolor == 0) | (icolor == 1) ;    %  Print to B&W .pdfs
-    print('-dps2',savestr) ;
-  else ;                %  Then print in Color
-    print('-dpsc2',savestr) ;
+  if ~isempty(savestr) ;   %  then create postscript file
+    orient landscape ;
+    if (icolor == 0) | (icolor == 1) ;    %  Print to B&W .pdfs
+      print('-dps2',savestr) ;
+    else ;                %  Then print in Color
+      print('-dpsc2',savestr) ;
+    end ;
   end ;
 end ;
 
@@ -314,11 +336,13 @@ if icolordist ~= 0 ;    %  Consider adding a histogram of color distribution
   if (icolordist >= 1) & (icolordist == round(icolordist)) ;
                                 %  Good choice of figure
 
-    if icolordist == 1 ;    %  Add a new figure window with color distribution
-      figure ;
-    else ;    %  Put graphic into this specified figure window
-      figure(icolordist) ;
-      clf ;
+    if ~(cdonlyflag == 1) ;
+      if icolordist == 1 ;    %  Add a new figure window with color distribution
+        figure ;
+      else ;    %  Put graphic into this specified figure window
+        figure(icolordist) ;
+        clf ;
+      end ;
     end ;
 
     %  Make histogram of color distribution

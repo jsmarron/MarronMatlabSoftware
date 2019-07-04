@@ -52,7 +52,7 @@ function ModeViewSM(mdata,paramstruct)
 %                          default = 3 ;
 %
 %    icolorhm          index for heat map color scheme:
-%                      0 - Gray level colors (default), 
+%                      0 - Gray level colors, 
 %                              starting with black at the alpha-th quantile
 %                              through white at the (1 - alpha)-th quantile
 %                      1 - Gray level colors, with white at 0, 
@@ -61,6 +61,10 @@ function ModeViewSM(mdata,paramstruct)
 %                      2 - Shades of Blue, White, Red, best for + and - values,
 %                              especially when 0 is important, 
 %                              which is coded as white
+%                      3 - (default) Gray level colors as in 0, for first 3 pages,
+%                              plus blue, white, red as in 2 for rest
+%                      4 - Gray level colors as in 1, for first 3 pages,
+%                              plus blue, white, red as in 2 for rest
 %                      ncolor x 3 color matrix 
 %                              (size of this overrides any input  of ncolor)
 %
@@ -136,7 +140,7 @@ function ModeViewSM(mdata,paramstruct)
 %
 iout = 1 ;
 nmode = 3 ;
-icolorhm = 0 ;
+icolorhm = 3 ;
 icolorcols = 1 ;
 icolorrows = 1 ;
 alpha = 0.05 ;
@@ -257,23 +261,27 @@ hgrid = 1:n ;
 vgrid = (1:d)' ;
 
 if icolorhm == 0 ;
-  mcolorhm = linspace(0,1,ncolor)' * ones(1,3) ;
+  icolorhm1 = 0 ;
+      %  icolorhm for first 3 pages
+  icolorhm2 = 0 ;
+      %  icolorhm for rest
 elseif icolorhm == 1 ;
-  mcolorhm = linspace(0,1,ncolor)' * ones(1,3) ;
+  icolorhm1 = 1 ;
+  icolorhm2 = 1 ;
 elseif icolorhm == 2 ;
-  if round(ncolor / 2) == (ncolor / 2) ;    %  if ncolor is even
-    mcolorhm = [ones(ncolor / 2,1) (linspace(0,1,ncolor / 2)' * ones(1,2))] ;
-    mcolorhm = [mcolorhm; [(linspace(1,0,ncolor / 2)' * ones(1,2)) ...
-                                   ones(ncolor / 2,1)]] ;
-  else ;    %  ncolor is odd
-    mcolorhm = [ones((ncolor + 1) / 2,1) ...
-                    (linspace(0,1,(ncolor + 1) / 2)' * ones(1,2))] ;
-    mcolorhm = [mcolorhm(1:((ncolor - 1) / 2),:); ...
-                     [(linspace(1,0,(ncolor + 1) / 2)' * ones(1,2)) ...
-                          ones((ncolor + 1) / 2,1)]] ;
-  end ;
+  icolorhm1 = 2 ;
+  icolorhm2 = 2 ;
+elseif icolorhm == 3 ;
+  icolorhm1 = 0 ;
+      %  icolorhm for first 3 pages
+  icolorhm2 = 2 ;
+      %  icolorhm for rest
+elseif icolorhm == 4 ;
+  icolorhm1 = 1 ;
+  icolorhm2 = 2 ;
 else ;
-  mcolorhm = icolorhm ;
+  icolorhm1 = icolorhm ;
+  icolorhm2 = icolorhm ;
 end ;
 
 if icolorcols == 0 ;
@@ -296,7 +304,7 @@ end ;
 if icolorrows == 0 ;
   mcolorrows = ones(d,1) * [0 0 0] ;
 elseif icolorrows == 1 ;
-  mcolorrows = HeatColorsSM(round(1.1 * d)) ;
+  mcolorrows = flipud(HeatColorsSM(round(1.1 * d))) ;
   mcolorrows = mcolorrows(1:d,:) ;
       %  keep just first 90%, to avoid white curves 
       %      that don't show up on white background
@@ -321,7 +329,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   figure(1) ;
   clf ;
   subplot(2,2,1) ;    %  Heat map in upper left
-    paramstruct = struct('icolor',icolorhm, ...
+    paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'icolordist',0, ...
@@ -335,20 +343,22 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
       for ic = 1:n ;
         plot(mdata(:,ic),vgrid,'-','Color',mcolorcols(ic,:)) ;
       end ;
-      axisSM(mdata,vgrid) ;
+      vaxmdata = axisSM(mdata) ;
+      axis([vaxmdata 1 d]) ;
       if titleflag ;
         title([titlestr ' Column Curves']) ;
       end ;
       xlabel('Color Values') ;
       ylabel(ylabelstr) ;
     hold off ;
+    set(gca,'Ydir','reverse')
   subplot(2,2,3) ;    %  Rows as data objects in lower left
     plot(hgrid',mdata(1,:)','-','Color',mcolorrows(1,:)) ;
     hold on ;
       for ir = 1:d ;
         plot(hgrid',mdata(ir,:)','-','Color',mcolorrows(ir,:)) ;
       end ;
-      axisSM(hgrid',mdata) ;
+      axis([1 n vaxmdata]) ;
       if titleflag ;
         title([titlestr ' Row Curves']) ;
       end ;
@@ -357,7 +367,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
     hold off ;
   if ~(icolordist == 0) ;
     subplot(2,2,4) ;    %  Show heatmap color distribution in lower right
-    paramstruct = struct('icolor',icolorhm, ...
+    paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'cdonlyflag',1) ;
@@ -370,7 +380,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
       %  This cures the tendency for the image to turn all black
   if ~isempty(savestr) ;   %  then create postscript file
     orient landscape ;
-    if ((icolorhm == 0) | (icolorhm == 1)) & ...
+    if ((icolorhm1 == 0) | (icolorhm1 == 1)) & ...
         (icolorcols == 0) & (icolorrows == 0) ;    %  Print to B&W .pdfs
       print('-dps2',[savestr 'Input']) ;
     else ;                %  Then print in Color
@@ -384,7 +394,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   clf ;
   mdatacom = mean(mdata,2) * ones(1,n) ;
   subplot(2,2,1) ;    %  Heat map in upper left
-    paramstruct = struct('icolor',icolorhm, ...
+    paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'icolordist',0, ...
@@ -398,29 +408,32 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
       for ic = 1:n ;
         plot(mdatacom(:,ic),vgrid,'-','Color',mcolorcols(ic,:)) ;
       end ;
-      axisSM(mdatacom,vgrid) ;
+      vaxmdatacom = axisSM(mdatacom) ;
+      axis([vaxmdatacom 1 d]) ;
       if titleflag ;
         title([titlestr ' Column Curves']) ;
       end ;
       xlabel('Color Values') ;
       ylabel(ylabelstr) ;
     hold off ;
-  subplot(2,2,3) ;    %  Rows as data objects in upper right
+    set(gca,'Ydir','reverse')
+  subplot(2,2,3) ;    %  Rows as data objects in lower left
     plot(hgrid',mdatacom(1,:)','-','Color',mcolorrows(1,:)) ;
     hold on ;
       for ir = 1:d ;
         plot(hgrid',mdatacom(ir,:)','-','Color',mcolorrows(ir,:)) ;
       end ;
-      axisSM(hgrid',mdatacom) ;
+      axis([1 n vaxmdatacom]) ;
       if titleflag ;
         title([titlestr ' Row Curves']) ;
       end ;
+
       xlabel(xlabelstr) ;
       ylabel('Color Values') ;
     hold off ;
   if ~(icolordist == 0) ;
-    subplot(2,2,4) ;    %  Show heatmap color distribution in lower left
-    paramstruct = struct('icolor',icolorhm, ...
+    subplot(2,2,4) ;    %  Show heatmap color distribution in lower right
+    paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'cdonlyflag',1) ;
@@ -433,7 +446,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
       %  This cures the tendency for the image to turn all black
   if ~isempty(savestr) ;   %  then create postscript file
     orient landscape ;
-    if ((icolorhm == 0) | (icolorhm == 1)) & ...
+    if ((icolorhm1 == 0) | (icolorhm1 == 1)) & ...
         (icolorcols == 0) & (icolorrows == 0) ;    %  Print to B&W .pdfs
       print('-dps2',[savestr 'ColObjMean']) ;
     else ;                %  Then print in Color
@@ -447,7 +460,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   clf ;
   mdatarom = ones(d,1) * mean(mdata,1) ;
   subplot(2,2,1) ;    %  Heat map in upper left
-    paramstruct = struct('icolor',icolorhm, ...
+    paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'icolordist',0, ...
@@ -461,20 +474,22 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
       for ic = 1:n ;
         plot(mdatarom(:,ic),vgrid,'-','Color',mcolorcols(ic,:)) ;
       end ;
-      axisSM(mdatarom,vgrid) ;
+      vaxmdatarom = axisSM(mdatarom) ;
+      axis([vaxmdatarom 1 d]) ;
       if titleflag ;
         title([titlestr ' Column Curves']) ;
       end ;
       xlabel('Color Values') ;
       ylabel(ylabelstr) ;
     hold off ;
-  subplot(2,2,3) ;    %  Rows as data objects in upper right
+    set(gca,'Ydir','reverse')
+  subplot(2,2,3) ;    %  Rows as data objects in lower left
     plot(hgrid',mdatarom(1,:)','-','Color',mcolorrows(1,:)) ;
     hold on ;
       for ir = 1:d ;
         plot(hgrid',mdatarom(ir,:)','-','Color',mcolorrows(ir,:)) ;
       end ;
-      axisSM(hgrid',mdatarom) ;
+      axis([1 n vaxmdatarom]) ;
       if titleflag ;
         title([titlestr ' Row Curves']) ;
       end ;
@@ -482,8 +497,8 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
       ylabel('Color Values') ;
     hold off ;
   if ~(icolordist == 0) ;
-    subplot(2,2,4) ;    %  Show heatmap color distribution in lower left
-    paramstruct = struct('icolor',icolorhm, ...
+    subplot(2,2,4) ;    %  Show heatmap color distribution in lower right
+    paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'cdonlyflag',1) ;
@@ -496,7 +511,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
       %  This cures the tendency for the image to turn all black
   if ~isempty(savestr) ;   %  then create postscript file
     orient landscape ;
-    if ((icolorhm == 0) | (icolorhm == 1)) & ...
+    if ((icolorhm1 == 0) | (icolorhm1 == 1)) & ...
         (icolorcols == 0) & (icolorrows == 0) ;    %  Print to B&W .pdfs
       print('-dps2',[savestr 'RowObjMean']) ;
     else ;                %  Then print in Color
@@ -511,7 +526,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   mdataoac = mdata - mdatacom - mdatarom + mean(mean(mdata)) ;
       %  Overall Centered Version of Data
   subplot(2,2,1) ;    %  Heat map in upper left
-    paramstruct = struct('icolor',icolorhm, ...
+    paramstruct = struct('icolor',icolorhm2, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'icolordist',0, ...
@@ -525,20 +540,22 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
       for ic = 1:n ;
         plot(mdataoac(:,ic),vgrid,'-','Color',mcolorcols(ic,:)) ;
       end ;
-      axisSM(mdataoac,vgrid) ;
+      vaxmdataoac = axisSM(mdataoac) ;
+      axis([vaxmdataoac 1 d]) ;
       if titleflag ;
         title([titlestr ' Column Curves']) ;
       end ;
       xlabel('Color Values') ;
       ylabel(ylabelstr) ;
     hold off ;
-  subplot(2,2,3) ;    %  Rows as data objects in upper right
+    set(gca,'Ydir','reverse')
+  subplot(2,2,3) ;    %  Rows as data objects in lower left
     plot(hgrid',mdataoac(1,:)','-','Color',mcolorrows(1,:)) ;
     hold on ;
       for ir = 1:d ;
         plot(hgrid',mdataoac(ir,:)','-','Color',mcolorrows(ir,:)) ;
       end ;
-      axisSM(hgrid',mdataoac) ;
+      axis([1 n vaxmdataoac]) ;
       if titleflag ;
         title([titlestr ' Row Curves']) ;
       end ;
@@ -546,8 +563,8 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
       ylabel('Color Values') ;
     hold off ;
   if ~(icolordist == 0) ;
-    subplot(2,2,4) ;    %  Show heatmap color distribution in lower left
-    paramstruct = struct('icolor',icolorhm, ...
+    subplot(2,2,4) ;    %  Show heatmap color distribution in lower right
+    paramstruct = struct('icolor',icolorhm2, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'cdonlyflag',1) ;
@@ -560,7 +577,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
       %  This cures the tendency for the image to turn all black
   if ~isempty(savestr) ;   %  then create postscript file
     orient landscape ;
-    if ((icolorhm == 0) | (icolorhm == 1)) & ...
+    if ((icolorhm2 == 0) | (icolorhm2 == 1)) & ...
         (icolorcols == 0) & (icolorrows == 0) ;    %  Print to B&W .pdfs
       print('-dps2',[savestr 'OAMeanResid']) ;
     else ;                %  Then print in Color
@@ -577,7 +594,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
     mdatamode = U(:,imode) * S(imode,imode) * V(:,imode)' ;
         %  Rank 1 matrix version of this mode
     subplot(2,2,1) ;    %  Heat map in upper left
-      paramstruct = struct('icolor',icolorhm, ...
+      paramstruct = struct('icolor',icolorhm2, ...
                            'alpha',alpha, ...
                            'ncolor',ncolor, ...
                            'icolordist',0, ...
@@ -591,20 +608,22 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
         for ic = 1:n ;
           plot(mdatamode(:,ic),vgrid,'-','Color',mcolorcols(ic,:)) ;
         end ;
-        axisSM(mdatamode,vgrid) ;
+        vaxmdatamode = axisSM(mdatamode) ;
+        axis([vaxmdatamode 1 d]) ;
         if titleflag ;
           title([titlestr ' Column Curves']) ;
         end ;
         xlabel('Color Values') ;
         ylabel(ylabelstr) ;
       hold off ;
-    subplot(2,2,3) ;    %  Rows as data objects in upper right
+      set(gca,'Ydir','reverse')
+    subplot(2,2,3) ;    %  Rows as data objects in lower left
       plot(hgrid',mdatamode(1,:)','-','Color',mcolorrows(1,:)) ;
       hold on ;
         for ir = 1:d ;
           plot(hgrid',mdatamode(ir,:)','-','Color',mcolorrows(ir,:)) ;
         end ;
-        axisSM(hgrid',mdatamode) ;
+        axis([1 n vaxmdatamode]) ;
         if titleflag ;
           title([titlestr ' Row Curves']) ;
         end ;
@@ -612,8 +631,8 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
         ylabel('Color Values') ;
       hold off ;
     if ~(icolordist == 0) ;
-      subplot(2,2,4) ;    %  Show heatmap color distribution in lower left
-      paramstruct = struct('icolor',icolorhm, ...
+      subplot(2,2,4) ;    %  Show heatmap color distribution in lower right
+      paramstruct = struct('icolor',icolorhm2, ...
                            'alpha',alpha, ...
                            'ncolor',ncolor, ...
                            'cdonlyflag',1) ;
@@ -626,7 +645,7 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
         %  This cures the tendency for the image to turn all black
     if ~isempty(savestr) ;   %  then create postscript file
       orient landscape ;
-      if ((icolorhm == 0) | (icolorhm == 1)) & ...
+      if ((icolorhm2 == 0) | (icolorhm2 == 1)) & ...
           (icolorcols == 0) & (icolorrows == 0) ;    %  Print to B&W .pdfs
         print('-dps2',[savestr 'Mode' num2str(imode)]) ;
       else ;                %  Then print in Color

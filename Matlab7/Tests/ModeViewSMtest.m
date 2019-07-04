@@ -3,7 +3,7 @@ disp('Running MATLAB script file ModeViewSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION ModeViewSM,
 %    Visualization of Modes of variation
 
-itest = 17 ;     %  1,...,23  Simple parameter tests
+itest = 19 ;     %  1,...,19  Simple parameter tests
 
 
 disp(' ') ;
@@ -66,7 +66,7 @@ if (itest == 1) | ...
     ModeViewSM(mdata,paramstruct) ;
 
   elseif itest == 3 ;
-    disp('Test manually set default colors') ;
+    disp('Test icolorhm = 0') ;
     paramstruct = struct('icolorhm',0, ...
                          'icolorcols',1, ...
                          'icolorrows',1) ;
@@ -161,19 +161,25 @@ if (itest == 1) | ...
     ModeViewSM(mdata,paramstruct) ;
 
   elseif itest == 18 ;
+    disp('Test icolorhm = 3') ;
+    paramstruct = struct('icolorhm',3) ;
+    ModeViewSM(mdata,paramstruct) ;
 
   elseif itest == 19 ;
+    disp('Test icolorhm = 4') ;
+    paramstruct = struct('icolorhm',4) ;
+    ModeViewSM(mdata,paramstruct) ;
 
   elseif itest == 20 ;
+
+  elseif itest == 21 ;
+
+  elseif itest == 22 ;
 %{
     paramstruct = struct('',, ...
                          '',, ...
                          '',) ;
 %}
-
-  elseif itest == 21 ;
-
-  elseif itest == 22 ;
 
   elseif itest == 23 ;
 

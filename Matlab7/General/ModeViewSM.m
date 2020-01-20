@@ -39,10 +39,10 @@ function ModeViewSM(mdata,paramstruct)
 %    iout              Index for output organization:
 %                      1 - (default) One page (figure) for each mode
 %                                         of variation
+%                      4 - Column object scores scatterplot (as in scatplotSM)
 %              Note: these are not yet supported:
 %                      2 - Each row has 3 modes (heat map, columns, rows)
 %                      3 - Similar to curvdatSM, but with row mean mode
-%                      4 - Column object scores scatterplot (as in scatplotSM)
 %                      5 - Row object scores scatterplot 
 %
 %    nmode             number of modes of variation to show, beyond:
@@ -70,13 +70,28 @@ function ModeViewSM(mdata,paramstruct)
 %
 %    icolorcols        index for columns as data object curves plot
 %                      0 - Black
-%                      1 - (default) Rainbow color scheme
+%                      1 - color version (Matlab 7 color default)
+%                      2 - (default) Rainbow color scheme
 %                      n x 3 color matrix 
+%
+%    markerstrcols     markers for column objects,  only has effect for iout = 3 or 4
+%                      Can be either a single string with symbol to use for marker,
+%                          e.g. 'o' (default), '.', '+', 'x'
+%                          (see "help plot" for a full list)
+%                      Or a character array (n x 1), of these symbols,
+%                          One for each data vector, created using:  strvcat
 %
 %    icolorrows        index for columns as data object curves plot
 %                      0 - Black
 %                      1 - (default) Heat Color scheme
 %                      d x 3 color matrix 
+%
+%    markerstrrows     markers for row objects,  only has effect for iout = 5
+%                      Can be either a single string with symbol to use for marker,
+%                          e.g. '+' (default), '.', 'o', 'x'
+%                          (see "help plot" for a full list)
+%                      Or a character array (n x 1), of these symbols,
+%                          One for each data vector, created using:  strvcat
 %
 %    alpha             Proportion of data in:
 %                           first and last bins (icolor = 0, 3, 4 or matrix)
@@ -133,7 +148,7 @@ function ModeViewSM(mdata,paramstruct)
 %    RainbowColorsQY.m
 %    HeatColorsSM.m
 
-%    Copyright (c) J. S. Marron 2019
+%    Copyright (c) J. S. Marron 2019, 2020
 
 
 %  First set all parameters to defaults
@@ -141,8 +156,10 @@ function ModeViewSM(mdata,paramstruct)
 iout = 1 ;
 nmode = 3 ;
 icolorhm = 3 ;
-icolorcols = 1 ;
+icolorcols = 2 ;
+markerstrcols = 'o' ;
 icolorrows = 1 ;
+markerstrcols = '+' ;
 alpha = 0.05 ;
 ncolor = 64 ;
 icolordist = 1 ;
@@ -172,8 +189,16 @@ if nargin > 1 ;   %  then paramstruct is an argument
     icolorcols = getfield(paramstruct,'icolorcols') ; 
   end ;
 
+  if isfield(paramstruct,'markerstrcols') ;    %  then change to input value
+    markerstrcols = getfield(paramstruct,'markerstrcols') ; 
+  end ;
+
   if isfield(paramstruct,'icolorrows') ;    %  then change to input value
     icolorrows = getfield(paramstruct,'icolorrows') ; 
+  end ;
+
+  if isfield(paramstruct,'markerstrrows') ;    %  then change to input value
+    markerstrrows = getfield(paramstruct,'markerstrrows') ; 
   end ;
 
   if isfield(paramstruct,'alpha') ;    %  then change to input value
@@ -286,7 +311,7 @@ end ;
 
 if icolorcols == 0 ;
   mcolorcols = ones(n,1) * [0 0 0] ;
-elseif icolorcols == 1 ;
+elseif icolorcols == 2 ;
   mcolorcols = RainbowColorsQY(n) ;
 else ;
   if ~(size(icolorcols,2) == 3) ;    %  have invalid input color map
@@ -320,6 +345,18 @@ else ;
     mcolorrows = icolorrows ;
   end ;
 end ;
+
+
+%  Do common calculations
+%
+mdatacom = mean(mdata,2) * ones(1,n) ;
+vromscores = mean(mdata,1) ;
+mdatarom = ones(d,1) * vromscores ;
+mdataoac = mdata - mdatacom - mdatarom + mean(mean(mdata)) ;
+    %  Overall Centered Version of Data
+[U,S,V] = svds(mdataoac,nmode) ;
+mscores = [vromscores; (S * V')] ;
+    %  Scores for plotting when iout = 4
 
 
 if iout == 1 ;    %  One page (figure) for each mode of variation
@@ -392,7 +429,6 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   %
   figure(2) ;
   clf ;
-  mdatacom = mean(mdata,2) * ones(1,n) ;
   subplot(2,2,1) ;    %  Heat map in upper left
     paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
@@ -458,7 +494,6 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   %
   figure(3) ;
   clf ;
-  mdatarom = ones(d,1) * mean(mdata,1) ;
   subplot(2,2,1) ;    %  Heat map in upper left
     paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
@@ -523,8 +558,6 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   %
   figure(4) ;
   clf ;
-  mdataoac = mdata - mdatacom - mdatarom + mean(mean(mdata)) ;
-      %  Overall Centered Version of Data
   subplot(2,2,1) ;    %  Heat map in upper left
     paramstruct = struct('icolor',icolorhm2, ...
                          'alpha',alpha, ...
@@ -587,7 +620,6 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
 
   %  Make SVD modes pages (figures)
   %
-  [U,S,V] = svds(mdataoac,nmode) ;
   for imode = 1:nmode ;
     figure(4 + imode) ;
     clf ;
@@ -666,6 +698,17 @@ elseif iout == 3 ;    %  Similar to curvdatSM, but with row mean mode
 
 elseif iout == 4 ;    %  Column object scores scatterplot (as in scatplotSM)
 
+  labelcellstr = {{'Flat Dir''n Scores'; ...
+                   'Mode 1 Scores'; ...
+                   'Mode 2 Scores'; ...
+                   'Mode 3 Scores'; ...
+                   'Mode 4 Scores'}} ;
+  paramstruct = struct('icolor',mcolorcols, ...
+                       'markerstr',markerstrcols, ...
+                       'titlecellstr',{{titlestr}}, ...
+                       'labelcellstr',labelcellstr, ...
+                       'savestr',savestr) ;
+  scatplotSM(mscores,eye(nmode + 1),paramstruct) ;
 
 
 elseif iout == 5 ;    %  Row object scores scatterplot

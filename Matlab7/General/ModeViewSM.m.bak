@@ -135,13 +135,7 @@ function ModeViewSM(mdata,paramstruct)
 %
 %
 % Outputs:
-%     Graphics in new figures as:
-%         Figure 1:  Raw data
-%         Figure 2:  Column Object Mean mode of variation
-%         Figure 3:  Row Trait Mean mode of variation
-%         Figure 4:  Residuals from double centering
-%         Figure 5+:  SVD modes of variation
-% 
+%     Graphics in new figures 
 %     When savestr exists,
 %        Postscript file saved in 'savestr'.ps 
 %                 (and 'savestr'ColorDist.ps, when specified)

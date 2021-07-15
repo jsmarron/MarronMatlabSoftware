@@ -111,11 +111,12 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                          of axis handles (or left at the default of empty)
 %
 %    ipval            index for p-value computation:
-%                         1  (default) Display both p-value (empirical quantile)
-%                                and Z-score
+%                         1  (default) Display all of p-value (empirical quantile),
+%                                Z-score and Z-score Confidence Interval
 %                         2  Show only p-value (empirical quantile)
 %                         3  Show only Z-score (useful for comparisons, when
 %                                            p-values are all 0)
+%                         4  Show Z-score and Z-score Confidence Interval 
 %
 %    ishowperm        0  -  Just show two panel (projections & p-value) display
 %                     1  -  (default) Also show two panels of permuted 
@@ -1249,7 +1250,12 @@ if ~(nsim == 0) ;    %  Then do permutation test
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
              vax(3) + 0.8 * (vax(4) - vax(3)), ...
              ['Z-score = ' num2str(zscore(it))],'Color','k') ;
-         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
+
+      elseif ipval == 4 ;
+        text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
+             vax(3) + 0.8 * (vax(4) - vax(3)), ...
+             ['Z-score = ' num2str(zscore(it))],'Color','k') ;
+        text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
               vax(3) + 0.7 * (vax(4) - vax(3)), ...
              ['Z-score CI = ' '[' num2str(zscore_L(it)) ',' num2str(zscore_U(it)) ']'],'Color','k') ;
 
@@ -1257,7 +1263,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         disp('!!!   Warning from DiProPermSM.m:         !!!') ;
         disp('!!!   Invalid ipval,                      !!!') ;
-        disp('!!!   using default of both displays      !!!') ;
+        disp('!!!   using default of all displays       !!!') ;
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
              vax(3) + 0.8 * (vax(4) - vax(3)), ...

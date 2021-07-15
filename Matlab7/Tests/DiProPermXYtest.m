@@ -10,7 +10,7 @@ disp('Running MATLAB script file DiProPermXYtest.m') ;
 %            Confidence Intervals for the Z score
 
 
-itest = 66 ;     %  1,...,74  Simple parameter tests from DiProPermSMtest.m
+itest = 202 ;     %  1,...,75  Simple parameter tests from DiProPermSMtest.m
                   %  101,... First round of simulations
                   %  101 - single simple Gaussian example (each of DWD,MD,MDP,SVM)
                   %  102 - single balanced Gaussian mixture (each of DWD,MD,MDP,SVM)
@@ -18,6 +18,8 @@ itest = 66 ;     %  1,...,74  Simple parameter tests from DiProPermSMtest.m
                   %  111 - explore Gaussian mean differences DWD, t-stat & MD
                   %  112 - explore Gaussian mean differences MD, t-stat & MD
                   %  113 - explore Gaussian mean differences SVM, t-stat & MD
+                  %             Note:  a number of the above are in Directory
+                  %                  Research/ComplexPopn/DiProPerm
                   %  201,...,  More tests of newer features
 
 
@@ -99,11 +101,11 @@ if itest < 100 ;    %  then do simple parameter tests, on small data set
     DiProPermXY(data1,data2,paramstruct) ;
 
 
-  elseif itest == 9 ;    % try out both pvalues
+  elseif itest == 9 ;    % try out all pvalues
 
     paramstruct = struct('ipval',1, ...
                          'nsim',50, ...
-                         'title1str','ipval = 1, both') ;
+                         'title1str','ipval = 1, all') ;
     DiProPermXY(data1,data2,paramstruct) ;
 
 
@@ -115,7 +117,7 @@ if itest < 100 ;    %  then do simple parameter tests, on small data set
     DiProPermXY(data1,data2,paramstruct) ;
 
 
-  elseif itest == 11 ;    % try out Gaussian fit only p-value
+  elseif itest == 11 ;    % try out Z-score only
 
     paramstruct = struct('ipval',3, ...
                          'nsim',50, ...
@@ -414,10 +416,10 @@ if itest < 100 ;    %  then do simple parameter tests, on small data set
 
   elseif itest == 36 ;    % try out pvalues & Z-score
 
-    paramstruct = struct('ipval',4, ...
+    paramstruct = struct('ipval',5, ...
                          'nsim',50, ...
                          'nreport',25, ...
-                         'title1str','ipval = 4, not valid', ...
+                         'title1str','ipval = 5, not valid', ...
                          'iscreenwrite',1) ;
     DiProPermXY(data1,data2,paramstruct) ;
 
@@ -934,11 +936,19 @@ if itest < 100 ;    %  then do simple parameter tests, on small data set
     DiProPermXY(data1,data2,paramstruct) ;
 
 
+  elseif itest == 75 ;    % try out Z-score & CI only
+
+    paramstruct = struct('ipval',4, ...
+                         'nsim',50, ...
+                         'title1str','ipval = 4, Z-score & CI only') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
 
   end ;
 
 
-else ;    %  then do part of 1st round of simulation study
+elseif itest < 200 ;    %  then do part of 1st round of simulation study
 
   if itest < 110 ;    %  then run single sample simulations, (each of DWD,MD,MDP,SVM)
 
@@ -1190,6 +1200,37 @@ else ;    %  then do part of 1st round of simulation study
 
   end ;
 
+
+else ;    %  Test new parts
+
+  %  Start with previous test data
+  %
+  rng(66430983) ;
+
+  data1 = randn(50,10) ;
+  data2 = 1 + randn(50,10) ;
+
+  figure(1) ;
+  clf ;
+
+
+  if itest == 201 ;    % check balanced permutation index set to  unbalanced
+
+    paramstruct = struct('iper',1, ...
+                         'nsim',50, ...
+                         'title1str','Reduce nsim to 50') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 202 ;    % check balanced permutation index set to  balanced
+
+    paramstruct = struct('iper',2, ...
+                         'nsim',50, ...
+                         'title1str','Reduce nsim to 50') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  end ;
 
 
 end ;

@@ -671,15 +671,26 @@ for it = 1:nt ;
     dirstr = 'SVM' ;
     vdir = SVM1SM(mdata1,mdata2,SVMpar) ;
         %  SVM direction vector, pointing from 2nd group towards first
+
   elseif iidir == 6 ;    %  Support Vector Machine direction vector
+
     dirstr = 'DWD Large' ;
+    S = rng ;
+        %  save state of random number generator
+        %  since DWDLarge seems to reset it
     DWDLarge_X = [mdata1 mdata2];
     DWDLarge_y = [ones(1, size(mdata1, 2)) -ones(1, size(mdata2, 2))]';
     options.method = 1; 
+pauseSM
     [C,ddist] = penaltyParameter(DWDLarge_X,DWDLarge_y,1);
+pauseSM
     vdir = genDWDweighted(DWDLarge_X,DWDLarge_y,C,1,options);
     vdir = vdir./norm(vdir);
-%  DWD new algorithm direction vector, pointing from 2nd group towards first
+pauseSM
+        %  DWD new algorithm direction vector, pointing from 2nd group towards first
+    rng(S) ;
+        %  restore state of random number generator
+
   else ;
 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -914,7 +925,6 @@ if ~(nsim == 0) ;    %  Then do permutation test
         %  random permutation of flagss1sim
     comboss1flag = logical(flagss1sim) ;
       
-      
 
     %  Find permuted data directions, and statistics
     %
@@ -970,15 +980,24 @@ if ~(nsim == 0) ;    %  Then do permutation test
         vdirc = SVM1SM(mdata(:,comboss1flag), ...
                          mdata(:,~comboss1flag),SVMpar) ;
             %  SVM direction vector, pointing from 2nd group towards first
+
       elseif iidir == 6 ;    %  DWDLarge  algorithm direction vector
 
+        S = rng ;
+            %  save state of random number generator
+            %  since DWDLarge seems to reset it
         dirstr = 'DWDLarge' ;
-        DWDLarge_Xp = [mdata(:,comboss1flag) mdata(:,~comboss1flag)];
-        DWDLarge_yp = [ones(1, size(mdata(:,comboss1flag), 2)) -ones(1, size(mdata(:,~comboss1flag), 2))]';
-        options.method = 1; 
-        [Cp,ddistp] = penaltyParameter(DWDLarge_Xp,DWDLarge_yp,1);
-        vdirc = genDWDweighted(DWDLarge_Xp,DWDLarge_yp,Cp,1,options);
+        DWDLarge_Xp = [mdata(:,comboss1flag) mdata(:,~comboss1flag)] ;
+        DWDLarge_yp = [ones(1, size(mdata(:,comboss1flag), 2)) ...
+                       -ones(1, size(mdata(:,~comboss1flag), 2))]' ;
+        options.method = 1 ; 
+        [Cp,ddistp] = penaltyParameter(DWDLarge_Xp,DWDLarge_yp,1) ;
+        vdirc = genDWDweighted(DWDLarge_Xp,DWDLarge_yp,Cp,1,options) ;
+        rng(S) ;
+            %  restore state of random number generator
+
       end ;
+
       vdirc = vdirc / sqrt(sum(vdirc.^2)) ;
           %  divide by length, to make it a unit vector
 
@@ -1263,7 +1282,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         disp('!!!   Warning from DiProPermSM.m:         !!!') ;
         disp('!!!   Invalid ipval,                      !!!') ;
-        disp('!!!   using default of both displays      !!!') ;
+        disp('!!!   using default of all displays       !!!') ;
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
              vax(3) + 0.8 * (vax(4) - vax(3)), ...

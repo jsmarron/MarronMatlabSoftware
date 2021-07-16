@@ -10,7 +10,7 @@ disp('Running MATLAB script file DiProPermXYtest.m') ;
 %            Confidence Intervals for the Z score
 
 
-itest = 202 ;     %  1,...,75  Simple parameter tests from DiProPermSMtest.m
+itest = 203 ;     %  1,...,75  Simple parameter tests from DiProPermSMtest.m
                   %  101,... First round of simulations
                   %  101 - single simple Gaussian example (each of DWD,MD,MDP,SVM)
                   %  102 - single balanced Gaussian mixture (each of DWD,MD,MDP,SVM)
@@ -20,7 +20,7 @@ itest = 202 ;     %  1,...,75  Simple parameter tests from DiProPermSMtest.m
                   %  113 - explore Gaussian mean differences SVM, t-stat & MD
                   %             Note:  a number of the above are in Directory
                   %                  Research/ComplexPopn/DiProPerm
-                  %  201,...,  More tests of newer features
+                  %  201,...,214  More tests of newer features
 
 
 
@@ -1218,7 +1218,7 @@ else ;    %  Test new parts
 
     paramstruct = struct('iper',1, ...
                          'nsim',50, ...
-                         'title1str','Reduce nsim to 50') ;
+                         'title1str','perm index set to unbalanced') ;
     DiProPermXY(data1,data2,paramstruct) ;
 
 
@@ -1226,7 +1226,174 @@ else ;    %  Test new parts
 
     paramstruct = struct('iper',2, ...
                          'nsim',50, ...
-                         'title1str','Reduce nsim to 50') ;
+                         'title1str','perm index set to balanced') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 203 ;    % Test DWDLarge
+
+    paramstruct = struct('idir',6, ...
+                         'nsim',50, ...
+                         'title1str','Try DWDLarge direction') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 204 ;    % DWDLarge, no signal
+
+    data2 = data2 - 1 ;
+
+    paramstruct = struct('idir',6, ...
+                         'nsim',50, ...
+                         'title1str','DWDLarge, no signal') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 205 ;    % DWDLarge, balanced permutations
+
+    paramstruct = struct('iper',2, ...
+                         'idir',6, ...
+                         'nsim',50, ...
+                         'title1str','DWDLarge Balanced Perms') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 206 ;    % Time trials DWD vs. DWDLarge
+
+    tic ;
+    paramstruct = struct('idir',1, ...
+                         'nsim',1000, ...
+                         'title1str','DWD, 1000 sims', ...
+                         'iscreenwrite',1) ;
+    DiProPermXY(data1,data2,paramstruct) ;
+    t1 = toc ;
+
+    figure(2) ;
+    clf ;
+
+    tic ;
+    paramstruct = struct('idir',6, ...
+                         'nsim',1000, ...
+                         'title1str','DWDLarge, 1000 sims', ...
+                         'iscreenwrite',1) ;
+    DiProPermXY(data1,data2,paramstruct) ;
+    t2 = toc ;
+
+    disp(' ') ;
+    disp(['Time for DWD = ' num2str(t1) ' secs']) ;
+
+    disp(' ') ;
+    disp(['Time for DWDLarge = ' num2str(t2) ' secs']) ;
+
+
+  elseif itest == 207 ;    % DWD all vs. balanced
+
+    paramstruct = struct('iper',1, ...
+                         'idir',1, ...
+                         'nsim',1000, ...
+                         'nreport',20, ...
+                         'title1str','DWD, all', ...
+                         'iscreenwrite',1) ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+    figure(2) ;
+    clf ;
+
+    tic ;
+    paramstruct = struct('iper',2, ...
+                         'idir',1, ...
+                         'nsim',1000, ...
+                         'nreport',20, ...
+                         'title1str','DWD, balanced', ...
+                         'iscreenwrite',1) ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 208 ;    % Strong signal all vs. balanced
+
+    data2 = data2 + 5 ;
+
+    paramstruct = struct('iper',1, ...
+                         'idir',1, ...
+                         'nsim',100, ...
+                         'nreport',20, ...
+                         'title1str','Strong Signal, all', ...
+                         'iscreenwrite',1) ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+    figure(2) ;
+    clf ;
+
+    tic ;
+    paramstruct = struct('iper',2, ...
+                         'idir',1, ...
+                         'nsim',100, ...
+                         'nreport',20, ...
+                         'title1str','Strong Signal, balanced', ...
+                         'iscreenwrite',1) ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 209 ;    % manually set ishowperm to 1
+
+    paramstruct = struct('ishowperm',1, ...
+                         'nsim',50, ...
+                         'title1str','ishowperm = 1') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 210 ;    % manually set ishowperm to 0
+
+    paramstruct = struct('ishowperm',0, ...
+                         'nsim',50, ...
+                         'title1str','ishowperm = 0') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 211 ;    % Strong Signal Context of Xi Yang
+
+    rng(66430983) ;
+    data1 = randn(100,100) ;
+    data2 = 5 + randn(100,100) ;
+
+    paramstruct = struct('idir',6, ...
+                         'nsim',100, ...
+                         'title1str','Xi Yang strong signal') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 212 ;    % No Signal Context of Xi Yang
+
+    rng(66430983) ;
+    data1 = randn(100,100) ;
+    data2 = randn(100,100) ;
+
+    paramstruct = struct('idir',6, ...
+                         'nsim',100, ...
+                         'title1str','Xi Yang No signal') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 213 ;    % No Signal Context of Xi Yang, regular DWD
+
+    rng(66430983) ;
+    data1 = randn(100,100) ;
+    data2 = randn(100,100) ;
+
+    paramstruct = struct('idir',1, ...
+                         'nsim',100, ...
+                         'title1str','Xi Yang No signal') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 214 ;    % Strong Signal Context of Xi Yang, regular DWD
+
+    rng(66430983) ;
+    data1 = randn(100,100) ;
+    data2 = 5 + randn(100,100) ;
+
+    paramstruct = struct('idir',1, ...
+                         'nsim',100, ...
+                         'title1str','Xi Yang strong signal') ;
     DiProPermXY(data1,data2,paramstruct) ;
 
 

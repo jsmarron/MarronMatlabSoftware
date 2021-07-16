@@ -75,15 +75,13 @@ weightoptions = 2;
    sigma = sigma^(expon); 
    options.sigma = sigma;
    options.Zscale = Zscale; 
-%%  
-%{ 
+%%   
    fprintf('\n------------------------------------------------------')
    fprintf('--------------------------------')  
    fprintf('\n sample size = %3.0f, feature dimension = %3.0f',n,dim);
    fprintf('\n expon = %2.1f, penalty constant C = %4.2e',expon,C0); 
    fprintf('\n------------------------------------------------------')
    fprintf('--------------------------------')     
-%}
 %%   
    [w,beta,xi,r,alpha,runhist] = genDWDweighted_main(Z,y,Cvec,expon,options);
    ttime = etime(clock,tstart);
@@ -104,7 +102,6 @@ weightoptions = 2;
    info.psqmr    = runhist.psqmr(end);
    info.doublecompute = runhist.doublecompute(end);   
 %%
-%{
    fprintf('\n sample size = %3.0f, feature dimension = %3.0f',n,dim);
    fprintf('\n positve sample = %3.0f, negative sample = %3.0f',np,nn);    
    fprintf('\n norm(Z*alpha)=%3.2e, norm(w)=%3.2e',Zscale*norm(Z*alpha),norm(w));
@@ -116,5 +113,4 @@ weightoptions = 2;
    fprintf('\n primfeas = %3.2e',info.primfeas);
    fprintf('\n dualfeas = %3.2e',info.dualfeas);
    fprintf('\n relative gap = %3.2e\n',info.relgap);
-%}
 %%********************************************************************

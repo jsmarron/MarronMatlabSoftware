@@ -175,9 +175,6 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                                  or using:  ['+';'o']   (default)
 %                         An (n1 + n2) x 1 character array, 
 %                             One for each data point
-%                     Note:  When this is 'o', and ishowperm = 1 (or 2),
-%                            For projections of permutations 1 & 2 (or small-big),
-%                            Use '+' for 1st permuted group and '^' for 2nd
 %
 %    ibigdot          0  (default)  use Matlab default for dot sizes
 %                     1  force large dot size in prints (useful since some
@@ -684,6 +681,7 @@ for it = 1:nt ;
     DWDLarge_X = [mdata1 mdata2];
     DWDLarge_y = [ones(1, size(mdata1, 2)) -ones(1, size(mdata2, 2))]';
     options.method = 1; 
+    options.printlevel = 0 ;
     [C,ddist] = penaltyParameter(DWDLarge_X,DWDLarge_y,1);
     vdir = genDWDweighted(DWDLarge_X,DWDLarge_y,C,1,options);
     vdir = vdir./norm(vdir);
@@ -886,7 +884,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
   %
   mstat = zeros(nsim,nt) ;
   if ishowperm == 1 ;
-    Perm12Cell = cell(9,nt) ;
+    Perm12Cell = cell(7,nt) ;
         %  create 9 x nt cell array for storing info 
         %          from 1st & 2nd Permutations
   end ;
@@ -1091,70 +1089,25 @@ if ~(nsim == 0) ;    %  Then do permutation test
           statperm1 = statsim ;
           Perm12Cell{1,it} = vdirperm1 ;
           Perm12Cell{2,it} = statperm1 ;
-          if strcmp(vmarkerstr,'o') ;
-            vmarkerstr1 = [] ;
-            for ipm = 1:n ;
-              if comboss1flag(ipm) ;
-                vmarkerstr1 = strvcat(vmarkerstr1,'+') ;
-              else ;
-                vmarkerstr1 = strvcat(vmarkerstr1,'^') ;
-              end ;
-            end ;
-            Perm12Cell{3,it} = vmarkerstr1 ;
-          end ;
           mcolorsim = mcolor(indperm,:) ;
-          Perm12Cell{4,it} = mcolorsim ;
+          Perm12Cell{3,it} = mcolorsim ;
         elseif isim == 2 ;
           vdirperm2 = vdirc ;
           statperm2 = statsim ;
-          Perm12Cell{5,it} = vdirperm2 ;
-          Perm12Cell{6,it} = statperm2 ;
-          if strcmp(vmarkerstr,'o') ;
-            vmarkerstr2 = [] ;
-            for ipm = 1:n ;
-              if comboss1flag(ipm) ;
-                vmarkerstr2 = strvcat(vmarkerstr2,'+') ;
-              else ;
-                vmarkerstr2 = strvcat(vmarkerstr2,'^') ;
-              end ;
-            end ;
-            Perm12Cell{7,it} = vmarkerstr2 ;
-          end ;
-
+          Perm12Cell{4,it} = vdirperm2 ;
+          Perm12Cell{5,it} = statperm2 ;
           mcolorsim = mcolor(indperm,:) ;
-          Perm12Cell{8,it} = mcolorsim ;
+          Perm12Cell{6,it} = mcolorsim ;
         end ;
-        Perm12Cell{9,it} = dirstr ;
+        Perm12Cell{7,it} = dirstr ;
       elseif ishowperm == 2 ;
         if isim == 1 ;
           vdirperm1 = vdirc ;
           statperm1 = statsim ;
-vmarkerstr
-pauseSM
-          if strcmp(vmarkerstr,'o') ;
-            vmarkerstr1 = [] ;
-            for ipm = 1:n ;
-              if comboss1flag(ipm) ;
-                vmarkerstr1 = strvcat(vmarkerstr1,'+') ;
-              else ;
-                vmarkerstr1 = strvcat(vmarkerstr1,'^') ;
-              end ;
-            end ;
-          end ;
           mcolorsim1 = mcolor(indperm,:) ;
         elseif isim == 2 ;
           vdirperm2 = vdirc ;
           statperm2 = statsim ;
-          if strcmp(vmarkerstr,'o') ;
-            vmarkerstr2 = [] ;
-            for ipm = 1:n ;
-              if comboss1flag(ipm) ;
-                vmarkerstr2 = strvcat(vmarkerstr2,'+') ;
-              else ;
-                vmarkerstr2 = strvcat(vmarkerstr2,'^') ;
-              end ;
-            end ;
-          end ;
           mcolorsim2 = mcolor(indperm,:) ;
 
           if statperm1 <= statperm2 ;
@@ -1162,67 +1115,41 @@ pauseSM
             statmax = statperm2 ;
             Perm12Cell{1,it} = vdirperm1 ;
             Perm12Cell{2,it} = statperm1 ;
-            Perm12Cell{3,it} = vmarkerstr1 ;
-            Perm12Cell{4,it} = mcolorsim1 ;
-            Perm12Cell{5,it} = vdirperm2 ;
-            Perm12Cell{6,it} = statperm2 ;
-            Perm12Cell{7,it} = vmarkerstr2 ;
-            Perm12Cell{8,it} = mcolorsim2 ;
+            Perm12Cell{3,it} = mcolorsim1 ;
+            Perm12Cell{4,it} = vdirperm2 ;
+            Perm12Cell{5,it} = statperm2 ;
+            Perm12Cell{6,it} = mcolorsim2 ;
           else ;
             statmin = statperm2 ;
             statmax = statperm1 ;
             Perm12Cell{1,it} = vdirperm2 ;
             Perm12Cell{2,it} = statperm2 ;
-            Perm12Cell{3,it} = vmarkerstr2 ;
-            Perm12Cell{4,it} = mcolorsim2 ;
-            Perm12Cell{5,it} = vdirperm1 ;
-            Perm12Cell{6,it} = statperm1 ;
-            Perm12Cell{7,it} = vmarkerstr1 ;
-            Perm12Cell{8,it} = mcolorsim1 ;
+            Perm12Cell{3,it} = mcolorsim2 ;
+            Perm12Cell{4,it} = vdirperm1 ;
+            Perm12Cell{5,it} = statperm1 ;
+            Perm12Cell{6,it} = mcolorsim1 ;
           end ;
         else ;    %  later than first two isims
           statperm = statsim ;
           if statperm < statmin ;    %  then replace min by this
             statmin = statperm ;
             vdirperm = vdirc ;
-            if strcmp(vmarkerstr,'o') ;
-              vmarkerstr = [] ;
-              for ipm = 1:n ;
-                if comboss1flag(ipm) ;
-                  vmarkerstr = strvcat(vmarkerstr,'+') ;
-                else ;
-                  vmarkerstr = strvcat(vmarkerstr,'^') ;
-                end ;
-              end ;
-            end ;
             mcolorsim = mcolor(indperm,:) ;
             Perm12Cell{1,it} = vdirperm ;
             Perm12Cell{2,it} = statperm ;
-            Perm12Cell{3,it} = vmarkerstr ;
-            Perm12Cell{4,it} = mcolorsim ;
+            Perm12Cell{3,it} = mcolorsim ;
           elseif statmax < statperm ;    %  then replace max by this
             statmax = statperm ;
             vdirperm = vdirc ;
-            if strcmp(vmarkerstr,'o') ;
-              vmarkerstr = [] ;
-              for ipm = 1:n ;
-                if comboss1flag(ipm) ;
-                  vmarkerstr = strvcat(vmarkerstr,'+') ;
-                else ;
-                  vmarkerstr = strvcat(vmarkerstr,'^') ;
-                end ;
-              end ;
-            end ;
             mcolorsim = mcolor(indperm,:) ;
-            Perm12Cell{5,it} = vdirperm ;
-            Perm12Cell{6,it} = statperm ;
-            Perm12Cell{7,it} = vmarkerstr ;
-            Perm12Cell{8,it} = mcolorsim ;
+            Perm12Cell{4,it} = vdirperm ;
+            Perm12Cell{5,it} = statperm ;
+            Perm12Cell{6,it} = mcolorsim ;
           end ;
 
         end ;    %  of isim if-block
         
-        Perm12Cell{9,it} = dirstr ;
+        Perm12Cell{7,it} = dirstr ;
       end ;    %  of ishowperm if-block
 
 
@@ -1406,7 +1333,7 @@ pauseSM
     if  ishowperm == 1  | ...
         ishowperm == 2  ;
 
-      dirstr = Perm12Cell{9,it} ;
+      dirstr = Perm12Cell{7,it} ;
 
       if ishowperm == 1 ;
         titlestr1 = ['1st Permuted ' dirstr ' Projections'] ;
@@ -1419,12 +1346,8 @@ pauseSM
       subplot(2,2,3)
       vdirperm1 = Perm12Cell{1,it} ;
       statperm1 = Perm12Cell{2,it} ;
-      if strcmp(vmarkerstr,'o') ;
-        vmarkerstr1 = Perm12Cell{3,it} ;
-      else ;
-        vmarkerstr1 = vmarkerstr ;
-      end ;
-      mcolorsim = Perm12Cell{4,it} ;
+      vmarkerstr1 = vmarkerstr ;
+      mcolorsim = Perm12Cell{3,it} ;
       paramstructPP1 = struct('icolor',mcolorsim, ...
                               'isubpopkde',1, ...
                               'markerstr',vmarkerstr1, ...
@@ -1446,14 +1369,10 @@ pauseSM
       hold off ;
 
       subplot(2,2,4)
-      vdirperm2 = Perm12Cell{5,it} ;
-      statperm2 = Perm12Cell{6,it} ;
-      if strcmp(vmarkerstr,'o') ;
-        vmarkerstr2 = Perm12Cell{7,it} ;
-      else ;
-        vmarkerstr2 = vmarkerstr ;
-      end ;
-      mcolorsim = Perm12Cell{8,it} ;
+      vdirperm2 = Perm12Cell{4,it} ;
+      statperm2 = Perm12Cell{5,it} ;
+      vmarkerstr2 = vmarkerstr ;
+      mcolorsim = Perm12Cell{6,it} ;
       paramstructPP1 = struct('icolor',mcolorsim, ...
                               'isubpopkde',1, ...
                               'markerstr',vmarkerstr2, ...

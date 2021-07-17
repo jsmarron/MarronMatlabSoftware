@@ -10,7 +10,7 @@ disp('Running MATLAB script file DiProPermXYtest.m') ;
 %            Confidence Intervals for the Z score
 
 
-itest = 211 ;     %  1,...,75  Simple parameter tests from DiProPermSMtest.m
+itest = 225 ;     %  1,...,75  Simple parameter tests from DiProPermSMtest.m
                   %  101,... First round of simulations
                   %  101 - single simple Gaussian example (each of DWD,MD,MDP,SVM)
                   %  102 - single balanced Gaussian mixture (each of DWD,MD,MDP,SVM)
@@ -20,7 +20,7 @@ itest = 211 ;     %  1,...,75  Simple parameter tests from DiProPermSMtest.m
                   %  113 - explore Gaussian mean differences SVM, t-stat & MD
                   %             Note:  a number of the above are in Directory
                   %                  Research/ComplexPopn/DiProPerm
-                  %  201,...,216  More tests of newer features
+                  %  201,...,225  More tests of newer features
 
 
 
@@ -1429,40 +1429,123 @@ else ;    %  Test new parts
     DiProPermXY(data1,data2,paramstruct) ;
 
 
+  elseif itest == 215 ;    % manually set ishowperm to 1
 
-
-%{
-  elseif itest == 209 ;    % manually set ishowperm to 1
-
-    paramstruct = struct('ishowperm',1, ...
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',1, ...
                          'nsim',50, ...
                          'title1str','ishowperm = 1') ;
     DiProPermXY(data1,data2,paramstruct) ;
 
 
-  elseif itest == 210 ;    % manually set ishowperm to 0
+  elseif itest == 216 ;    % manually set ishowperm to 0
 
-    paramstruct = struct('ishowperm',0, ...
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',0, ...
                          'nsim',50, ...
                          'title1str','ishowperm = 0') ;
     DiProPermXY(data1,data2,paramstruct) ;
 
 
-  elseif itest == 215 ;    % ishowperm = 3
+  elseif itest == 217 ;    % ishowperm = 3
 
-    paramstruct = struct('ishowperm',3, ...
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',3, ...
                          'nsim',50, ...
                          'title1str','ishowperm = 3') ;
     DiProPermXY(data1,data2,paramstruct) ;
 
 
-  elseif itest == 216 ;    % ishowperm = 2
+  elseif itest == 218 ;    % ishowperm = 2
 
-    paramstruct = struct('ishowperm',2, ...
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',2, ...
                          'nsim',50, ...
                          'title1str','ishowperm = 2') ;
     DiProPermXY(data1,data2,paramstruct) ;
-%}
+
+
+  elseif itest == 219 ;    % ishowperm = 2, strong signal
+
+    data2 = data2 + 5 ;
+
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',2, ...
+                         'nsim',50, ...
+                         'title1str','ishowperm = 2, strong signal') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 220 ;    % ishowperm = 2, Xi Yang strong signal
+
+    rng(66430983) ;
+    data1 = randn(100,100) ;
+    data2 = 5 + randn(100,100) ;
+
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',2, ...
+                         'nsim',50, ...
+                         'title1str','ishowperm = 2, Xi Yang signal') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 221 ;    % ishowperm = 2, single marker
+
+    markerstr = '*' ;
+
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',2, ...
+                         'nsim',50, ...
+                         'markerstr',markerstr, ...
+                         'title1str','ishowperm = 2') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 222 ;    % ishowperm = 2, two markers
+
+    markerstr = ['^';'d'] ;
+
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',2, ...
+                         'nsim',50, ...
+                         'markerstr',markerstr, ...
+                         'title1str','ishowperm = 2') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 223 ;    %  Check output stat
+
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',2, ...
+                         'nsim',50, ...
+                         'title1str','Check Output stat') ;
+    stat = DiProPermXY(data1,data2,paramstruct) ;
+
+    disp(['Stat = ' num2str(stat)]) ;
+
+
+  elseif itest == 224 ;    %  Check outputs pval and Zscore
+
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',2, ...
+                         'nsim',50, ...
+                         'title1str','Check Outputs pval & zscore') ;
+    [stat, pval, zscore] = DiProPermXY(data1,data2,paramstruct) ;
+
+    disp(['pval = ' num2str(pval)]) ;
+    disp(['zscore = ' num2str(zscore)]) ;
+
+
+  elseif itest == 225 ;    %  Check CI
+
+    paramstruct = struct('idir',6, ...
+                         'ishowperm',2, ...
+                         'nsim',50, ...
+                         'title1str','Check Output stat') ;
+    [stat, pval, zscore, L, U] = DiProPermXY(data1,data2,paramstruct) ;
+
+    disp(['Confidence Interval = [' num2str(L) ',' num2str(U) ']']) ;
+
 
   end ;
 

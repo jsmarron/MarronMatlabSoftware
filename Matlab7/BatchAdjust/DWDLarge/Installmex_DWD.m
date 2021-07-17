@@ -25,12 +25,17 @@
          str2 = ['''',matlabroot,'\extern\lib\win32\microsoft\libmwblas.lib''  '];
       end
       libstr = [str1,str2];
-   elseif strcmp(computer_model,'PCWIN64')
-      str0 = ['''',matlabroot,'\extern\lib\win64\lcc\'' '];
-      if (exist(eval(str0),'dir')==7)
+   elseif strcmp(computer_model,'PCWIN64')              
+      str_lcc = ['''',matlabroot,'\extern\lib\win64\lcc\'' '];
+      str_mingw64 = ['''',matlabroot,'\extern\lib\win64\mingw64\'' '];  
+      str_microsoft = ['''',matlabroot,'\extern\lib\win64\microsoft\'' '];        
+      if (exist(eval(str_lcc),'dir')==7)
          str1 = ['''',matlabroot,'\extern\lib\win64\lcc\libmwlapack.lib''  '];
          str2 = ['''',matlabroot,'\extern\lib\win64\lcc\libmwblas.lib''  '];
-      else
+      elseif (exist(eval(str_mingw64),'dir')==7)
+         str1 = ['''',matlabroot,'\extern\lib\win64\mingw64\libmwlapack.lib''  '];
+         str2 = ['''',matlabroot,'\extern\lib\win64\mingw64\libmwblas.lib''  ']; 
+      elseif (exist(eval(str_microsoft),'dir')==7)
          str1 = ['''',matlabroot,'\extern\lib\win64\microsoft\libmwlapack.lib''  '];
          str2 = ['''',matlabroot,'\extern\lib\win64\microsoft\libmwblas.lib''  '];
       end

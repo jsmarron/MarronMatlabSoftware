@@ -20,7 +20,7 @@ itest = 203 ;     %  1,...,75  Simple parameter tests from DiProPermSMtest.m
                   %  113 - explore Gaussian mean differences SVM, t-stat & MD
                   %             Note:  a number of the above are in Directory
                   %                  Research/ComplexPopn/DiProPerm
-                  %  201,...,214  More tests of newer features
+                  %  201,...,216  More tests of newer features
 
 
 
@@ -1333,22 +1333,6 @@ else ;    %  Test new parts
     DiProPermXY(data1,data2,paramstruct) ;
 
 
-  elseif itest == 209 ;    % manually set ishowperm to 1
-
-    paramstruct = struct('ishowperm',1, ...
-                         'nsim',50, ...
-                         'title1str','ishowperm = 1') ;
-    DiProPermXY(data1,data2,paramstruct) ;
-
-
-  elseif itest == 210 ;    % manually set ishowperm to 0
-
-    paramstruct = struct('ishowperm',0, ...
-                         'nsim',50, ...
-                         'title1str','ishowperm = 0') ;
-    DiProPermXY(data1,data2,paramstruct) ;
-
-
   elseif itest == 211 ;    % Strong Signal Context of Xi Yang
 
     rng(66430983) ;
@@ -1396,6 +1380,41 @@ else ;    %  Test new parts
                          'title1str','Xi Yang strong signal') ;
     DiProPermXY(data1,data2,paramstruct) ;
 
+
+
+
+%{
+  elseif itest == 209 ;    % manually set ishowperm to 1
+
+    paramstruct = struct('ishowperm',1, ...
+                         'nsim',50, ...
+                         'title1str','ishowperm = 1') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 210 ;    % manually set ishowperm to 0
+
+    paramstruct = struct('ishowperm',0, ...
+                         'nsim',50, ...
+                         'title1str','ishowperm = 0') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 215 ;    % ishowperm = 3
+
+    paramstruct = struct('ishowperm',3, ...
+                         'nsim',50, ...
+                         'title1str','ishowperm = 3') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+
+
+  elseif itest == 216 ;    % ishowperm = 2
+
+    paramstruct = struct('ishowperm',2, ...
+                         'nsim',50, ...
+                         'title1str','ishowperm = 2') ;
+    DiProPermXY(data1,data2,paramstruct) ;
+%}
 
   end ;
 

@@ -10,15 +10,10 @@
 #include <matrix.h>
 #include <string.h> /* needed for memcpy() */
 
-#if !defined(_WIN32)
-#define dsyevd dsyevd_
-#define dgesdd dgesdd_
-#define dgemm dgemm_
-#endif
-
-#if !defined(MX_API_VER) || ( MX_API_VER < 0x07030000 )
-typedef int mwIndex;
-typedef int mwSize;
+#ifndef MWSIZE_MAX
+    #define  mwIndex        int
+    #define  mwSignedIndex  int
+    #define  mwSize         int
 #endif
 
 #if !defined(SQR)

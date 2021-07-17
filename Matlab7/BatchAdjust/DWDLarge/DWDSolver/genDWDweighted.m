@@ -1,5 +1,5 @@
 %%%********************************************************************
-%% [w,beta,xi,r,alpha,info,runhist] = genDWDweighted(X,y,C0,expon,options)
+%% [w,beta,xi,r,alpha,info,runhist] = genDWDweighted(X,y,C,expon,options)
 %% An sGS-ADMM method for solving 
 %%    min sum_j (1/rj^q) + C*<e,xi> 
 %%    s.t  r = ZT*w + beta*y + xi, r > 0, xi>=0, norm(w)<=1
@@ -30,6 +30,7 @@
    if ~isfield(options,'maxIter'); options.maxIter = 5000; end
    if ~isfield(options,'method'); options.method = 1; end
    if ~isfield(options,'tau'); options.tau = 1.618; end
+   if ~isfield(options,'printlevel'); options.printlevel = 1; end
 %%   
    [dim,n] =size(X); 
    idxpos = find(y>0); idxneg = find(y<0); 
@@ -75,15 +76,18 @@ weightoptions = 2;
    sigma = sigma^(expon); 
    options.sigma = sigma;
    options.Zscale = Zscale; 
-%%  
-%{ 
+%%   
+if (options.printlevel)
    fprintf('\n------------------------------------------------------')
    fprintf('--------------------------------')  
+   fprintf('\n   A fast algorithm for solving DWD')
+   fprintf('\n------------------------------------------------------')
+   fprintf('--------------------------------')     
    fprintf('\n sample size = %3.0f, feature dimension = %3.0f',n,dim);
    fprintf('\n expon = %2.1f, penalty constant C = %4.2e',expon,C0); 
    fprintf('\n------------------------------------------------------')
-   fprintf('--------------------------------')     
-%}
+   fprintf('--------------------------------')  
+end
 %%   
    [w,beta,xi,r,alpha,runhist] = genDWDweighted_main(Z,y,Cvec,expon,options);
    ttime = etime(clock,tstart);
@@ -104,7 +108,7 @@ weightoptions = 2;
    info.psqmr    = runhist.psqmr(end);
    info.doublecompute = runhist.doublecompute(end);   
 %%
-%{
+if (options.printlevel)
    fprintf('\n sample size = %3.0f, feature dimension = %3.0f',n,dim);
    fprintf('\n positve sample = %3.0f, negative sample = %3.0f',np,nn);    
    fprintf('\n norm(Z*alpha)=%3.2e, norm(w)=%3.2e',Zscale*norm(Z*alpha),norm(w));
@@ -116,5 +120,5 @@ weightoptions = 2;
    fprintf('\n primfeas = %3.2e',info.primfeas);
    fprintf('\n dualfeas = %3.2e',info.dualfeas);
    fprintf('\n relative gap = %3.2e\n',info.relgap);
-%}
+end
 %%********************************************************************

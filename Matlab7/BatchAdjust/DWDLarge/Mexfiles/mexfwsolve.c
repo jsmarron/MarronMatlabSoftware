@@ -47,9 +47,7 @@ void mexFunction(const int nlhs, mxArray *plhs[],
      b = mxGetPr(prhs[1]); 
   }
   if ( n != mxGetN(prhs[0]) ) { 
-     mexErrMsgTxt("mexfwsolve: R and rhs do not match."); }
-  if ( mxGetM(prhs[0]) != mxGetN(prhs[0]) ) { 
-     mexErrMsgTxt("mexfwsolve: R should be square."); }  
+     mexErrMsgTxt("mexfwsolve: R should be square."); }
   if (!mxIsSparse(prhs[0])) {
      mexErrMsgTxt("mexfwsolve: R should be sparse."); }
   R   = mxGetPr(prhs[0]);

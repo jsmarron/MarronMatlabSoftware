@@ -74,6 +74,7 @@ for fid = [1]
     options.tol     = 1e-5; 
     options.maxIter = 5000; 
     options.method  = 1; 
+    options.printlevel = 1;
     [w,beta,xi,r,alpha,info] = genDWDweighted(X,y,C,expon,options);  
     info.ttime = etime(clock,tstart); 
     info.w = w; info.beta = beta; info.xi = xi; info.r = r;
@@ -83,6 +84,7 @@ for fid = [1]
     res = (w'*X)'+beta;    
     info.error = length(find(y.*sign(res)<=0))/length(res);    
     %% solve using interior-point method
+    %% Need the package SDPT3.
     if (false)
        try 
          [w2,beta2,xi2,IPMinfo] = DWDrq_ipm(X,y,C,expon);    

@@ -10,7 +10,7 @@
  %********************************************************************
 
  %********************************************************************
- % [w,beta,xi,r,alpha,info,runhist] = genDWDweighted(X,y,C0,expon,options)
+ % [w,beta,xi,r,alpha,info,runhist] = genDWDweighted(X,y,C,expon,options)
  % An sGS-ADMM method for solving 
  %    min sum_j (1/rj^q) + C*<e,xi> 
  %    s.t  r = ZT*w + beta*y + xi, r > 0, xi>=0, norm(w)<=1

@@ -12,9 +12,10 @@
 #include <math.h>
 #include <matrix.h>
 
-#if !defined(MX_API_VER) || ( MX_API_VER < 0x07030000 )
-typedef int mwIndex;
-typedef int mwSize;
+#ifndef MWSIZE_MAX
+    #define  mwIndex        int
+    #define  mwSignedIndex  int
+    #define  mwSize         int
 #endif
 
 /********************************************************************

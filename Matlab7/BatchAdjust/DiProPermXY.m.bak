@@ -184,11 +184,11 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                              Only has effect on plot of simulated t-stats 
 %
 %    datovlaymax      maximum (on [0,1] scale, with 0 at bottom, 1 at top of plot)
-%                     of vertical range for overlaid data.  Default = 0.5
+%                     of vertical range for overlaid data.  Default = 0.6
 %                     This applies to both the projected data, and the simulated t-stats
 %
 %    datovlaymin      minimum (on [0,1] scale, with 0 at bottom, 1 at top of plot)
-%                     of vertical range for overlaid data.  Default = 0.4
+%                     of vertical range for overlaid data.  Default = 0.5
 %                     This applies to both the projected data, and the simulated t-stats
 %
 %    legendcellstr    cell array of strings for data set labels (2 of them),
@@ -328,8 +328,8 @@ statstrcol = [0 0.6 0] ;
 markerstr = ['+';'o'] ;
 ibigdot = 0 ;
 idatovlay = 1 ;
-datovlaymax = 0.5 ;
-datovlaymin = 0.4 ;
+datovlaymax = 0.6 ;
+datovlaymin = 0.5 ;
 legendcellstr = {} ;
 title1str = '' ;
 title2str = '' ;

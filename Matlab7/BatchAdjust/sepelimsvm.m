@@ -179,7 +179,8 @@
 %       Above was original, now add ";" to suppress screen write
    beta = X1(dnew+2) - X1(dnew+3) - X2(1) +X2(n+1) - col1'*barw ;
    normw = norm(w);
-   if normw < 1 - 1e-3, normw, end;
+%   if normw < 1 - 1e-3, normw, end;
+%        commented out to avoid screenwrite
    normwm1 = 0;
    if normw > 1 - 1e-3,
       w = w / normw;

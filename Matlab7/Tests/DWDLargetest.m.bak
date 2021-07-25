@@ -5,7 +5,7 @@ disp('Running MATLAB script file DWDLargetest.m') ;
 %    Website:    https://blog.nus.edu.sg/mattohkc/softwares/dwd/
 
 
-itest = 8 ;     %  1 - simple test
+itest = 7 ;     %  1 - simple test
                 %  2 - Xi Yang no signal example, n = d = 100
                 %  3 - No signal, n = d = 100, compare with DWD2 
                 %           and explore DWD parameter

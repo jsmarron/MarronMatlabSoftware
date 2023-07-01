@@ -423,6 +423,10 @@ if  ~(idatovlay == 0)   &  imptyp >= 0  ;    %  then will add data to plot
 
       elseif dolcolor == 2 ;    %  Use ordered spectrum of colors
 
+        dolcolor = RainbowColorsQY(n) ;
+
+%{
+    %  Older Version (hypercube, not HSV ordered)
         %  set up color map stuff
         %
         %  1st:    R  1      G  0 - 1    B  0
@@ -453,6 +457,7 @@ if  ~(idatovlay == 0)   &  imptyp >= 0  ;    %  then will add data to plot
                   [ones(nfifth+1,1)], flipud(vwt), zeros(nfifth+1,1)] ;
               %  note: put this together upside down
         dolcolor = colmap(1:n,:) ;
+%}
 
       else ;
 
@@ -799,7 +804,8 @@ if  nargout == 0  | ...
   if  ~(idatovlay == 0)   &  imptyp >= 0  ;    %  then add data to plot
 
     if idatovlay > 2 ;
-      rand('seed',idatovlay) ;
+%      rand('seed',idatovlay) ;
+      rng(idatovlay) ;
     end ;
 
     if ndo < length(data) ;    %  then need to subsample

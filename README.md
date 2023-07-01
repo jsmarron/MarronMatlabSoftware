@@ -12,4 +12,4 @@ Has 4 software directories:
 And directory of unit test functions:
 - Tests
 
-(c) J. S. Marron 2019
+(c) J. S. Marron 2023

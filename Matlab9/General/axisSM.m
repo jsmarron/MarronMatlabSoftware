@@ -22,7 +22,7 @@ function vax = axisSM(xmat,ymat,alpha) ;
 %                Changes axis properties of current graph,
 %                when not specified.
 
-%    Copyright (c) J. S. Marron 2002
+%    Copyright (c) J. S. Marron 2002, 2023
 
 
 %  Initialize

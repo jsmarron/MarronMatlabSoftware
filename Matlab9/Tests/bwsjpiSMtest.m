@@ -4,7 +4,7 @@ disp('Running MATLAB script file bwsjpiSMtest.m') ;
 %    Sheather Jones Plug In bandwidth (binned)
 %    Compares results to those from GAUSS program NMSJPI.TST
 
-itest = 1 ;   %  1,2  (test against old GAUSS implementation, etc.)
+itest = 4 ;   %  1,2  (test against old GAUSS implementation, etc.)
               %  3    (look carefully at default h range, for real data)            
               %  4    (look carefully at default h range, for nm data)            
 
@@ -36,12 +36,12 @@ if itest <= 2 ;
   if itest == 1 ;       %  Just do quick default SJPI
     nsjpi = bwsjpiSM(data) ;
     %  Also throw in the binned outside version:
-    bcts = gplbinr(data,0) ;
+    bcts = lbinrSM(data,0) ;
     pbsjpi = bwsjpiSM(bcts,[min(data),max(data)],0,-1) ;
   elseif itest == 2 ;   %  Pay more attention to getting xgrid right
     nsjpi = bwsjpiSM(data,[-4,4,401],0,0,0) ;
     %  Also throw in the binned outside version:
-    bcts = gplbinr(data,[-4,4,401]) ;
+    bcts = lbinrSM(data,[-4,4,401]) ;
     pbsjpi = bwsjpiSM(bcts,[-4,4,401],0,-1) ;
   end ;
 
@@ -78,34 +78,34 @@ elseif itest == 3 ;    %  Then do real data examples
     clf ;
 
     if idat == 1 ;
-      matfilestr = '\Research\GeneralData\incomes' ;
+      matfilestr = 'C:\Users\marron\Documents\Research\GeneralData\incomes' ;
       vrange = [0;3] ;
     elseif idat == 2 ;
-      matfilestr = '\Research\GeneralData\geyser' ;
+      matfilestr = 'C:\Users\marron\Documents\Research\GeneralData\geyser' ;
       vrange = [] ;
     elseif idat == 3 ;
-      matfilestr = '\Research\GeneralData\stamps' ;
+      matfilestr = 'C:\Users\marron\Documents\Research\GeneralData\stamps' ;
       vrange = [] ;
     elseif idat == 4 ;
-      matfilestr = '\Research\GeneralData\chondrit' ;
+      matfilestr = 'C:\Users\marron\Documents\Research\GeneralData\chondrit' ;
       vrange = [] ;
     elseif idat == 5 ;
-      matfilestr = '\Research\GeneralData\snowfall' ;
+      matfilestr = 'C:\Users\marron\Documents\Research\GeneralData\snowfall' ;
       vrange = [] ;
     elseif idat == 6 ;
-      matfilestr = '\Research\GeneralData\suicides' ;
+      matfilestr = 'C:\Users\marron\Documents\Research\GeneralData\suicides' ;
       vrange = [] ;
     elseif idat == 7 ;
-      matfilestr = '\Research\GeneralData\coalseam' ;
+      matfilestr = 'C:\Users\marron\Documents\Research\GeneralData\coalseam' ;
       vrange = [] ;
     elseif idat == 8 ;
-      matfilestr = '\Research\GeneralData\fredmari' ;
+      matfilestr = 'C:\Users\marron\Documents\Research\GeneralData\fredmari' ;
       vrange = [] ;
     elseif idat == 9 ;
-      matfilestr = '\Research\GeneralData\raydust' ;
+      matfilestr = 'C:\Users\marron\Documents\Research\GeneralData\raydust' ;
       vrange = [] ;
     elseif idat == 10 ;
-      matfilestr = '\Research\GeneralData\galaxy' ;
+      matfilestr = 'C:\Users\marron\Documents\Research\GeneralData\galaxy' ;
       vrange = [] ;
     end ;
 
@@ -142,7 +142,7 @@ elseif itest == 4 ;    %  Then do normal mixture examples
   %  !!!   Careful:  file nmpar.mat needs to be in the current directory  !!!
   %  Then all parameter matrices are in current directory
 %  load nmpar.mat
-  load \Research\GeneralData\nmstuff\nmpar.mat
+  load C:\Users\marron\Documents\Research\GeneralData\nmstuff\nmpar.mat
 
   figure(1) ;
 
@@ -156,8 +156,12 @@ elseif itest == 4 ;    %  Then do normal mixture examples
     clf ;
     xgrid = linspace(-3,3,401)' ;
     f = nmfSM(xgrid,parmat) ;
-    plot(xgrid,f,'r') ;
+    plot(xgrid,f,'k','LineWidth',3) ;
       title(['#' num2str(idist) ' ' titstr]) ;
+      vax = axis ;
+
+      disp('Any key to continue') ;
+      pauseSM ;
 
     hold on ;
     for inobs = 2:4 ;
@@ -167,12 +171,27 @@ elseif itest == 4 ;    %  Then do normal mixture examples
       %  Generate psuedo data and plot 
       data = nmdataSM(nobs,parmat) ;
       hsjpi = bwsjpiSM(data) ;
-      kdeSM(data,hsjpi) ;
+      paramstruct = struct('vh',hsjpi, ...
+                           'vxgrid',xgrid, ...
+                           'imptyp',1) ;
+      kde = kdeSM(data,paramstruct) ;
+      if inobs == 2 ;
+        colstr = 'g' ;
+      elseif inobs == 3 ;
+        colstr = 'b' ;
+      elseif inobs == 4 ;
+        colstr = 'r' ;
+      end ;
+      plot(xgrid,kde,colstr,'LineWidth',3) ;
+      text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
+           vax(3) + (1.1 - 0.1 * inobs) * (vax(4) - vax(3)), ...
+           ['n = ' num2str(nobs)],'Color',colstr) ;
+
+      disp('Any key to continue') ;
+      pauseSM ;
+
     end ;
     hold off ;
-
-    disp('Any key to continue') ;
-    pause
 
   end ;
 

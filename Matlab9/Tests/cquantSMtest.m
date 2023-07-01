@@ -18,6 +18,7 @@ elseif  itest == 4  |  itest == 14  ;
 elseif  itest == 5  |  itest == 15  ; 
   indat = 8 * rand(24,1) + 1 ;
 elseif  itest == 16 ;
+  disp('Testing matrix input, expecting error messsge') ;
   indat = rand(6,3) ;
 end ;
 
@@ -25,6 +26,8 @@ pgrid = linspace(-.1,1.1,401)' ;
 
 out = cquantSM(indat,pgrid) ;
 
+figure(1) ;
+clf ;
   nindat = length(indat) ;
   d = 1 / (nindat + 1) ;
 plot(pgrid,out,'-b',(d:d:1-d)',sort(indat),'ok') ;

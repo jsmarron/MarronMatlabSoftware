@@ -27,5 +27,5 @@ figure(1) ;
 clf ;
   nindat = length(indat) ;
   d = 1 / (nindat + 1) ;
-plot(xgrid,out,'-b',sort(indat),(d:d:1-d)','or') ;
+plot(xgrid,out,'-r',sort(indat),(d:d:1-d)','ok') ;
 

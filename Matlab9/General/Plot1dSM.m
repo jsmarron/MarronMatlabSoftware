@@ -5,7 +5,7 @@ function Plot1dSM(data,paramstruct)
 %     using jitter-type plots and kernel density estimates
 %
 % Inputs:
-%   data    - 1 x row vector data
+%   data    - 1 x n row vector data
 %
 %   paramstruct - a Matlab structure of input parameters
 %                    Use: "help struct" and "help datatypes" to
@@ -144,13 +144,21 @@ function Plot1dSM(data,paramstruct)
 %    savestr          string controlling saving of output,
 %                         either a full path, or a file prefix to
 %                         save in matlab's current directory
-%                         Will add .ps, and save as either
-%                             color postscript (icolor is neither 0 nor 3)
-%                         or
-%                             black&white postscript (when icolor = 0 or 3)
+%                       Will add file suffix determined by savetype
 %                         unspecified:  results only appear on screen
-%                     Note:  when savestr is nonempty, and ifigure = 0,
+%                       Note:  when savestr is nonempty, and ifigure = 0,
 %                            give warning and reset ifigure to 1
+%
+%    savetype         indicator of output file type:
+%                         1 - (default)  Matlab figure file (.fig)
+%                         2 - (.png)  raster graphics
+%                         3 - (.pdf)  vector graphics
+%                         4 - (.eps)  Color vector 
+%                                     (use when icolor is not 0)
+%                         5 - (.eps)  Black and White vector 
+%                                     (use when icolor = 0)
+%                         6 - (.jpg)  raster
+%                         7 - (.svg)  vector
 %
 %    iscreenwrite     0  (default)  no screen writes
 %                     1  write to screen to show progress
@@ -204,6 +212,7 @@ ylabelstr = '' ;
 labelfontsize = [] ;
 ifigure = 0 ;
 savestr = [] ;
+savetype = 1 ;
 iscreenwrite = 0 ;
 
 celltypes = [];
@@ -296,6 +305,10 @@ if nargin > 1 ;   %  then paramstruct is an argument
     end ;
   end ;
 
+  if isfield(paramstruct,'savetype') ;    %  then use input value
+    savetype = getfield(paramstruct,'savetype') ; 
+  end ;
+
   if isfield(paramstruct,'iscreenwrite') ;    %  then change to input value
     iscreenwrite = getfield(paramstruct,'iscreenwrite') ; 
   end ;
@@ -349,7 +362,7 @@ if  (size(icolor,1) > 1)  |  (size(icolor,2) > 1)  ;    %  if have color matrix
   elseif ~(n == size(icolor,1)) ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from projplot1SM.m:               !!!') ;
-    disp(['!!!   icolor as a matrix must have ' num2str(n) ' rows']) ;
+    disp(['!!!   icolor as a matrix must have n = ' num2str(n) ' rows']) ;
     disp('!!!   Resetting to icolor = 1, Matlab default   !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     icolor = 1 ;
@@ -477,7 +490,6 @@ if  size(icolor,1) == 1   &  size(icolor,2) == 1 ;    %  then have scalar input
         %  color of projection dots
 
     indivplotflag = 0 ;
-    icolorprint = 0 ;
 
   elseif ischar(icolor) ;
 
@@ -485,7 +497,6 @@ if  size(icolor,1) == 1   &  size(icolor,2) == 1 ;    %  then have scalar input
     dotcolor = icolor ;
         %  string for color of projection dots
     indivplotflag = 0 ;
-    icolorprint = 1 ;
 
   elseif icolor == 1 ;    %  then do MATLAB 7 color default
 
@@ -505,7 +516,6 @@ if  size(icolor,1) == 1   &  size(icolor,2) == 1 ;    %  then have scalar input
     colmap = colmap(1:n,:) ;
 
     indivplotflag = 1 ;
-    icolorprint = 1 ;
 
 
   elseif icolor == 2 ;    %  then do spectrum for ordered time series
@@ -513,7 +523,6 @@ if  size(icolor,1) == 1   &  size(icolor,2) == 1 ;    %  then have scalar input
     kdecolor = 'k' ;
     colmap = RainbowColorsQY(n) ;
     indivplotflag = 1 ;
-    icolorprint = 1 ;
 
   elseif icolor == 3 ;    %  then do gray levels for ordered time series
 
@@ -526,8 +535,6 @@ if  size(icolor,1) == 1   &  size(icolor,2) == 1 ;    %  then have scalar input
     colmap = vgray' * ones(1,3) ;
 
     indivplotflag = 1 ;
-    icolorprint = 1 ;
-        %  Leave this as "color" to get gray levels to show up in .ps file
 
   end ;
 
@@ -538,7 +545,6 @@ elseif  size(icolor,2) == 3  ;    %  then have valid color matrix
   colmap = icolor ;
 
   indivplotflag = 1 ;
-  icolorprint = 1 ;
 
 else ;    %   invalid color matrix input
 
@@ -567,6 +573,11 @@ if ~(idatovlay == 0) ;    %  then add data to plot
   end ;
 
   if ndo < n ;    %  then need to subsample
+
+    if idatovlay > 2 ;
+      rng(idatovlay) ;
+    end ;
+
     [temp,randperm] = sort(rand(n,1)) ;
           %  randperm is a random permutation of 1,2,...,n
     vindol = randperm(1:ndo) ;
@@ -718,7 +729,7 @@ if  (isubpopkde == 1)  |  (isubpopkde == 2) ;
         %  subpopulation data for this subpopulation
     ndatsp = sum(spflag) ;
         %  number of data points in this subpopulation
-    spkde = kdeSM(spdat,paramstruct) ;
+    spkde = kdeSM(spdat',paramstruct) ;
         %  mass one kde for this subpopulation
     spkde = (ndatsp / n) * spkde ;
         %  rescale, so mass is proportional to size of subpopulation
@@ -755,8 +766,8 @@ if indivplotflag == 0 ;    %  then can plot everything with a single plot call
           hts = (datovlaymin + (datovlaymax - datovlaymin) ...
                                            * (0.5:ndo)' / ndo) * vax(4) ;
         else ;    %  then use a random ordering
-          if ~(idatovlay == 2) ;
-            rand('seed',idatovlay) ;
+          if idatovlay > 2 ;
+            rng(idatovlay) ;
           end ;
           hts = (datovlaymin + (datovlaymax - datovlaymin) ...
                                            * rand(ndo,1)) * vax(4) ;
@@ -806,8 +817,8 @@ elseif indivplotflag == 1 ;    %  then need to do individual plot calls
           hts = (datovlaymin + (datovlaymax - datovlaymin) ...
                                            * (0.5:ndo)' / ndo) * vax(4) ;
         else ;    %  then use a random ordering
-          if ~(idatovlay == 2) ;
-            rand('seed',idatovlay) ;
+          if idatovlay > 2 ;
+            rng(idatovlay) ;
           end ;
           hts = (datovlaymin + (datovlaymax - datovlaymin) ...
                                            * rand(ndo,1)) * vax(4) ;
@@ -873,19 +884,9 @@ end ;
 
 %  Save output (if needed)
 %
-if ~isempty(savestr) ;   %  then create postscript file
+if ~isempty(savestr) ;   %  then save graphics
 
-  orient landscape ;
-
-  if icolorprint ~= 0 ;     %  then make color postscript
-    print('-dpsc',savestr) ;
-  else ;                %  then make black and white
-    print('-dps',savestr) ;
-  end ;
-
-  if ( augmentWithUserData )
-    saveas(gcf, savestr, 'fig')
-  end ;
+  printSM(savestr,savetype) ;
 
 end ;
 

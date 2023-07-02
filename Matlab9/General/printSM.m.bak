@@ -1,0 +1,46 @@
+function printSM(filestr,itype) 
+% PRINTSM, Print Graphic to File
+%   Steve Marron's matlab function
+%     For the current figure window, creates a graphical
+%     output file, with a given filename
+%
+% Inputs:
+%   filestr - Text Name of output file
+%                Suffix (3 letters) below will be automatically added
+%
+%     itype - indicator of output file type:
+%                1  - (default)  Save as Matlab figure file (.fig)
+%                2  - (.png)  Portable Network Graphics - raster graphics
+%                3  - (.pdf)  Portable Document Format - vector graphics
+%                4  - (.eps)  Color Encapsulated Postscript- vector 
+%                5  - (.eps)  Black and White EPS - vector 
+%                6  - (.jpg)  Joint Photograph Experts Group - raster
+%                7  - (.svg)  Scalable Vector Graphics - vector
+%
+% Output:
+%      Creates a graphic file in the current directory 
+%      
+
+%    Copyright (c) J. S. Marron 2023
+
+if nargin == 1 ;   %  then set itype to default .fig
+  itype = 1 ;      
+end ;
+
+if itype == 1 ;    %  (.fig)
+  savefig(filestr) ;
+elseif itype == 2 ;    %  (.png)
+  print(filestr,'-dpng') ;
+elseif itype == 3 ;    %]  (.pdf)
+  print(filestr,'-dpdf') ;
+elseif itype == 4 ;    %  (.eps) Color
+  orient landscape ;
+  print(filestr,'-depsc') ;
+elseif itype == 5 ;    %  (.eps) B&W
+  print(filestr,'-deps') ;
+elseif itype == 6 ;    %  (.jpg)
+  print(filestr,'-djpeg') ;
+elseif itype == 7 ;    %  (.svg)
+  print(filestr,'-dsvg') ;
+end ;
+

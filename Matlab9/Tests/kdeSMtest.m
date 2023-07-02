@@ -2,8 +2,8 @@ disp('Running MATLAB script file kdeSMtest.m') ;
 %
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION kdeSM,
 %    General Purpose Kernel Density Estimation
-
-itest = 31 ;     %  1,2,...,31
+print
+itest = 22 ;     %  1,2,...,31
 
 format compact ;
 format short ;
@@ -729,7 +729,7 @@ elseif itest == 22 ;  %  test big dots
 
     savestr = 'kdeSMtestBigDots1' ;
     orient landscape ;
-    print('-dpsc',savestr) ;
+    printSM(savestr,2) ;
 
     disp(['Check output file ' savestr]) ;
 
@@ -742,7 +742,7 @@ elseif itest == 22 ;  %  test big dots
 
     savestr = 'kdeSMtestBigDots2' ;
     orient landscape ;
-    print('-dpsc',savestr) ;
+    printSM(savestr,2) ;
 
     disp(['Check output file ' savestr]) ;
 

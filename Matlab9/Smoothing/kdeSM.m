@@ -111,7 +111,7 @@ function [kde,xgrid,mker] = kdeSM(data,paramstruct)
 %                         e.g. 'o', '.' (default), '+', 'x'
 %                         (see "help plot" for a full list)
 %                     Or a character array (n x 1), of these symbols,
-%                         One for each data vector, created using:  strvcat
+%                         One for each data vector, created using:  char
 %
 %    ibigdot          0  (default)  use Matlab default for dot sizes
 %                     1  force large dot size in prints (useful since some
@@ -218,9 +218,6 @@ iplot = 0 ;
 %
 if nargin > 1    %  then paramstruct has been added
 
-%paramstruct
-%pauseSM
-
   if isfield(paramstruct,'vh')     %  then change to input value
     vh = paramstruct.vh ; 
   end 
@@ -308,97 +305,6 @@ if nargin > 1    %  then paramstruct has been added
   if isfield(paramstruct,'iplot')     %  then change to input value
     iplot = paramstruct.iplot ; 
   end 
-
-%{
-  if isfield(paramstruct,'vh')     %  then change to input value
-    vh = getfield(paramstruct,'vh') ; 
-  end 
-
-  if isfield(paramstruct,'vxgrid')     %  then change to input value
-    vxgrid = getfield(paramstruct,'vxgrid') ; 
-  end 
-
-  if isfield(paramstruct,'imptyp')     %  then change to input value
-    imptyp = getfield(paramstruct,'imptyp') ; 
-  end 
-
-  if isfield(paramstruct,'eptflag')     %  then change to input value
-    eptflag = getfield(paramstruct,'eptflag') ; 
-  end 
-
-  if isfield(paramstruct,'ibdryadj')     %  then change to input value
-    ibdryadj = getfield(paramstruct,'ibdryadj') ; 
-  end 
-
-  if isfield(paramstruct,'idatovlay')     %  then change to input value
-    idatovlay = getfield(paramstruct,'idatovlay') ; 
-  end 
-
-  if isfield(paramstruct,'ndatovlay')     %  then change to input value
-    ndatovlay = getfield(paramstruct,'ndatovlay') ; 
-  end 
-
-  if isfield(paramstruct,'datovlaymax')     %  then change to input value
-    datovlaymax = getfield(paramstruct,'datovlaymax') ; 
-  end 
-
-  if isfield(paramstruct,'datovlaymin')     %  then change to input value
-    datovlaymin = getfield(paramstruct,'datovlaymin') ; 
-  end 
-
-  if isfield(paramstruct,'dolcolor')     %  then change to input value
-    dolcolor = getfield(paramstruct,'dolcolor') ; 
-  end 
-
-  if isfield(paramstruct,'dolmarkerstr')     %  then change to input value
-    dolmarkerstr = getfield(paramstruct,'dolmarkerstr') ; 
-  end 
-
-  if isfield(paramstruct,'ibigdot')     %  then change to input value
-    ibigdot = getfield(paramstruct,'ibigdot') ; 
-  end 
-
-  if isfield(paramstruct,'linewidth')     %  then change to input value
-    linewidth = getfield(paramstruct,'linewidth') ; 
-  end 
-
-  if isfield(paramstruct,'linecolor')     %  then change to input value
-    linecolor = getfield(paramstruct,'linecolor') ; 
-  end 
-
-  if isfield(paramstruct,'titlestr')     %  then change to input value
-    titlestr = getfield(paramstruct,'titlestr') ; 
-  end 
-
-  if isfield(paramstruct,'titlefontsize')     %  then change to input value
-    titlefontsize = getfield(paramstruct,'titlefontsize') ; 
-  end 
-
-  if isfield(paramstruct,'xlabelstr')     %  then change to input value
-    xlabelstr = getfield(paramstruct,'xlabelstr') ; 
-  end 
-
-  if isfield(paramstruct,'ylabelstr')     %  then change to input value
-    ylabelstr = getfield(paramstruct,'ylabelstr') ; 
-  end 
-
-  if isfield(paramstruct,'labelfontsize')     %  then change to input value
-    labelfontsize = getfield(paramstruct,'labelfontsize') ; 
-  end 
-
-  if isfield(paramstruct,'plotbottom')     %  then change to input value
-    plotbottom = getfield(paramstruct,'plotbottom') ; 
-  end 
-
-  if isfield(paramstruct,'plottop')     %  then change to input value
-    plottop = getfield(paramstruct,'plottop') ; 
-  end 
-
-  if isfield(paramstruct,'iplot')     %  then change to input value
-    iplot = getfield(paramstruct,'iplot') ; 
-  end 
-
-%}
 
 
 end   %  of resetting of input parameters
@@ -517,40 +423,6 @@ if  ~(idatovlay == 0)   &&  imptyp >= 0      %  then will add data to plot
       elseif dolcolor == 2     %  Use ordered spectrum of colors
 
         dolcolor = RainbowColorsQY(n) ;
-
-%{
-    %  Older Version (hypercube, not HSV ordered)
-        %  set up color map stuff
-        %
-        %  1st:    R  1      G  0 - 1    B  0
-        %  2nd:    R  1 - 0  G  1        B  0
-        %  3rd:    R  0      G  1        B  0 - 1
-        %  4th:    R  0      G  1 - 0    B  1
-        %  5th:    R  0 - 1  G  0        B  1
-
-        nfifth = ceil((n - 1) / 5) ;
-        del = 1 / nfifth ;
-        vwt = (0:del:1)' ;
-        colmap = [flipud(vwt), zeros(nfifth+1,1), ones(nfifth+1,1)] ;
-        colmap = colmap(1:size(colmap,1)-1,:) ;
-              %  cutoff last row to avoid having it twice
-        colmap = [colmap; ...
-                  [zeros(nfifth+1,1), vwt, ones(nfifth+1,1)]] ;
-        colmap = colmap(1:size(colmap,1)-1,:) ;
-              %  cutoff last row to avoid having it twice
-        colmap = [colmap; ...
-                  [zeros(nfifth+1,1), ones(nfifth+1,1), flipud(vwt)]] ;
-        colmap = colmap(1:size(colmap,1)-1,:) ;
-              %  cutoff last row to avoid having it twice
-        colmap = [colmap; ...
-                  [vwt, ones(nfifth+1,1), zeros(nfifth+1,1)]] ;
-        colmap = colmap(1:size(colmap,1)-1,:) ;
-              %  cutoff last row to avoid having it twice
-        colmap = [colmap; ...
-                  [ones(nfifth+1,1)], flipud(vwt), zeros(nfifth+1,1)] ;
-              %  note: put this together upside down
-        dolcolor = colmap(1:n,:) ;
-%}
 
       else 
 
@@ -897,7 +769,6 @@ if  nargout == 0  || ...
   if  ~(idatovlay == 0)   &&  imptyp >= 0      %  then add data to plot
 
     if idatovlay > 2 
-%      rand('seed',idatovlay) ;
       rng(idatovlay) ;
     end 
 

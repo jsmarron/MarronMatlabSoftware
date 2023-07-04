@@ -225,79 +225,76 @@ slideids = [];
 %
 if nargin > 1    %  then paramstruct is an argument
 
-paramstruct
-paramstruct.(icolor)
   if isfield(paramstruct,'icolor')     %  then change to input value
     icolor = paramstruct.icolor ; 
-%    icolor = getfield(paramstruct,'icolor') ; 
   end 
 
   if isfield(paramstruct,'markerstr')     %  then change to input value
-    markerstr = getfield(paramstruct,'markerstr') ; 
+    markerstr = paramstruct.markerstr ; 
   end 
 
   if isfield(paramstruct,'isubpopkde')     %  then change to input value
-    isubpopkde = getfield(paramstruct,'isubpopkde') ; 
+    isubpopkde = paramstruct.isubpopkde ; 
   end 
 
   if isfield(paramstruct,'ibigdot')     %  then change to input value
-    ibigdot = getfield(paramstruct,'ibigdot') ; 
+    ibigdot = paramstruct.ibigdot ; 
   end 
 
   if isfield(paramstruct,'idatovlay')     %  then change to input value
-    idatovlay = getfield(paramstruct,'idatovlay') ; 
+    idatovlay = paramstruct.idatovlay ; 
   end 
 
   if isfield(paramstruct,'ndatovlay')     %  then change to input value
-    ndatovlay = getfield(paramstruct,'ndatovlay') ; 
+    ndatovlay = paramstruct.ndatovlay ; 
   end 
 
   if isfield(paramstruct,'datovlaymax')     %  then change to input value
-    datovlaymax = getfield(paramstruct,'datovlaymax') ; 
+    datovlaymax = paramstruct.datovlaymax ; 
   end 
 
   if isfield(paramstruct,'datovlaymin')     %  then change to input value
-    datovlaymin = getfield(paramstruct,'datovlaymin') ; 
+    datovlaymin = paramstruct.datovlaymin ; 
   end 
 
   if isfield(paramstruct,'legendcellstr')     %  then change to input value
-    legendcellstr = getfield(paramstruct,'legendcellstr') ; 
+    legendcellstr = paramstruct.legendcellstr ; 
   end 
 
   if isfield(paramstruct,'mlegendcolor')     %  then change to input value
-    mlegendcolor = getfield(paramstruct,'mlegendcolor') ; 
+    mlegendcolor = paramstruct.mlegendcolor ; 
   end 
 
   if isfield(paramstruct,'vaxlim')     %  then change to input value
-    vaxlim = getfield(paramstruct,'vaxlim') ; 
+    vaxlim = paramstruct.vaxlim ; 
   end 
 
   if isfield(paramstruct,'titlestr')     %  then change to input value
-    titlestr = getfield(paramstruct,'titlestr') ; 
+    titlestr = paramstruct.titlestr ; 
   end 
 
   if isfield(paramstruct,'titlefontsize')     %  then change to input value
-    titlefontsize = getfield(paramstruct,'titlefontsize') ; 
+    titlefontsize = paramstruct.titlefontsize ; 
   end 
 
   if isfield(paramstruct,'xlabelstr')     %  then change to input value
-    xlabelstr = getfield(paramstruct,'xlabelstr') ; 
+    xlabelstr = paramstruct.xlabelstr ; 
   end 
 
   if isfield(paramstruct,'ylabelstr')     %  then change to input value
-    ylabelstr = getfield(paramstruct,'ylabelstr') ; 
+    ylabelstr = paramstruct.ylabelstr ; 
   end 
 
   if isfield(paramstruct,'labelfontsize')     %  then change to input value
-    labelfontsize = getfield(paramstruct,'labelfontsize') ; 
+    labelfontsize = paramstruct.labelfontsize ; 
   end 
 
   if isfield(paramstruct,'ifigure')     %  then change to input value
-    ifigure = getfield(paramstruct,'ifigure') ; 
+    ifigure = paramstruct.ifigure ; 
   end 
   
   if isfield(paramstruct,'savestr')     %  then use input value
-    savestr = getfield(paramstruct,'savestr') ; 
+    savestr = paramstruct.savestr ; 
     if ~(ischar(savestr) || isempty(savestr))     %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from projplot1SM.m:  !!!') ;
@@ -309,12 +306,13 @@ paramstruct.(icolor)
   end 
 
   if isfield(paramstruct,'savetype')     %  then use input value
-    savetype = getfield(paramstruct,'savetype') ; 
+    savetype = paramstruct.savetype ; 
   end 
 
   if isfield(paramstruct,'iscreenwrite')     %  then change to input value
-    iscreenwrite = getfield(paramstruct,'iscreenwrite') ; 
+    iscreenwrite = paramstruct.iscreenwrite ; 
   end 
+
 
 end     %  of resetting of input parameters
 
@@ -368,7 +366,7 @@ if  (isubpopkde == 1)  ||  (isubpopkde == 2)
   end 
 end 
 
-if  ~isempty(vaxlim)  &&  ~(vaxlim == 1)  
+if  ~isempty(vaxlim)  &  ~(vaxlim == 1)  
   if  (size(vaxlim,1) ~= 1)  ||  ...
       (  ~((size(vaxlim,2) == 2) || ...
            (size(vaxlim,2) == 4) ))  || ...
@@ -611,7 +609,6 @@ else    %  then are using default, or have entered single symbol
     mmarks = [] ;
     for i=1:n 
       mmarks = char(mmarks,markerstr) ;
-%      mmarks = strvcat(mmarks,markerstr) ;
     end 
   end 
 end 
@@ -659,8 +656,8 @@ end
                        'vxgrid',vax) ;
 [kde,kdexgrid] = kdeSM(data',paramstruct) ;
 
-if  isempty(vaxlim)  ||  ...
-    vaxlim == 1  ||  ...
+if  isempty(vaxlim)  |  ...
+    vaxlim == 1  |  ...
     size(vaxlim,2) == 2      %  then use axisSM default for kde
   vaxkde = axisSM(kde) ;
   vax = [vax 0 vaxkde(2)] ;

@@ -691,7 +691,7 @@ elseif itest == 20 ;  %  test vertical plot ranges (bdry shifted)
 
 
 elseif itest == 21 ;  %  test seeded random number generation of jitter heights
-  rand('seed',92387494) ;
+  rng(92387494) ;
   indat = rand(20,1) ;
 
   subplot(2,2,1) ;
@@ -718,7 +718,7 @@ elseif itest == 21 ;  %  test seeded random number generation of jitter heights
 
 
 elseif itest == 22 ;  %  test big dots
-  rand('seed',92387494) ;
+  rng(92387494) ;
   indat = rand(2000,1) ;
 
     figure(1)
@@ -748,7 +748,7 @@ elseif itest == 22 ;  %  test big dots
 
 
 elseif itest == 23 ;  %  test colors of overlaid data
-  rand('seed',92387494) ;
+  rng(92387494) ;
   indat = sort(rand(50,1)) ;
 
   subplot(3,3,1) ;
@@ -806,7 +806,7 @@ elseif itest == 23 ;  %  test colors of overlaid data
 
 
 elseif itest == 24 ;  %  test markers
- rand('seed',92387494) ;
+ rng(92387494) ;
   indat = sort(rand(50,1)) ;
 
   subplot(3,4,1) ;
@@ -897,7 +897,7 @@ elseif itest == 24 ;  %  test markers
 
 
 elseif itest == 25 ;  %  test colors & markers when not all dat overlaid
-  rand('seed',92387494) ;
+  rng(92387494) ;
   indat = sort(rand(2000,1)) ;
 
   subplot(2,4,1) ;
@@ -960,7 +960,7 @@ elseif itest == 25 ;  %  test colors & markers when not all dat overlaid
 
 
 elseif itest == 26 ;  %  test colors & markers when not all dat overlaid
- rand('seed',92387494) ;
+ rng(92387494) ;
   indat = sort(rand(2000,1)) ;
 
   subplot(2,4,1) ;
@@ -1031,7 +1031,7 @@ elseif itest == 26 ;  %  test colors & markers when not all dat overlaid
 
 
 elseif itest == 27 ;  %  test colors & markers for truncated data
-  rand('seed',92387494) ;
+  rng(92387494) ;
   indat = sort(rand(2000,1)) ;
 
   subplot(2,4,1) ;
@@ -1110,7 +1110,7 @@ elseif itest == 27 ;  %  test colors & markers for truncated data
 
 
 elseif itest == 28 ;  %  test colors & markers for truncated data & small ndatovlay
-  rand('seed',92387494) ;
+  rng(92387494) ;
   indat = sort(rand(2000,1)) ;
 
   subplot(2,4,1) ;
@@ -1197,7 +1197,7 @@ elseif itest == 28 ;  %  test colors & markers for truncated data & small ndatov
 
 
 elseif itest == 29 ;  %  test error message when input is not a column vector
-  rand('seed',92387494) ;
+  rng(92387494) ;
   indat = sort(rand(50,30)) ;
 
   disp('Check Get Error and Termination when input is a matrix') ;
@@ -1208,7 +1208,7 @@ elseif itest == 29 ;  %  test error message when input is not a column vector
 
 
 elseif itest == 30 ;  %  test axis SM option
-  rand('seed',92387494) ;
+  rng(92387494) ;
   indat = sort(rand(50,1)) ;
 
   subplot(2,2,1) ;

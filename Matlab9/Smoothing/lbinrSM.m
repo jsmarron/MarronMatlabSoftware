@@ -37,7 +37,7 @@ function [bindat,bincent] = lbinrSM(data,vgridp,eptflag,ibtype)
 %            nprSM.m
 %
 
-%    Copyright (c) J. S. Marron 1996-2011
+%    Copyright (c) J. S. Marron 1996-2023
 
 
 %  Detect if this is density estimation, or regression, and handle data

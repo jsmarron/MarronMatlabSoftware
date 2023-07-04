@@ -33,7 +33,7 @@ function vroot = rootfSM(vx,vy,irtyp,lflag,iout)
 %
 %  See Also:  minrSM.m
 
-%    Copyright (c) J. S. Marron 1996-2001
+%    Copyright (c) J. S. Marron 1996-2023
 
 
 %  Set parameters and defaults according to number of input arguments

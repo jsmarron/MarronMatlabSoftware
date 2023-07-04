@@ -10,7 +10,7 @@ function hsnr = bwsnrSM(data)
 %     hsnr - simple "Normal reference bandwidth"
 %
 
-%    Copyright (c) J. S. Marron 1996-2001
+%    Copyright (c) J. S. Marron 1996-2023
 
 n = length(data) ;
 dsd = std(data) ;

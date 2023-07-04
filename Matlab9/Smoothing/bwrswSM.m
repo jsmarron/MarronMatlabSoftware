@@ -31,7 +31,7 @@ function hrsw = bwrswSM(data,piflag,xgridp,eptflag)
 %    lbinrSM.m
 %    nprSM.m
 
-%    Copyright (c) J. S. Marron 1997-2001
+%    Copyright (c) J. S. Marron 1997-2023
 
 
 %  Set parameters and defaults according to number of input arguments

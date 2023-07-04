@@ -26,7 +26,7 @@ function vmin = minrSM(vx,vy,lflag,iout)
 %                            = 1,  when right end is hit
 % See also: rootfSM.m
 
-%    Copyright (c) J. S. Marron 1996-2001
+%    Copyright (c) J. S. Marron 1996-2023
 
 %  Set parameters and defaults according to number of input arguments
 if nargin == 2     %  only 2 arguments input

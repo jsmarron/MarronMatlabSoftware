@@ -41,7 +41,7 @@ function hsjpi = bwsjpiSM(data,xgridp,hgridp,imptyp,eptflag)
 %    bwosSM.m
 %    rootfSM
 
-%    Copyright (c) J. S. Marron 1996-2011
+%    Copyright (c) J. S. Marron 1996-2023
 
 
 %  Set parameters and defaults according to number of input arguments

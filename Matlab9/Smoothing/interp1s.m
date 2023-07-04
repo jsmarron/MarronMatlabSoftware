@@ -12,7 +12,7 @@ function yi = interp1s(x,y,xi)
 %
 %     For more details, try "help interp1"
 
-%    Copyright (c) J. S. Marron 1997
+%    Copyright (c) J. S. Marron 1997, 2023
 
 
 %  Initialize Output

@@ -17,7 +17,7 @@ function iqrange = iqrSM(data,isort)
 % Assumes path can find function:
 %    cquantSM
 
-%    Copyright (c) J. S. Marron 1996-2004
+%    Copyright (c) J. S. Marron 1996-2023
 
 
 %  First decide whether or not to sort, based on number of inputs

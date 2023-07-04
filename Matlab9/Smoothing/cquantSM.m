@@ -33,7 +33,7 @@ function vquant = cquantSM(data,vprob,isort)
 %
 % For inverse of this (over probs in [0,1]), use cprobSM.m
 
-%    Copyright (c) J. S. Marron 1997, 2004
+%    Copyright (c) J. S. Marron 1997, 2004, 2023
 
 
 %  Check have a column vector input

@@ -15,7 +15,7 @@ function hos = bwosSM(data)
 %     hos - S.D. based oversmoothed bandwidth
 %
 
-%    Copyright (c) J. S. Marron 1996-2004
+%    Copyright (c) J. S. Marron 1996-2023
 
 if size(data,2) == 1         %  if a column vector
   n = length(data) ;

@@ -16,7 +16,7 @@ function hrot = bwrotSM(data,irot)
 %    iqrSM
 %    cquantSM
 
-%    Copyright (c) J. S. Marron 1996-2004
+%    Copyright (c) J. S. Marron 1996-2023
 
 if nargin == 1    %  Then use default: ROT2
   iirot = 2 ;

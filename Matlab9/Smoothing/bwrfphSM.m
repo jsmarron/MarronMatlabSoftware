@@ -19,7 +19,7 @@ function rfph = bwrfphSM(bincts,xgridp,h,deriv)
 %       rfph -  Estimate of integrated squared density derivative
 %
 
-%    Copyright (c) J. S. Marron 1996-2004
+%    Copyright (c) J. S. Marron 1996-2023
 
 
 %  Set initial values

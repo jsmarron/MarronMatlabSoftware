@@ -31,7 +31,7 @@ function vprob = cprobSM(data,vx,isort)
 %
 % For inverse of this (over x where prob is in [0,1]), use cquantSM.m
 
-%    Copyright (c) J. S. Marron 1997, 2001
+%    Copyright (c) J. S. Marron 1997, 2001, 2023
 
 
 %  First decide whether or not to sort, based on number of inputs

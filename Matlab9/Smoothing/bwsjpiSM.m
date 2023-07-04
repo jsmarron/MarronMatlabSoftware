@@ -46,67 +46,67 @@ function hsjpi = bwsjpiSM(data,xgridp,hgridp,imptyp,eptflag)
 
 %  Set parameters and defaults according to number of input arguments
 %
-if nargin == 1 ;    %  only 1 argument input, use default xgrid params
+if nargin == 1     %  only 1 argument input, use default xgrid params
   ixgridp = 0 ;
-else ;              %  xgrid was specified, use that
+else               %  xgrid was specified, use that
   ixgridp = xgridp ;
-end ;
+end 
 
-if nargin <= 2 ;    %  at most 2 arguments input, use default hgrid par's
+if nargin <= 2     %  at most 2 arguments input, use default hgrid par's
   ihgridp = 0 ;
-else ;              %  xgrid was specified, use that
+else               %  xgrid was specified, use that
   ihgridp = hgridp ;
-end ;
+end 
 
-if nargin <= 3 ;    %  at most 3 arguments input, use default implementation
+if nargin <= 3     %  at most 3 arguments input, use default implementation
   iimptyp = 0 ;
-else ;              %  implementation was specified, use that
+else               %  implementation was specified, use that
   iimptyp = imptyp ;
-end ;
+end 
 
-if nargin <= 4 ;    %  at most 4 arguments input, use default endpt trunc
+if nargin <= 4     %  at most 4 arguments input, use default endpt trunc
   ieptflag = 0 ;    %  Default
-else ;
+else 
   ieptflag = eptflag ;    %  Endpt trunc was specified, so use it
-end ;
+end 
 
 
 hsjpi = [] ;
-if size(data,2) > 1 ;
+if size(data,2) > 1 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from bwsjpiSM.m:         !!!') ;
     disp('!!!   data must be a column vector   !!!') ;
     disp('!!!   Terminating Execution          !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     return ;
-end ;
+end 
 
 
 
 %  Bin, if needed
 %
-if iimptyp == -1 ;   %  Then data have already been binned
+if iimptyp == -1    %  Then data have already been binned
 
-  if (length(ixgridp) == 1) | (length(ixgridp) > 3) ;
+  if (length(ixgridp) == 1) || (length(ixgridp) > 3) 
                        %  Then can't proceed because don't have bin ends
     disp('!!!   Error: bwsjpib needs to know the endpoints   !!!') ;
     disp('!!!            to use this implementation        !!!') ;
-  else ;
+  else 
     bincts = data ;
 
     nbin = 401 ;
     lend = ixgridp(1) ;
     rend = ixgridp(2) ;
-    if length(ixgridp) == 3 ;          %  then use number of grid points
+    if length(ixgridp) == 3           %  then use number of grid points
       nbin = ixgridp(3) ;
-    end ;
+    end 
 
-    if nbin ~= length(bincts) ;    %  Then something is wrong
+    if nbin ~= length(bincts)     %  Then something is wrong
       disp('!!!   Warning: bwsjpib was told the wrong number of bins   !!!') ;
       disp('!!!            will just use the number of counts.       !!!') ;
       nbin = length(bincts) ;
-    end ;
-  end ;
+    end 
+  end 
 
   %  Get standard deviation from bin counts
   n = sum(bincts) ;
@@ -119,36 +119,36 @@ if iimptyp == -1 ;   %  Then data have already been binned
           %  sum((x_i - avg)^2)
   sd = sqrt(sd / (n - 1)) ;
 
-else ;               %  Then need to bin data
+else                %  Then need to bin data
 
-  if length(ixgridp) > 3 ;  %  Then need to warn of change to default
+  if length(ixgridp) > 3   %  Then need to warn of change to default
     disp('!!!   Warning: gpkde was given an xgrid, and also   !!!') ;
     disp('!!!       asked to bin; will bin and ignore xgrid   !!!') ;
-  end ;
+  end 
 
   %  Specify grid parameters
   nbin = 401 ;         %  Default
   lend = min(data) ;   %  Default
   rend = max(data) ;   %  Default
-  if (length(ixgridp) == 2) | (length(ixgridp) == 3) ;
+  if (length(ixgridp) == 2) || (length(ixgridp) == 3) 
                                    %  then use input endpoints
     lend = ixgridp(1) ;
     rend = ixgridp(2) ;
-  end ;
-  if length(ixgridp) == 3 ;          %  then use number of grid points
+  end 
+  if length(ixgridp) == 3           %  then use number of grid points
     nbin = ixgridp(3) ;
-  end ;
+  end 
 
-  if lend > rend ;    %  Then bad range has been input
+  if lend > rend     %  Then bad range has been input
     disp('!!!   Error in gpkde: invalid range chosen  !!!') ;
     bincts = [] ;
-  else ;
+  else 
     bincts = lbinrSM(data,[lend,rend,nbin],ieptflag) ;
-  end ;
+  end 
 
   sd = std(data) ;
 
-end ;
+end 
 n = sum(bincts) ;
           %  put this here in case of truncations during binning
 
@@ -156,23 +156,23 @@ n = sum(bincts) ;
 
 %  Get hgrid for rootfinding over
 %
-if length(ihgridp) < 2 ;
-  if iimptyp == -1 ;   %  Then data have already been binned
+if length(ihgridp) < 2 
+  if iimptyp == -1    %  Then data have already been binned
     hmax = bwosSM([n,sd]) ;
-  else ;
+  else 
     hmax = bwosSM(data) ;
-  end ;
+  end 
   hmin = hmax / 9 ;
-else ;
+else 
   hmin = ihgridp(1) ;
   hmax = ihgridp(2) ;
-end ;
+end 
 
-if length(ihgridp) < 3 ;
+if length(ihgridp) < 3 
   nh = 21 ;
-else ;
+else 
   nh = ihgridp(3) ;
-end ;
+end 
 
 vlogh = linspace(log10(hmin),log10(hmax),nh)' ;
 vh = 10.^vlogh ;
@@ -208,7 +208,7 @@ c = c * mk2^(1/7) ;
 va = c * vh.^(5/7) ;
 
 vsjpisf = [] ;
-for ih = 1:nh ;
+for ih = 1:nh 
   h = vh(ih) ;
   a = va(ih) ;
 
@@ -218,7 +218,7 @@ for ih = 1:nh ;
   sjpisf = h - (rk / (rfppa * mk22 * n))^(1/5) ;
 
   vsjpisf = [vsjpisf; sjpisf] ;
-end ;
+end 
 
 
 

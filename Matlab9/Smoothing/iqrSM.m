@@ -21,29 +21,29 @@ function iqrange = iqrSM(data,isort)
 
 
 %  First decide whether or not to sort, based on number of inputs
-if nargin == 1 ;
+if nargin == 1 
   iisort = 1 ;
           %  default is to sort, when isort unpsecified    
-else ;
+else 
   iisort = isort ;
-end ;
+end 
 
 %  Do sort if needed
-if iisort ~= 0 ;    %  then do a sort
+if iisort ~= 0     %  then do a sort
   sdata = sort(data) ;
-else ;
+else 
   sdata = data ;
-end ;
+end 
 
 %  now get IQR
-if size(sdata,2) == 1 ;
+if size(sdata,2) == 1 
   iqrange = cquantSM(sdata,.75,0) - cquantSM(sdata,.25,0) ;
           %  last 0 turns of need to sort
-else ;
+else 
   iqrange = [] ;
-  for icol = 1:size(sdata,2) ;
+  for icol = 1:size(sdata,2) 
     iqrange = [iqrange; cquantSM(sdata(:,icol),.75,0) - ...
                           cquantSM(sdata(:,icol),.25,0)] ;
-  end ;
-end ;
+  end 
+end 
 

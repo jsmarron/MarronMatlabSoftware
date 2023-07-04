@@ -17,13 +17,13 @@ function hos = bwosSM(data)
 
 %    Copyright (c) J. S. Marron 1996-2004
 
-if size(data,2) == 1 ;        %  if a column vector
+if size(data,2) == 1         %  if a column vector
   n = length(data) ;
   dsd = std(data) ;
-elseif size(data,1) == 1 ;    %  if a row vector
+elseif size(data,1) == 1     %  if a row vector
   n = data(1) ;
   dsd = data(2) ;
-end ;
+end 
 
   rk = 1 / (2 * sqrt(pi)) ;
           %  Integral of the square of the Gaussian kernel

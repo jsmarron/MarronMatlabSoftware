@@ -37,29 +37,29 @@ function vroot = rootfSM(vx,vy,irtyp,lflag,iout)
 
 
 %  Set parameters and defaults according to number of input arguments
-if nargin == 2 ;    %  only 2 arguments input
+if nargin == 2     %  only 2 arguments input
   iirtyp = -1 ;      
           %  Use default: root type is downcrossing
-else ;              %  more than two arguments input
+else               %  more than two arguments input
   iirtyp = irtyp ;
           %  Use input local root type
-end ;
+end 
 
-if nargin <= 3 ;    %  2 or 3 arguments input
+if nargin <= 3     %  2 or 3 arguments input
   ilflag = 1 ;      
           %  Use default: largest local root
-else ;              %  more than 4 arguments input
+else               %  more than 4 arguments input
   ilflag = lflag ;
           %  Use input local root flag
-end ;
+end 
 
-if nargin <= 4 ;    %  2,3 or 4 arguments input
+if nargin <= 4     %  2,3 or 4 arguments input
   iiout = 1 ;
           %  Use default: Output only root value
-else ;              %  5 arguments input
+else               %  5 arguments input
   iiout = iout ;
           %  Use input choice of output type
-end ;
+end 
 
 nx = length(vx) ;
 
@@ -71,93 +71,93 @@ yflagdif = yflag(2:nx) - yflag(1:(nx-1)) ;
           %  -1 at gaps with downcrossing
           %   0 at gaps with no sign change
           %  +1 at gaps with upcrossing
-if iirtyp < 0 ;    %  If want to look at downcrossings 
+if iirtyp < 0     %  If want to look at downcrossings 
   jumpflag = (yflagdif < 0) ;
           %  flag gaps where yflag decreases across 0
-elseif iirtyp == 0 ;    %  If want to look at all 0 crossings 
+elseif iirtyp == 0     %  If want to look at all 0 crossings 
   jumpflag = (abs(yflagdif) > 0) ;
           %  flag gaps where yflag crosses 0
-else ;    %  If want to look at upcrossings 
+else     %  If want to look at upcrossings 
   jumpflag = (yflagdif > 0) ;
           %  flag gaps where yflag increases across 0
-end ;
+end 
 njump = sum(jumpflag) ;
           %  number of interesting jumps,m i.e. zero-crossings
 
 
-if njump == 0 ;    %  Then no interesting zero crossings
+if njump == 0     %  Then no interesting zero crossings
 
   nup = sum(yflag) ;    
           %  Number of sites where y positive
 
-  if iirtyp < 0 ;        %  Then were looking for downcrossings
+  if iirtyp < 0         %  Then were looking for downcrossings
                          %  so take endpt "closest to being one"
 
-    if nup == nx ;    %  then all sites are positive
+    if nup == nx     %  then all sites are positive
                      %  so right end is "closest to downcrossing"
       xroot = vx(nx) ;
       errflag = 1 ;
-    elseif nup == 0 ; %  then all sites are negative
+    elseif nup == 0  %  then all sites are negative
                      %  so left end is "closest to downcrossing"
       xroot = vx(1) ;
       errflag = -1 ;
-    else ;           %  then there was an upcrossing
+    else             %  then there was an upcrossing
                      %  so take endpoint "closest to 0"
-      if abs(vy(1)) < abs(vy(nx)) ;
+      if abs(vy(1)) < abs(vy(nx)) 
         xroot = vx(1) ;
         errflag = -1 ;
-      else ;
+      else 
         xroot = vx(nx) ;
         errflag = 1 ;
-      end ;
-    end ;
+      end 
+    end 
 
-  elseif iirtyp > 0 ;    %  Then were looking for upcrossings
+  elseif iirtyp > 0      %  Then were looking for upcrossings
                          %  so take endpt "closest to being one"
 
-    if nup == nx ;    %  then all sites are positive
+    if nup == nx     %  then all sites are positive
                      %  so left end is "closest to downcrossing"
       xroot = vx(1) ;
       errflag = -1 ;
-    elseif nup == 0 ; %  then all sites are negative
+    elseif nup == 0  %  then all sites are negative
                      %  so right end is "closest to downcrossing"
       xroot = vx(nx) ;
       errflag = 1 ;
-    else ;           %  then there was a downcrossing
+    else             %  then there was a downcrossing
                      %  so take endpoint "closest to 0"
-      if abs(vy(1)) < abs(vy(nx)) ;
+      if abs(vy(1)) < abs(vy(nx)) 
         xroot = vx(1) ;
         errflag = -1 ;
-      else ;
+      else 
         xroot = vx(nx) ;
         errflag = 1 ;
-      end ;
-    end ;
+      end 
+    end 
 
-  elseif iirtyp == 0 ;    %  Then were looking for all crossings,
+  elseif iirtyp == 0     %  Then were looking for all crossings,
                          %  so take endpoint "closest to 0" 
 
-    if abs(vy(1)) <= abs(vy(nx)) ;
+    if abs(vy(1)) <= abs(vy(nx)) 
       xroot = vx(1) ;
       errflag = -1 ;
-    else ;
+    else 
       xroot = vx(nx) ;
       errflag = 1 ;
-    end ;
+    end 
 
-  end ;
+  end 
 
-else ;    %  Then work with zero crossings
+else     %  Then work with zero crossings
 
   %  find index of interval where most interesting crossing occurs
-  if ilflag < 0 ;    %  then want smallest local root
-    [temp, i] = max(jumpflag) ;
-  else ;             %  then want largest local root
-   [temp, i] = max(flipud(jumpflag)) ;
+  if ilflag < 0     %  then want smallest local root
+    [~, i] = max(jumpflag) ;
+  else              %  then want largest local root
+   [~, i] = max(flipud(jumpflag)) ;
     i = nx - i ;
-  end ;
+  end 
 
-  if i == 1 ;               %  Then at left end, so fit parabola
+  if i == 1                %  Then at left end, so fit parabola
     locx = vx(1:3) ;
     locy = vy(1:3) ;
           %  x & y values around current root
@@ -169,7 +169,7 @@ else ;    %  Then work with zero crossings
           %  roots in desired range
     xroot = min(xroot) ;
           %  in case of multiple roots, take smallest
-  elseif i == (nx - 1) ;    %  Then at right end, so fit parabola
+  elseif i == (nx - 1)     %  Then at right end, so fit parabola
     locx = vx(nx-2:nx) ;
     locy = vy(nx-2:nx) ;
           %  x & y values around current root
@@ -181,7 +181,7 @@ else ;    %  Then work with zero crossings
           %  roots in desired range
     xroot = min(xroot) ;
           %  in case of multiple roots, take smallest
-  else ;                    %  Then in interior, so fit cubic
+  else                     %  Then in interior, so fit cubic
     locx = vx((i-1):(i+2)) ;
     locy = vy((i-1):(i+2)) ;
           %  x & y values around current root
@@ -197,25 +197,25 @@ else ;    %  Then work with zero crossings
           %  roots in desired range
     xroot = min(xroot) ;
           %  in case of multiple roots, take smallest
-  end ;
+  end 
   errflag = 0 ;
 
-end ;
+end 
 
 
-if errflag == -1 ;
+if errflag == -1 
   disp('!!!   Warning: rootfSM hit left end   !!!') ;
-elseif errflag == 1 ;
+elseif errflag == 1 
   disp('!!!   Warning: rootfSM hit right end   !!!') ;
-end ;
+end 
 
 
 %  Construct output vector
-if iiout == 1 ;   %  then only output x root
+if iiout == 1    %  then only output x root
   vroot = xroot ;
-elseif iiout == 2 ;   %  then output x & # roots
+elseif iiout == 2    %  then output x & # roots
   vroot = [xroot; njump] ;
-elseif iiout == 3 ;   %  then output x, # roots, and errflag
+elseif iiout == 3    %  then output x, # roots, and errflag
   vroot = [xroot; njump; errflag] ;
-end ;
+end 
 

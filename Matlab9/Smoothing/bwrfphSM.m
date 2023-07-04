@@ -38,12 +38,12 @@ hp = ones(size(arg)) ;
           %  0-th Hermite Poly
 hpn = arg ;
           %  1-st Hermite Poly
-for is = 1:deriv ;
+for is = 1:deriv 
   hp = arg .* hpn - (2*is - 1) * hp ;
           %  (2*is)-th Hermite Poly
   hpn = arg .* hp - (2*is) * hpn ;
           %  (2*is+1)-th Hermite Poly
-end ;
+end 
 kernel = hp .* narg ;
 
 

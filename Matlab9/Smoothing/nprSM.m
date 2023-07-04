@@ -182,94 +182,94 @@ iplot = 0 ;
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct has been added
+if nargin > 1    %  then paramstruct has been added
 
-  if isfield(paramstruct,'vh') ;    %  then change to input value
+  if isfield(paramstruct,'vh')     %  then change to input value
     vh = getfield(paramstruct,'vh') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'vxgrid') ;    %  then change to input value
+  if isfield(paramstruct,'vxgrid')     %  then change to input value
     vxgrid = getfield(paramstruct,'vxgrid') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'imptyp') ;    %  then change to input value
+  if isfield(paramstruct,'imptyp')     %  then change to input value
     imptyp = getfield(paramstruct,'imptyp') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'polydeg') ;    %  then change to input value
+  if isfield(paramstruct,'polydeg')     %  then change to input value
     polydeg = getfield(paramstruct,'polydeg') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'eptflag') ;    %  then change to input value
+  if isfield(paramstruct,'eptflag')     %  then change to input value
     eptflag = getfield(paramstruct,'eptflag') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'ndataoverlay') ;    %  then change to input value
+  if isfield(paramstruct,'ndataoverlay')     %  then change to input value
     ndataoverlay = getfield(paramstruct,'ndataoverlay') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'dolcolor') ;    %  then change to input value
+  if isfield(paramstruct,'dolcolor')     %  then change to input value
     dolcolor = getfield(paramstruct,'dolcolor') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'ibigdot') ;    %  then change to input value
+  if isfield(paramstruct,'ibigdot')     %  then change to input value
     ibigdot = getfield(paramstruct,'ibigdot') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'linewidth') ;    %  then change to input value
+  if isfield(paramstruct,'linewidth')     %  then change to input value
     linewidth = getfield(paramstruct,'linewidth') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'linecolor') ;    %  then change to input value
+  if isfield(paramstruct,'linecolor')     %  then change to input value
     linecolor = getfield(paramstruct,'linecolor') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'titlestr') ;    %  then change to input value
+  if isfield(paramstruct,'titlestr')     %  then change to input value
     titlestr = getfield(paramstruct,'titlestr') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'titlefontsize') ;    %  then change to input value
+  if isfield(paramstruct,'titlefontsize')     %  then change to input value
     titlefontsize = getfield(paramstruct,'titlefontsize') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'xlabelstr') ;    %  then change to input value
+  if isfield(paramstruct,'xlabelstr')     %  then change to input value
     xlabelstr = getfield(paramstruct,'xlabelstr') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'ylabelstr') ;    %  then change to input value
+  if isfield(paramstruct,'ylabelstr')     %  then change to input value
     ylabelstr = getfield(paramstruct,'ylabelstr') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'labelfontsize') ;    %  then change to input value
+  if isfield(paramstruct,'labelfontsize')     %  then change to input value
     labelfontsize = getfield(paramstruct,'labelfontsize') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'plotbottom') ;    %  then change to input value
+  if isfield(paramstruct,'plotbottom')     %  then change to input value
     plotbottom = getfield(paramstruct,'plotbottom') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'plottop') ;    %  then change to input value
+  if isfield(paramstruct,'plottop')     %  then change to input value
     plottop = getfield(paramstruct,'plottop') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'iplot') ;    %  then change to input value
+  if isfield(paramstruct,'iplot')     %  then change to input value
     iplot = getfield(paramstruct,'iplot') ; 
-  end ;
+  end 
 
 
-end ;  %  of resetting of input parameters
+end   %  of resetting of input parameters
 
 
-if  imptyp < 3  &  polydeg > 1 ;
+if  imptyp < 3  &&  polydeg > 1 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from nprSM.m:              !!!') ;
   disp('!!!   polydeg > 1 requires imptyp = 3    !!!') ;
   disp('!!!   resetting imptype to 3             !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   imptyp = 3 ;
-end ;
+end 
 
-if  vh <= 0  &  imptyp ~= 0  ;
+if  vh <= 0  &&  imptyp ~= 0  
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from nprSM.m:          !!!') ;
   disp('!!!   vh <= 0 requires imptyp = 0    !!!') ;
@@ -277,56 +277,56 @@ if  vh <= 0  &  imptyp ~= 0  ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   imptyp = 0 ;
 
-  if polydeg ~= 1 ;
+  if polydeg ~= 1 
     disp('!!!   and can''t have polydeg not 1   !!!') ;
     disp('!!!   resetting polydeg to 1         !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     polydeg = 1 ;
-  end ;
+  end 
 
-end ;
+end 
 
 
 
 
 %  Calculate local polynomial smooth
 %
-if imptyp > 0 ;    %  Then do direct implementation
+if imptyp > 0     %  Then do direct implementation
 
-  if min(vh) > 0 ;    %  Then have valid bandwidths, so proceed
+  if min(vh) > 0     %  Then have valid bandwidths, so proceed
 
     n = size(data,1) ;
 
-    if length(vxgrid) > 3 ;  %  Then use input grid
+    if length(vxgrid) > 3   %  Then use input grid
       xgrid = vxgrid ;
       nbin = length(xgrid) ;
-    else ;                    %  Need to generate a grid
+    else                     %  Need to generate a grid
       nbin = 401 ;         %  Default
       lend = min(data(:,1)) ;   %  Default
       rend = max(data(:,1)) ;   %  Default
-      if length(vxgrid) >= 2 ;      %  use input endpoints
+      if length(vxgrid) >= 2       %  use input endpoints
         lend = vxgrid(1) ;
         rend = vxgrid(2) ;
-      end ;
-      if length(vxgrid) == 3 ;      %  use number of grid points
+      end 
+      if length(vxgrid) == 3       %  use number of grid points
         nbin = vxgrid(3) ;
-      end ;
+      end 
 
-      if lend > rend ;    %  Then bad range has been input
+      if lend > rend     %  Then bad range has been input
         disp('!!!   Error in nprSM: invalid range chosen  !!!') ;
         xgrid = [] ;
-      else ;
+      else 
         xgrid = linspace(lend,rend,nbin)' ;
-      end ;
-    end ;
+      end 
+    end 
 
 
     %  Loop through bandwidths
     npr = [] ;
-    for ih = 1:length(vh) ;
+    for ih = 1:length(vh) 
       h = vh(ih) ;
 
-      if imptyp ~= 2  &  imptyp ~= 3 ;
+      if imptyp ~= 2  &&  imptyp ~= 3 
                     %  Then do direct matrix implementation
 
         arg = vec2matSM((data(:,1) ./ h),nbin) - vec2matSM((xgrid' ./ h),n) ;
@@ -340,23 +340,23 @@ if imptyp > 0 ;    %  Then do direct implementation
         s0 = sum(mwt)' ;
           %  sum part of s0, and make result a column vector
         sy0 = sum(mwt .* vec2matSM(data(:,2),nbin))' ;
-        if polydeg ~= 0 ;    %  Then need extra stuff for local linear
+        if polydeg ~= 0     %  Then need extra stuff for local linear
           s1 = sum(mwt .* arg)' ;
           s2 = sum(mwt .* arg.^2)' ;
           sy1 = sum(mwt .* arg .* vec2matSM(data(:,2),nbin))' ;
-        end ;
+        end 
 
         arg = 0 ;
         mwt = 0 ;
           %  get rid of these huge matrices as soon as possible
 
-        if polydeg == 0 ;    %  then do local constant (NW)
+        if polydeg == 0     %  then do local constant (NW)
           denom = s0 ; 
-        else ;                %  then do local linear
+        else                 %  then do local linear
           denom = s2 .* s0 - s1 .* s1 ; 
-        end ;
+        end 
 
-        if sum( (denom / max([denom; eps])) <= eps ) ;
+        if sum( (denom / max([denom; eps])) <= eps ) 
                    %  If denominator has any entry that is effectively 0
           disp('!!!   Warning from nprSM:  h is too small  !!!') ;
           disp('!!!      returning interpolant of data     !!!') ;
@@ -368,45 +368,45 @@ if imptyp > 0 ;    %  Then do direct implementation
           nprh = interp1s(sxdat,sydat,xgrid) ;
              %  specially modified version, that allows extrapolation
 
-        else ;    %  then do usual calculations
+        else     %  then do usual calculations
 
-          if polydeg == 0 ;    %  then do local constant (NW)
+          if polydeg == 0     %  then do local constant (NW)
             nprh = sy0 ./ denom ;
-          else ;                %  then do local linear
+          else                 %  then do local linear
             nprh = (s2 .* sy0 - s1 .* sy1) ./ denom ;
-          end ;
+          end 
 
-        end ;
+        end 
 
         npr = [npr nprh] ;
 
-      else ;   %  Do slower looped implementations
+      else    %  Do slower looped implementations
         nprh = [] ;
-        for ixg = 1:nbin ;    %  Loop through grid points
+        for ixg = 1:nbin     %  Loop through grid points
           arg = (data(:,1) - xgrid(ixg)) / h ;
           vwt = exp(-(arg .^2) / 2) ;
           %  exponential part of Gaussian density (constant not
           %         needed since these divide each other later)
 
-          if imptyp == 2 ;   %  Then do formula type of linear fit
+          if imptyp == 2    %  Then do formula type of linear fit
                               %  (direct modification of imptyp = 1)
             arg = arg * h ;
           %  put back on scale of data.
             s0 = sum(vwt) ;
             sy0 = sum(vwt .* data(:,2)) ;
-            if polydeg ~= 0 ;    %  Then need extra stuff for local linear
+            if polydeg ~= 0     %  Then need extra stuff for local linear
               s1 = sum(vwt .* arg)' ;
               s2 = sum(vwt .* arg.^2)' ;
               sy1 = sum(vwt .* arg .* data(:,2))' ;
-            end ;
+            end 
 
-            if polydeg == 0 ;    %  then do local constant (NW)
+            if polydeg == 0     %  then do local constant (NW)
               denom = s0 ; 
-            else ;                %  then do local linear
+            else                 %  then do local linear
               denom = s2 .* s0 - s1 .* s1 ; 
-            end ;
+            end 
 
-            if denom <= eps ;
+            if denom <= eps 
                    %  If denominator is effectively 0
               disp('!!!   Warning from nprSM:  h is too small  !!!') ;
               disp('!!!      returning interpolant of data     !!!') ;
@@ -417,30 +417,30 @@ if imptyp > 0 ;    %  Then do direct implementation
               sydat = sydat(vsind) ;
               nprhx = interp1s(sxdat,sydat,xgrid(ixg)) ;
 
-            else ;    %  then do usual calculations
+            else     %  then do usual calculations
 
-              if polydeg == 0 ;    %  then do local constant (NW)
+              if polydeg == 0     %  then do local constant (NW)
                 nprhx = sy0 ./ denom ;
-              else ;                %  then do local linear
+              else                 %  then do local linear
                 nprhx = (s2 .* sy0 - s1 .* sy1) ./ denom ;
-              end ;
+              end 
 
-            end ;
+            end 
 
-          else ;   %  (imptyp = 3)  Then do direct poly fit, in window
+          else    %  (imptyp = 3)  Then do direct poly fit, in window
             mx = ones(size(data,1),1) ;
                   %  1st column of "polynomial fit design matrix"
-            if polydeg >= 1 ;
-              for ideg = 1:polydeg ;
+            if polydeg >= 1 
+              for ideg = 1:polydeg 
                 mx = [mx, (arg .* mx(:,size(mx,2)))] ;
                   %  next column of "polynomial fit design matrix"
-              end ;
-            end ;
+              end 
+            end 
             mwt = diag(vwt) ;
 
             xpwx = mx' * mwt * mx ;
 
-            if (1 / cond(xpwx)) <= eps ;
+            if (1 / cond(xpwx)) <= eps 
                    %  If matrix is effectively singular
               disp('!!!   Warning from nprSM:  h is too small  !!!') ;
               disp('!!!      returning interpolant of data     !!!') ;
@@ -451,108 +451,109 @@ if imptyp > 0 ;    %  Then do direct implementation
               sydat = sydat(vsind) ;
               nprhx = interp1s(sxdat,sydat,xgrid(ixg)) ;
 
-            else ;    %  then do usual calculations
+            else     %  then do usual calculations
 
-              polycoef = inv(xpwx) * mx' * mwt * data(:,2) ;
+              polycoef = xpwx \ mx' * mwt * data(:,2) ;
+%              polycoef = inv(xpwx) * mx' * mwt * data(:,2) ;
                   %  kernel weighted least squares fit of poly to Ys
               nprhx = polycoef(1) ;
                   %  1st entry is order 0 part
-            end ;
-          end ;
+            end 
+          end 
 
           nprh = [nprh; nprhx] ;
-        end ;
+        end 
         npr = [npr nprh] ;
-      end ;
-    end ;
+      end 
+    end 
 
-  else ;    %  Have invalid bandwidths
+  else     %  Have invalid bandwidths
 
     disp('!!!   Error in nprSM: A bandwidth is invalid   !!!') ;
     disp('    (Note: cannot use data driven, with direct impl''s)') ;
 
-  end ;
+  end 
+ 
+else      %  Then do binned implementation
 
-else ;     %  Then do binned implementation
+  if imptyp == -1    %  Then data have already been binned
 
-  if imptyp == -1 ;   %  Then data have already been binned
-
-    if (length(vxgrid) == 1) | (length(vxgrid) > 3) ;
+    if (length(vxgrid) == 1) || (length(vxgrid) > 3) 
                          %  Then can't proceed because don't have bin ends
       disp('!!!   Error: nprSM needs to know the endpoints   !!!') ;
       disp('!!!            to use this implementation        !!!') ;
       bincts = [] ;
-    else ;
+    else 
       n = sum(data(:,1)) ;
       bincts = data ;
 
       nbin = 401 ;    %  default value
       lend = vxgrid(1) ;
       rend = vxgrid(2) ;
-      if length(vxgrid) == 3 ;          %  then use number of grid points
+      if length(vxgrid) == 3           %  then use number of grid points
         nbin = vxgrid(3) ;
-      end ;
+      end 
 
-      if nbin ~= length(bincts) ;    %  Then something is wrong
+      if nbin ~= length(bincts)     %  Then something is wrong
 
         disp('!!!   Warning: nprSM was told the wrong number of bins   !!!') ;
         disp('!!!            will just use the number of counts.       !!!') ;
 
         nbin = size(bincts,1) ;
-      end ;
-    end ;
+      end 
+    end 
 
-  else ;               %  Then need to bin data
+  else                %  Then need to bin data
 
     n = size(data,1) ;
 
-    if length(vxgrid) > 3 ;  %  Then need to warn of change to default
+    if length(vxgrid) > 3   %  Then need to warn of change to default
       disp('!!!   Warning: nprSM was given an xgrid, and also   !!!') ;
       disp('!!!       asked to bin; will bin and ignore xgrid   !!!') ;
-    end ;
+    end 
 
     %  Specify grid parameters
     nbin = 401 ;         %  Default
     lend = min(data(:,1)) ;   %  Default
     rend = max(data(:,1)) ;   %  Default
-    if (length(vxgrid) == 2) | (length(vxgrid) == 3) ;
+    if (length(vxgrid) == 2) || (length(vxgrid) == 3) 
                                      %  then use input endpoints
       lend = vxgrid(1) ;
       rend = vxgrid(2) ;
-    end ;
-    if length(vxgrid) == 3 ;          %  then use number of grid points
+    end 
+    if length(vxgrid) == 3           %  then use number of grid points
       nbin = vxgrid(3) ;
-    end ;
+    end 
 
-    if lend > rend ;    %  Then bad range has been input
+    if lend > rend     %  Then bad range has been input
       disp('!!!   Error in nprSM: invalid range chosen  !!!') ;
       bincts = [] ;
-    else ;
+    else 
       bincts = lbinrSM(data,[lend,rend,nbin],eptflag) ;
-    end ;
+    end 
 
     %  Can do data-based bandwidth selection here, if specified
-    if vh == -1 ;        %  Then use RSW Rule of Thumb
+    if vh == -1         %  Then use RSW Rule of Thumb
       vh = bwrswSM(data,-1) ;
-    elseif min(vh) <= 0 ;     %  Then be sure to use default,
+    elseif min(vh) <= 0       %  Then be sure to use default,
                               %  RSW Direct Plug In
                               %    (in case an unsupp val was input)
       vh = bwrswSM(data) ;
-      if vh == 0 ;
+      if vh == 0 
         disp('!!!   Warning from nprSM: h_RSW was 0     !!!') ;
         disp('          (going to Rule of Thumb)    ') ;
         vh = bwrswSM(data,-1) ;
-      end ;
+      end 
 
-    end ;
+    end 
 
-  end ;
+  end 
   xgrid = linspace(lend,rend,nbin)' ;
 
 
   %  Loop through bandwidths
   npr = [] ;
-  for ih = 1:length(vh) ;
+  for ih = 1:length(vh) 
     h = vh(ih) ;
 
     %  Create vector of kernel values, at equally spaced grid
@@ -560,11 +561,11 @@ else ;     %  Then do binned implementation
     k = nbin - 1 ;    %  index of last nonzero entry of kernel vector
     arg = linspace(0,k * delta / h,k + 1)' ;
     kvec0 = exp(-(arg.^2) / 2) / sqrt(2 * pi) ;
-    if polydeg ~= 0 ;    %  Then need extra stuff for local linear
+    if polydeg ~= 0     %  Then need extra stuff for local linear
       arg = arg * h ;
       kvec1 = kvec0 .* arg ;
       kvec2 = kvec1 .* arg ;
-    end ;
+    end 
 
     %  Do actual kernel smooth
     kvec0 = [flipud(kvec0(2:k+1)); kvec0] ;
@@ -573,7 +574,7 @@ else ;     %  Then do binned implementation
     s0 = s0(k+1:k+nbin) ;
     sy0 = conv(bincts(:,2),kvec0) ;
     sy0 = sy0(k+1:k+nbin) ;
-    if polydeg ~= 0 ;    %  Then need extra stuff for local linear
+    if polydeg ~= 0     %  Then need extra stuff for local linear
       kvec1 = [-flipud(kvec1(2:k+1)); kvec1] ;
           %  skew-symmetric here!
       s1 = conv(bincts(:,1),kvec1) ;
@@ -585,13 +586,13 @@ else ;     %  Then do binned implementation
           %  construct symmetric kernel
       s2 = conv(bincts(:,1),kvec2) ;
       s2 = s2(k+1:k+nbin) ;
-    end ;
+    end 
 
-    if polydeg == 0 ;    %  then do local constant (NW)
+    if polydeg == 0     %  then do local constant (NW)
       denom = s0 ; 
-    else ;                %  then do local linear
+    else                 %  then do local linear
       denom = s2 .* s0 - s1 .* s1 ; 
-    end ;
+    end 
 
 
     vflag0d = (denom / max([denom; eps])) <= eps ;
@@ -599,23 +600,23 @@ else ;     %  Then do binned implementation
 
     sflag0d = sum(vflag0d) ;
           %  > 0 when there are some locations with 0 denominator
-    if sflag0d > 0 ;
+    if sflag0d > 0 
       disp('!!!   Warning from nprSM:  data too sparse for this h   !!!') ;
       disp('!!!   will interpolate over sparse regions  !!!') ;
       denom(vflag0d) = ones(sflag0d,1) ;
           %  replace 0's by ones (temporarily)
-    end ;
+    end 
 
     %  main calculation of smooth
-    if polydeg == 0 ;    %  then do local constant (NW)
+    if polydeg == 0     %  then do local constant (NW)
       nprh = sy0 ./ denom ;
-    else ;                %  then do local linear
+    else                 %  then do local linear
       nprh = (s2 .* sy0 - s1 .* sy1) ./ denom ;
-    end ;
+    end 
 
 
 
-    if sflag0d > 0 ;     %  then need to come back and fix up 0 denoms
+    if sflag0d > 0      %  then need to come back and fix up 0 denoms
       vflagbf = bincts(:,1) > 0 ;
           %  one where there is some data, in sense that binct > 0
 
@@ -624,120 +625,120 @@ else ;     %  Then do binned implementation
       tybdat = bincts(vflagbf,2) ./ bincts(vflagbf,1) ;    
           %  y data as bin averages, truncated to nonzpero bins
 
-      if sflag0d == nbin ;     %  then have denom trouble at each data point,
+      if sflag0d == nbin      %  then have denom trouble at each data point,
                                %  so just return interpolant of binned data
 
         nprh = interp1s(txbdat,tybdat,xgrid) ;
 
-      else ;    %  then have some regions where denom is OK,
+      else     %  then have some regions where denom is OK,
                 %  so do interpolation only over those regions
 
 
-        if vflag0d(1) == 1 ;    %  then have data sparsity at left end
+        if vflag0d(1) == 1     %  then have data sparsity at left end
                                 %  and need to adjust
-          [temp,ifge] = max(1 - vflag0d) ;
+          [~,ifge] = max(1 - vflag0d) ;
           %  index of first point with good estimate (where denom is nonzero)
-          [temp,ifpbag] = max(vflagbf(ifge:nbin)) ;
+          [~,ifpbag] = max(vflagbf(ifge:nbin)) ;
           ifpbag = ifpbag + ifge - 1 ;
           %  index of first positive binct after first good estimate
 
             flag = txbdat < xgrid(ifpbag) ;
-            if sum(flag) > 0 ;   %  Then there are some points to int. over
+            if sum(flag) > 0    %  Then there are some points to int. over
               vx = [txbdat(flag); xgrid(ifpbag)] ;
                   %  x's for interpolation 
               vy = [tybdat(flag); nprh(ifpbag)] ;
                   %  y's for interpolation 
-            else ;
+            else 
               vx = xgrid(ifpbag) ;
                   %  x's for interpolation 
               vy = nprh(ifpbag) ;
                   %  y's for interpolation 
-            end ;
+            end 
           nprh(1:(ifpbag-1)) = interp1s(vx,vy,xgrid(1:(ifpbag-1))) ;
           vflag0d(1:(ifpbag-1)) = zeros(ifpbag-1,1) ;
           %  reset flag, now that values have been fixed
-        end ;
+        end 
 
 
-        if vflag0d(nbin) == 1 ;    %  then have data sparsity at right end
+        if vflag0d(nbin) == 1     %  then have data sparsity at right end
                                    %  and need to adjust
-          [temp,ilge] = max(flipud(1 - vflag0d)) ;
+          [~,ilge] = max(flipud(1 - vflag0d)) ;
           ilge = nbin + 1 - ilge ;
           %  index of last point with good estimate (where denom is nonzero)
-          [temp,ilpbbg] = max(flipud(vflagbf(1:ilge))) ;
+          [~,ilpbbg] = max(flipud(vflagbf(1:ilge))) ;
           ilpbbg = ilge + 1 - ilpbbg ;
           %  index of last positive binct before last good estimate
           
             flag = txbdat > xgrid(ilpbbg) ;
-            if sum(flag) > 0 ;   %  Then there are some points to int. over
+            if sum(flag) > 0    %  Then there are some points to int. over
               vx = [xgrid(ilpbbg); txbdat(flag)] ;
                   %  x's for interpolation 
               vy = [nprh(ilpbbg); tybdat(flag)] ;
                   %  y's for interpolation 
-            else ;
+            else 
               vx = xgrid(ilpbbg) ;
                   %  x's for interpolation 
               vy = nprh(ilpbbg) ;
                   %  y's for interpolation 
-            end ;
+            end 
           nprh((ilpbbg+1):nbin) = interp1s(txbdat,tybdat, ...
                               xgrid((ilpbbg+1):nbin)) ;
           vflag0d((ilpbbg+1):nbin) = zeros(nbin-ilpbbg,1) ;
           %  reset flag, now that values have been fixed
-        end ;
+        end 
 
 
-        while sum(vflag0d) > 0 ;   %  loop until all sparsity problems fixed
-          [temp,ind0d] = max(vflag0d) ;
+        while sum(vflag0d) > 0    %  loop until all sparsity problems fixed
+          [~,ind0d] = max(vflag0d) ;
           %  an index where still have 0 denom
 
-          [temp,inge] = max(1 - vflag0d(ind0d:nbin)) ;
+          [~,inge] = max(1 - vflag0d(ind0d:nbin)) ;
           inge = inge + ind0d - 1 ;
           %  index of next point with good estimate (where denom is nonzero)
-          [temp,inpbag] = max(vflagbf(inge:nbin)) ;
+          [~,inpbag] = max(vflagbf(inge:nbin)) ;
           inpbag = inpbag + inge - 1 ;
           %  index of next positive binct after first good estimate
 
-          [temp,ilge] = max(flipud(1 - vflag0d(1:ind0d))) ;
+          [~,ilge] = max(flipud(1 - vflag0d(1:ind0d))) ;
           ilge = ind0d + 1 - ilge ;
           %  index of last point with good estimate (where denom is nonzero)
-          [temp,ilpbbg] = max(flipud(vflagbf(1:ilge))) ;
+          [~,ilpbbg] = max(flipud(vflagbf(1:ilge))) ;
           ilpbbg = ilge + 1 - ilpbbg ;
           %  index of last positive binct before last good estimate
 
             flag = (txbdat > xgrid(ilpbbg)) .* (txbdat < xgrid(inpbag)) ;
-            if sum(flag) > 0 ;   %  Then there are some points to int. over
+            if sum(flag) > 0    %  Then there are some points to int. over
               vx = [xgrid(ilpbbg); txbdat(flag); xgrid(inpbag)] ;
                   %  x's for interpolation 
               vy = [nprh(ilpbbg); tybdat(flag); nprh(inpbag)] ;
                   %  y's for interpolation 
-            else ;
+            else 
               vx = [xgrid(ilpbbg); xgrid(inpbag)] ;
                   %  x's for interpolation 
               vy = [nprh(ilpbbg); nprh(inpbag)] ;
                   %  y's for interpolation 
-            end ;
+            end 
           nprh((ilpbbg+1):(inpbag-1)) = interp1(vx,vy, ...
                                       xgrid((ilpbbg+1):(inpbag-1))) ;
           %  linearly interpolate accross gap
           vflag0d((ilpbbg+1):(inpbag-1)) = zeros(inpbag-ilpbbg-1,1) ;
-        end ;
+        end 
 
-      end ;
+      end 
 
-    end ;
+    end 
 
     npr = [npr nprh] ;
 
-  end ;
+  end 
 
-end ;
+end 
 
 
 
 %  Create matrix of kernels, if this is needed
 %
-if nargout == 3 ;
+if nargout == 3 
   cent = mean([lend; rend]) ;
           %  centerpoint of evaluation grid
   mih = vec2matSM(1 ./ vh',nbin) ;
@@ -747,59 +748,59 @@ if nargout == 3 ;
           %  Gaussian kernels with mass 1
   mker = 0.05 * mker ;
           %  Make masses = 0.05
-end ;
+end 
 
 
 
 %  Make plots if no numerical output requested
 %
-if  nargout == 0  | ...
-      iplot == 1  ;  %  Then make a plot
+if  nargout == 0  || ...
+      iplot == 1    %  Then make a plot
 
 
-  if  length(vh) > 3  &  ~isfield(paramstruct,'linewidth')  ;
+  if  length(vh) > 3  &&  ~isfield(paramstruct,'linewidth')  
                               %  then need to change default value of linewidth
     linewidth = 0.5 ;
-  end ;
+  end 
 
 
-  if isempty(linecolor) ;
+  if isempty(linecolor) 
     plot(xgrid,npr,'LineWidth',linewidth) ;
-  else ;
+  else 
     plot(xgrid,npr,'LineWidth',linewidth,'Color',linecolor) ;
-  end ;
+  end 
 
 
-  if  isempty(plottop)  &  isempty(plotbottom)  ;   %  then adjust top and bottom
+  if  isempty(plottop)  &&  isempty(plotbottom)     %  then adjust top and bottom
     plotbottom = min(min(npr)) ;
     plottop = max(max(npr)) ;
     plotrange = plottop - plotbottom ;
     plotbottom = plotbottom - 0.05 * plotrange ;
     plottop = plottop + 0.05 * plotrange ;
-  elseif isempty(plottop) ;                         %  then only adjust top
+  elseif isempty(plottop)                          %  then only adjust top
     plottop = max(max(npr)) ;
     plotrange = plottop - plotbottom ;
     plottop = plottop + 0.05 * plotrange ;
-  elseif isempty(plotbottom) ;                      %  then only adjust bottom
+  elseif isempty(plotbottom)                       %  then only adjust bottom
     plotbottom = min(min(npr)) ;
     plotrange = plottop - plotbottom ;
     plotbottom = plotbottom - 0.05 * plotrange ;
-  end ;
+  end 
 
   vax = [lend,rend,plotbottom,plottop] ;
   axis(vax) ;
 
 
-  if  ndataoverlay > 0  &  imptyp >= 0  ;
+  if  ndataoverlay > 0  &&  imptyp >= 0  
                             %  then overlay data
   
-    if ndataoverlay == 1 ;
+    if ndataoverlay == 1 
       ndo = min(n,1000) ;
-    elseif ndataoverlay == 2 ;
+    elseif ndataoverlay == 2 
       ndo = n ;
-    else ;
+    else 
       ndo = min(n,ndataoverlay) ;
-    end ;
+    end 
 
 
     flagleft = (data(:,1) < lend) ;
@@ -808,39 +809,39 @@ if  nargout == 0  | ...
         %  ones where data above right end
     nleft = sum(flagleft) ;
     nright = sum(flagright) ;
-    if nleft + nright > 0 ;    %  then need to deal with points outside range
+    if nleft + nright > 0     %  then need to deal with points outside range
 
-      if eptflag == 1 ;    %  the truncate data outside range
+      if eptflag == 1     %  the truncate data outside range
         datatrunc = data(~(flagleft | flagright),:) ;
             %  keep data that is not (outside left or outside right)
 
-      else ;    %  then move outside points to nearest end
+      else     %  then move outside points to nearest end
         datatrunc = data ;
-        if nleft > 0 ;    %  then replace those points with lend
+        if nleft > 0     %  then replace those points with lend
           datatrunc(flagleft,1) = lend * ones(nleft,1) ;
-        end ;
-        if nright > 0 ;    %  then replace those points with rend
+        end 
+        if nright > 0     %  then replace those points with rend
           datatrunc(flagright,1) = rend * ones(nright,1) ;
-        end ;
+        end 
 
-      end ;
+      end 
 
-    else ;
+    else 
 
       datatrunc = data ;
 
-    end ;
+    end 
 
 
-    if ndo < n ;    %  then need to subsample
-      [temp,randperm] = sort(rand(n,1)) ;
+    if ndo < n     %  then need to subsample
+      [~,randperm] = sort(rand(n,1)) ;
             %  randperm is a random permutation of 1,2,...,n
       vkeep = randperm(1:ndo) ;
             %  indices of elements to keep for display
       dataol = datatrunc(vkeep,:) ;
-    else ;    %  overlay full data set
+    else     %  overlay full data set
       dataol = datatrunc ;
-    end ;
+    end 
 
 
     %  overlay selected data
@@ -850,46 +851,46 @@ if  nargout == 0  | ...
     ftop = vax(4) ;
     hold on ;
 
-      if ibigdot == 1 ;   %  plot deliberately large dots
+      if ibigdot == 1    %  plot deliberately large dots
         plot(dataol(:,1),dataol(:,2),[dolcolor 'o'], ...
                           'MarkerSize',1,'LineWidth',2) ;
-      else ;    %  use matlab default dots
+      else     %  use matlab default dots
         plot(dataol(:,1),dataol(:,2),[dolcolor '.']) ;
-      end ;
+      end 
 
     hold off ;
   
-  end ;
+  end 
 
 
-  if ~isempty(titlestr) ;
-    if isempty(titlefontsize) ;
+  if ~isempty(titlestr) 
+    if isempty(titlefontsize) 
       title(titlestr) ;
-    else ;
+    else 
       title(titlestr,'FontSize',titlefontsize) ;
-    end ;
-  end ;
+    end 
+  end 
 
 
-  if ~isempty(xlabelstr) ;
-    if isempty(labelfontsize) ;
+  if ~isempty(xlabelstr) 
+    if isempty(labelfontsize) 
       xlabel(xlabelstr) ;
-    else ;
+    else 
       xlabel(xlabelstr,'FontSize',labelfontsize) ;
-    end ;
-  end ;
+    end 
+  end 
 
 
-  if ~isempty(ylabelstr) ;
-    if isempty(labelfontsize) ;
+  if ~isempty(ylabelstr) 
+    if isempty(labelfontsize) 
       ylabel(ylabelstr) ;
-    else ;
+    else 
       ylabel(ylabelstr,'FontSize',labelfontsize) ;
-    end ;
-  end ;
+    end 
+  end 
 
 
 
 
-end ;
+end 
 

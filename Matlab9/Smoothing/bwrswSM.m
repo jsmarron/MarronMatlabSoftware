@@ -36,23 +36,23 @@ function hrsw = bwrswSM(data,piflag,xgridp,eptflag)
 
 %  Set parameters and defaults according to number of input arguments
 %
-if nargin == 1 ;    %  only 1 argument input, use default plug in flag
+if nargin == 1     %  only 1 argument input, use default plug in flag
   ipiflag = 0 ;
-else ;              %  plug in flag was specified, use that
+else               %  plug in flag was specified, use that
   ipiflag = piflag ;
-end ;
+end 
 
-if nargin <= 2 ;    %  at most 2 arguments input, use default xgrid params
+if nargin <= 2     %  at most 2 arguments input, use default xgrid params
   ixgridp = 0 ;
-else ;              %  xgrid was specified, use that
+else               %  xgrid was specified, use that
   ixgridp = xgridp ;
-end ;
+end 
 
-if nargin <= 3 ;    %  at most 3 arguments input, use default endpt trunc
+if nargin <= 3     %  at most 3 arguments input, use default endpt trunc
   ieptflag = 0 ;    %  Default
-else ;
+else 
   ieptflag = eptflag ;    %  Endpt trunc was specified, so use it
-end ;
+end 
 
 
 
@@ -75,16 +75,16 @@ c3k = (4 * (1/2 + 2 * sqrt(2) - 4 * sqrt(3) / 3) / sqrt(2 * pi)).^(1/9) ;
 %  Set endpts
 %
 nbin = 401 ;    %  standard default
-if length(ixgridp) > 1 ;   %  then have read in endpoints, so use them
+if length(ixgridp) > 1    %  then have read in endpoints, so use them
   lend = ixgridp(1) ;
   rend = ixgridp(2) ;
-  if length(ixgridp) == 3 ;   %  then have read in numbe of bins, so use
+  if length(ixgridp) == 3    %  then have read in numbe of bins, so use
     nbin = ixgridp(3) ;
-  end ;   %  otherwise use above default
-else ;  %  default to data endpoints
+  end    %  otherwise use above default
+else   %  default to data endpoints
   lend = min(data(:,1)) ;
   rend = max(data(:,1)) ;
-end ;
+end 
 ixgridp = [lend; rend; nbin] ;
           %  reset this for later calls
 
@@ -102,13 +102,13 @@ hmax = 2 * hmax ;
 
 %  First check sample large enough to calculate this
 %
-if nobs <= 5 ;
+if nobs <= 5 
           %  sample size is too small for some denominators below
   disp('!!!   Warning from bwrswb:  sample size is too small   !!!') ;
   disp('!!!            Returning twice range as answer         !!!') ;
   hrsw = hmax ;
 
-else ;  %  sample size OK, so proceed
+else    %  sample size OK, so proceed
 
 
   %  Sort data, for blockwise operations
@@ -116,17 +116,17 @@ else ;  %  sample size OK, so proceed
   %     some tests showed this goes very fast for n up to 10000, and
   %     and took only 2-3 secs for 100000).
   %
-  [temp, vind] = sort(data(:,1)) ;
+  [~, vind] = sort(data(:,1)) ;
   sdata = data(vind,:) ;
 
 
   %  Get chosen type of bandwidth
   %
-  if ipiflag == -1 ;    %  Then do Rule of Thumb version
+  if ipiflag == -1     %  Then do Rule of Thumb version
     vrss = [] ;
     vs2q = [] ;
     vt22q = [] ;
-    for N = 1:Nmax ;    %  Loop through potential numbers of blocks
+    for N = 1:Nmax     %  Loop through potential numbers of blocks
       vimax = round((1:(N-1))' * nobs / N) ;
       vimin = [1; (vimax + 1)] ;
           %  vector of starting indices for each block
@@ -135,7 +135,7 @@ else ;  %  sample size OK, so proceed
       rss = 0 ;
       t22q = 0 ;
           %  set to 0 so they can be summed
-      for iblk = 1:N ;    %  Loop through blocks
+      for iblk = 1:N     %  Loop through blocks
         imin = vimin(iblk) ;
         imax = vimax(iblk) ;
         vdata = sdata(imin:imax,:) ;
@@ -158,42 +158,42 @@ else ;  %  sample size OK, so proceed
           %  add to RSS
         t22q = t22q + sum(m2q.^2) ;
           %  add to theta22 estimate
-      end ;  
+      end   
       s2q = rss / (nobs - 5 * N) ;
       t22q = t22q / nobs ;
 
       vrss = [vrss; rss] ;
       vs2q = [vs2q; s2q] ;
       vt22q = [vt22q; t22q] ;
-    end ;
+    end 
     vcp = (vrss /(vrss(Nmax) / (nobs - 5 * Nmax))) - ...
                                   (nobs - 10 * (1:Nmax)') ;
           %  RSW version of mallows Cp
-    [temp, Nhat] = min(vcp) ;
+    [~, Nhat] = min(vcp) ;
           %  get Nhat to minimize Cp
     s2q = vs2q(Nhat) ;
     t22q = vt22q(Nhat) ;
 
 
     %  Guard against denom too small
-    if (abs(t22q) * nobs / std(data(:,2))) > eps  ; 
+    if (abs(t22q) * nobs / std(data(:,2))) > eps   
                 %  then 2nd derive estimate is large enough, so proceed
       hrsw = c1k * (s2q * (rend - lend) / (t22q * nobs)).^(1/5) ;
-    else ;           %  funny denom, give error message, return upper bound
+    else            %  funny denom, give error message, return upper bound
       disp('!!!   Warning from bwrswb:  t22q is too small   !!!') ;
       disp('!!!       Returning twice range as answer       !!!') ;
       hrsw = hmax ;
-    end ;
+    end 
 
 
-  else ;    %  Then do Direct Plug In
+  else     %  Then do Direct Plug In
 
 
     %    Start step 1
     vrss = [] ;
     vs2q = [] ;
     vt24q = [] ;
-    for N = 1:Nmax ;    %  Loop through potential numbers of blocks
+    for N = 1:Nmax     %  Loop through potential numbers of blocks
       vimax = round((1:(N-1))' * nobs / N) ;
       vimin = [1; (vimax + 1)] ;
             %  vector of starting indices for each block
@@ -202,7 +202,7 @@ else ;  %  sample size OK, so proceed
       rss = 0 ;
       t24q = 0 ;
           %  set to 0 so they can be summed
-      for iblk = 1:N ;    %  Loop through blocks
+      for iblk = 1:N     %  Loop through blocks
         imin = vimin(iblk) ;
         imax = vimax(iblk) ;
         vdata = sdata(imin:imax,:) ;
@@ -227,18 +227,18 @@ else ;  %  sample size OK, so proceed
           %  add to RSS
         t24q = t24q + sum(m2q * m4q) ;
           %  add to theta24 estimate
-      end ;  
+      end   
       s2q = rss / (nobs - 5 * N) ;
       t24q = t24q / nobs ;
 
       vrss = [vrss; rss] ;
       vs2q = [vs2q; s2q] ;
       vt24q = [vt24q; t24q] ;
-    end ;
+    end 
     vcp = (vrss /(vrss(Nmax) / (nobs - 5 * Nmax))) - ...
                                   (nobs - 10 * (1:Nmax)') ;
           %  RSW version of mallows Cp
-    [temp, Nhat] = min(vcp) ;
+    [~, Nhat] = min(vcp) ;
           %  get Nhat to minimize Cp
     s2q = vs2q(Nhat) ;
     t24q = vt24q(Nhat) ;
@@ -248,7 +248,7 @@ else ;  %  sample size OK, so proceed
     %    Start step 2
     %
     %  First guard against denom too small
-    if (abs(t24q) * nobs / std(data(:,2))) > eps  ; 
+    if (abs(t24q) * nobs / std(data(:,2))) > eps 
                 %  then 4th deriv. estimate is large enough, so proceed
 
       %         First bin the data
@@ -323,11 +323,11 @@ else ;  %  sample size OK, so proceed
                        - s3.*s3.*s3 - s2.*s2.*s5 - s1.*s4.*s4) ;
 
 
-      if sum(denom == 0) ;   %  if any 0 entry in denominator
+      if sum(denom == 0)    %  if any 0 entry in denominator
         disp('!!!   Warning from bwrswb:  gamse is too small   !!!') ;
         disp('!!!         Returning binwidth as answer         !!!') ;
         errflag = -1 ;  
-      else ;
+      else 
 
         numer = s0 .* (s2.*sy2.*s6 + sy1.*s5.*s4 + s4.*s3.*sy3 ...
                          - s4.*sy2.*s4 - s3.*sy1.*s6 - s2.*sy3.*s5) ;
@@ -344,9 +344,9 @@ else ;  %  sample size OK, so proceed
               %  estimate of m'' by local cubic fit
           bcents = linspace(lend,rend,nbin) ;
               %  bin centers
-          [temp, ia] = min(abs(bcents - ((1 - alpha) * lend + alpha * rend))) ;
+          [~, ia] = min(abs(bcents - ((1 - alpha) * lend + alpha * rend))) ;
               %  index of bin corresponding to alpha way through range
-          [temp, i1ma] = min(abs(bcents - (alpha * lend + (1 - alpha) * rend))) ;
+          [~, i1ma] = min(abs(bcents - (alpha * lend + (1 - alpha) * rend))) ;
               %  index of bin corresponding to 1 - alpha way through range
         tbncts = bncts(ia:i1ma,1) ;
               %  alpha truncated bincts
@@ -357,7 +357,7 @@ else ;  %  sample size OK, so proceed
         %        Estimate sig2
         %
         %  First guard against denom too small
-        if (abs(t22) * nobs / std(data(:,2))) > eps  ; 
+        if (abs(t22) * nobs / std(data(:,2))) > eps 
                 %  then 2nd deriv. estimate is large enough, so proceed
           lamamse = c3k * (s2q^2 * (rend - lend) / (t22^2 * nobs^2))^(1/9) ;
           paramstruct = struct('vh',lamamse,...
@@ -365,13 +365,13 @@ else ;  %  sample size OK, so proceed
                                'imptyp',-1) ;
                                          %  -1 for using already binned data
           mhat = nprSM(bncts,paramstruct) ;
-        else ;    %  want "infinite bandwidth" here,
-                  %  so just use linear at bincoutns
+        else     %  want "infinite bandwidth" here,
+                 %  so just use linear at bincoutns
           lincoeffs = polyfit(vdata(:,1),vdata(:,2),1) ;
             %  coefficients of linear fit
           mhat = polyval(lincoeffs,linspace(lend,rend,nbin)') ;
             %  linear fit, evaluated at data
-        end ;
+        end 
         s21 = sum(data(:,2).^2)  ;
         s21 = s21 - 2 * sum(mhat .* bncts(:,2)) ;
         s21 = s21 + sum(mhat.^2 .* bncts(:,1)) ;
@@ -381,38 +381,38 @@ else ;  %  sample size OK, so proceed
 
         errflag = 0 ;    %  finish usual calculation
 
-      end ;
+      end 
 
-    else ;     %  Then denom was too small, so return large bandwidth
+    else      %  Then denom was too small, so return large bandwidth
       disp('!!!   Warning from bwrswb:  t24q is too small   !!!') ;
       disp('!!!        Returning twice range as answer      !!!') ;
       errflag = 1 ;   
 
-    end ;
+    end 
 
     %    Step 3
-    if errflag == -1 ;      %  then seems h is too small, return binwidth
+    if errflag == -1     %  then seems h is too small, return binwidth
       hrsw = hmin ;
-    elseif errflag == 1 ;      %  then seems h is too big, return twice range
+    elseif errflag == 1     %  then seems h is too big, return twice range
       hrsw = hmax ;
-    else ;
+    else 
       hrsw = c1k * (s21 * (rend - lend) / (t22 * nobs)).^(1/5) ;
-    end ;
+    end 
 
-  end ;
+  end 
 
-end ;
+end 
 
 
 %  Check final answer is within "acceptable range", if not then adjust
 %
-if hrsw < hmin ;
+if hrsw < hmin 
   disp('!!!   Warning from bwrswb:  final result too small   !!!') ;
   disp('!!!           Returning binwidth as answer           !!!') ;
   hrsw = hmin ;
-elseif hrsw > hmax ;
+elseif hrsw > hmax 
   disp('!!!   Warning from bwrswb:  final result too large   !!!') ;
   disp('!!!         Returning twice range as answer          !!!') ;
   hrsw = hmax ;
-end ;
+end 
 

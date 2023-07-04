@@ -1,11 +1,15 @@
-function Plot1dSM(data,paramstruct) 
-% PLOT1DSM, PLOT of 1 Dimensional data, 
+function projplot1SM(data,vdir,paramstruct) 
+% PROJPLOT1SM, PROJection PLOT in 1 dimension, 
 %   Steve Marron's matlab function
-%     Generic plot of one dimensional (univariate) data,
+%     Studies one dimensional projections of data,
 %     using jitter-type plots and kernel density estimates
+%     based on a given direction vector
 %
 % Inputs:
-%   data    - 1 x n row vector data
+%   data    - d x n matrix of data, each column vector is 
+%                    a "d-dim digitized curve"
+%
+%   vdir    - a d dimensional "direction vector"
 %
 %   paramstruct - a Matlab structure of input parameters
 %                    Use: "help struct" and "help datatypes" to
@@ -30,7 +34,7 @@ function Plot1dSM(data,paramstruct)
 %    icolor           0  fully black and white version (everywhere)
 %                     string (any of 'r', 'g', 'b', etc.) that single color
 %                     1  (default)  color version (Matlab 7 color default)
-%                     2  rainbow colors for time series (ordered spectrum)
+%                     2  time series version (ordered spectrum of colors)
 %                     3  black and white time series version 
 %                             (ordered spectrum of gray levels)
 %                     nx3 color matrix:  a color label for each data point
@@ -173,6 +177,7 @@ function Plot1dSM(data,paramstruct)
 %
 %
 % Assumes path can find personal functions:
+%    Plot1dSM.m
 %    axisSM.m
 %    bwsjpiSM.m
 %    kdeSM.m
@@ -188,7 +193,7 @@ function Plot1dSM(data,paramstruct)
 %    cquantSM.m
 
 
-%    Copyright (c) J. S. Marron 2023
+%    Copyright (c) J. S. Marron 2004-2023
 
 
 
@@ -215,21 +220,14 @@ savestr = [] ;
 savetype = 1 ;
 iscreenwrite = 0 ;
 
-celltypes = [];
-cellsubtypes = [];
-slidenames = [];
-slideids = [];
 
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct is an argument
+if nargin > 2 ;   %  then paramstruct is an argument
 
-paramstruct
-paramstruct.(icolor)
   if isfield(paramstruct,'icolor') ;    %  then change to input value
-    icolor = paramstruct.icolor ; 
-%    icolor = getfield(paramstruct,'icolor') ; 
+    icolor = getfield(paramstruct,'icolor') ; 
   end ;
 
   if isfield(paramstruct,'markerstr') ;    %  then change to input value
@@ -298,16 +296,8 @@ paramstruct.(icolor)
   
   if isfield(paramstruct,'savestr') ;    %  then use input value
     savestr = getfield(paramstruct,'savestr') ; 
-    if ~(ischar(savestr) | isempty(savestr)) ;    %  then invalid input, so give warning
-      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Warning from projplot1SM.m:  !!!') ;
-      disp('!!!   Invalid savestr,             !!!') ;
-      disp('!!!   using default of no save     !!!') ;
-      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      savestr = [] ;
-    end ;
   end ;
-
+  
   if isfield(paramstruct,'savetype') ;    %  then use input value
     savetype = getfield(paramstruct,'savetype') ; 
   end ;
@@ -322,19 +312,31 @@ end ;    %  of resetting of input parameters
 %  set preliminary stuff
 %
 d = size(data,1) ;
-         %  number of rows (should be 1)
+         %  dimension of each data curve
 n = size(data,2) ;
-         %  number of data points
+         %  number of data curves
 
-if d > 1 ;
+if ~(d == size(vdir,1)) ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Error from projplot1SM.m:   !!!') ;
-  disp('!!!   data must be a row vector   !!!') ;
+  disp('!!!   Dimension of vdir must be   !!!') ;
+  disp('!!!   same as dimension of data   !!!') ;
   disp('!!!   Terminating execution       !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   return ;
 end ;
 
+if ~(1 == size(vdir,2)) ;
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  disp('!!!   Error from projplot1SM.m:   !!!') ;
+  disp('!!!   vdir must be a single       !!!') ;
+  disp('!!!   column vector               !!!') ;
+  disp('!!!   Terminating execution       !!!') ;
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  return ;
+end ;
+
+%{
 if  (size(icolor,1) > 1)  |  (size(icolor,2) > 1)  ;    %  if have color matrix
   if ~(3 == size(icolor,2)) ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -346,13 +348,12 @@ if  (size(icolor,1) > 1)  |  (size(icolor,2) > 1)  ;    %  if have color matrix
   elseif ~(n == size(icolor,1)) ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from projplot1SM.m:               !!!') ;
-    disp(['!!!   icolor as a matrix must have n = ' num2str(n) ' rows']) ;
+    disp(['!!!   icolor as a matrix must have ' num2str(n) ' rows']) ;
     disp('!!!   Resetting to icolor = 1, Matlab default   !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     icolor = 1 ;
   end ;
 end ;
-
 
 if  (isubpopkde == 1)  |  (isubpopkde == 2) ;    
                      %  Then have requested subpop kdes
@@ -474,6 +475,7 @@ if  size(icolor,1) == 1   &  size(icolor,2) == 1 ;    %  then have scalar input
         %  color of projection dots
 
     indivplotflag = 0 ;
+    icolorprint = 0 ;
 
   elseif ischar(icolor) ;
 
@@ -481,6 +483,7 @@ if  size(icolor,1) == 1   &  size(icolor,2) == 1 ;    %  then have scalar input
     dotcolor = icolor ;
         %  string for color of projection dots
     indivplotflag = 0 ;
+    icolorprint = 1 ;
 
   elseif icolor == 1 ;    %  then do MATLAB 7 color default
 
@@ -500,13 +503,46 @@ if  size(icolor,1) == 1   &  size(icolor,2) == 1 ;    %  then have scalar input
     colmap = colmap(1:n,:) ;
 
     indivplotflag = 1 ;
+    icolorprint = 1 ;
 
 
   elseif icolor == 2 ;    %  then do spectrum for ordered time series
 
     kdecolor = 'k' ;
-    colmap = RainbowColorsQY(n) ;
+
+    %  set up color map stuff
+    %
+    %  1st:    R  1      G  0 - 1    B  0
+    %  2nd:    R  1 - 0  G  1        B  0
+    %  3rd:    R  0      G  1        B  0 - 1
+    %  4th:    R  0      G  1 - 0    B  1
+    %  5th:    R  0 - 1  G  0        B  1
+
+    nfifth = ceil((n - 1) / 5) ;
+    del = 1 / nfifth ;
+    vwt = (0:del:1)' ;
+    colmap = [flipud(vwt), zeros(nfifth+1,1), ones(nfifth+1,1)] ;
+    colmap = colmap(1:size(colmap,1)-1,:) ;
+          %  cutoff last row to avoid having it twice
+    colmap = [colmap; ...
+              [zeros(nfifth+1,1), vwt, ones(nfifth+1,1)]] ;
+    colmap = colmap(1:size(colmap,1)-1,:) ;
+          %  cutoff last row to avoid having it twice
+    colmap = [colmap; ...
+              [zeros(nfifth+1,1), ones(nfifth+1,1), flipud(vwt)]] ;
+    colmap = colmap(1:size(colmap,1)-1,:) ;
+          %  cutoff last row to avoid having it twice
+    colmap = [colmap; ...
+              [vwt, ones(nfifth+1,1), zeros(nfifth+1,1)]] ;
+    colmap = colmap(1:size(colmap,1)-1,:) ;
+          %  cutoff last row to avoid having it twice
+    colmap = [colmap; ...
+              [ones(nfifth+1,1)], flipud(vwt), zeros(nfifth+1,1)] ;
+
+          %  note: put this together upside down
+
     indivplotflag = 1 ;
+    icolorprint = 1 ;
 
   elseif icolor == 3 ;    %  then do gray levels for ordered time series
 
@@ -519,6 +555,8 @@ if  size(icolor,1) == 1   &  size(icolor,2) == 1 ;    %  then have scalar input
     colmap = vgray' * ones(1,3) ;
 
     indivplotflag = 1 ;
+    icolorprint = 1 ;
+        %  Leave this as "color" to get gray levels to show up in .ps file
 
   end ;
 
@@ -529,6 +567,7 @@ elseif  size(icolor,2) == 3  ;    %  then have valid color matrix
   colmap = icolor ;
 
   indivplotflag = 1 ;
+  icolorprint = 1 ;
 
 else ;    %   invalid color matrix input
 
@@ -557,11 +596,6 @@ if ~(idatovlay == 0) ;    %  then add data to plot
   end ;
 
   if ndo < n ;    %  then need to subsample
-
-    if idatovlay > 2 ;
-      rng(idatovlay) ;
-    end ;
-
     [temp,randperm] = sort(rand(n,1)) ;
           %  randperm is a random permutation of 1,2,...,n
     vindol = randperm(1:ndo) ;
@@ -623,18 +657,80 @@ if ~isempty(legendcellstr) ;
         %  all black when unspecified
   end ;
 end ;
+%}
+
+
+
+
+%  Compute Projections
+%
+vdirlen2 = sum(vdir.^2) ;
+if abs(vdirlen2 - 1) < 10^(-10) ;    %  already has length 1
+  vdirn = vdir ;
+else ;    %  need to adjust length to be 1
+  if iscreenwrite == 1 ;    %  then give a warning about adjustment
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    disp('!!!   Warning from projplot1SM.m:          !!!') ;
+    disp('!!!   vdir should be a direction vector,   !!!') ;
+    disp('!!!   will adjust to length 1              !!!') ;
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  end ;
+  if vdirlen2 < 10^(-10)  ;    %  then can't proceed, so quit
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    disp('!!!   Error from projplot1SM.m:   !!!') ;
+    disp('!!!   vdir length is too short,   !!!') ;
+    disp('!!!   Terminating execution       !!!') ;
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    return ;
+  end ;
+  vdirn = vdir / sqrt(vdirlen2) ;
+end ;
+vproj = vdirn' * data ;
+    %  row vector of inner products with data
+
+
+P1dParamstruct = struct('icolor',icolor, ...
+                        'markerstr',markerstr, ...
+                        'isubpopkde',isubpopkde, ...
+                        'ibigdot',ibigdot, ...
+                        'idatovlay',idatovlay, ...
+                        'ndatovlay',ndatovlay, ...
+                        'datovlaymax',datovlaymax, ...
+                        'datovlaymin',datovlaymin, ...
+                        'legendcellstr',legendcellstr, ...
+                        'mlegendcolor',mlegendcolor, ...
+                        'vaxlim',vaxlim, ...
+                        'titlestr',titlestr, ...
+                        'titlefontsize',titlefontsize, ...
+                        'xlabelstr',xlabelstr, ...
+                        'ylabelstr',ylabelstr, ...
+                        'labelfontsize',labelfontsize, ...
+                        'ifigure',ifigure, ...
+                        'savestr',savestr, ...
+                        'savetype',savetype, ...
+                        'iscreenwrite',iscreenwrite) ;
+
+Plot1dSM(vproj,P1dparamstruct) ;
+
+
+
+
+%{
+vproj = vproj' ;
+    %  turn into a column vector
+
 
 
 
 %  Set Axes & Compute Kernel Density Estimate
 %
-projrange = max(data) - min(data) ;
+projrange = max(vproj) - min(vproj) ;
 if projrange <= 0 ;    %  all projectuons are the same (i.e. 0-var variable)
   if isempty(vaxlim) ;    %  then use value +- 1
-    vax = [(data(1) - 1) (data(1) + 1)] ;
+    vax = [(vproj(1) - 1) (vproj(1) + 1)] ;
     hkde = 0.1 ;
   elseif vaxlim == 1 ;    %  then use symmetrized defaults
-    vax = [-(abs(data(1)) + 1) (abs(data(1)) + 1)] ;
+    vax = [-(abs(vproj(1)) + 1) (abs(vproj(1)) + 1)] ;
     hkde = 0.1 ;
   else ;
     vax = vaxlim([1 2]) ;
@@ -642,21 +738,21 @@ if projrange <= 0 ;    %  all projectuons are the same (i.e. 0-var variable)
   end ;
 else ;    %  have soe different projections
   if isempty(vaxlim) ;    %  then use axisSM defaults
-    vax = axisSM(data) ;
+    vax = axisSM(vproj) ;
   elseif vaxlim == 1 ;    %  then use symmetrized defaults
-    vax = axisSM(data) ;
+    vax = axisSM(vproj) ;
     vaxx = max(abs(vax([1 2]))) ;
     vax = [-vaxx vaxx] ;
   else ;
     vax = vaxlim([1 2]) ;
   end ;
     paramstruct = struct('xgridp',vax) ;
-  hkde = bwsjpiSM(data',paramstruct) ;
+  hkde = bwsjpiSM(vproj,paramstruct) ;
 end; 
 
   paramstruct = struct('vh',hkde,...
                        'vxgrid',vax) ;
-[kde,kdexgrid] = kdeSM(data',paramstruct) ;
+[kde,kdexgrid] = kdeSM(vproj,paramstruct) ;
 
 if  isempty(vaxlim)  |  ...
     vaxlim == 1  |  ...
@@ -709,11 +805,11 @@ if  (isubpopkde == 1)  |  (isubpopkde == 2) ;
   for isp = 1:nsubpop ;
     spflag = (vidatsp == isp) ;
         %  one where data points are in this subpopulation
-    spdat = data(spflag) ;
+    spdat = vproj(spflag) ;
         %  subpopulation data for this subpopulation
     ndatsp = sum(spflag) ;
         %  number of data points in this subpopulation
-    spkde = kdeSM(spdat',paramstruct) ;
+    spkde = kdeSM(spdat,paramstruct) ;
         %  mass one kde for this subpopulation
     spkde = (ndatsp / n) * spkde ;
         %  rescale, so mass is proportional to size of subpopulation
@@ -739,6 +835,13 @@ elseif ifigure < 0 ;
 end ;
 
 
+
+
+
+
+
+
+
 if indivplotflag == 0 ;    %  then can plot everything with a single plot call
 
   plot(kdexgrid,kde,[kdecolor '-']) ;
@@ -750,8 +853,8 @@ if indivplotflag == 0 ;    %  then can plot everything with a single plot call
           hts = (datovlaymin + (datovlaymax - datovlaymin) ...
                                            * (0.5:ndo)' / ndo) * vax(4) ;
         else ;    %  then use a random ordering
-          if idatovlay > 2 ;
-            rng(idatovlay) ;
+          if ~(idatovlay == 2) ;
+            rand('seed',idatovlay) ;
           end ;
           hts = (datovlaymin + (datovlaymax - datovlaymin) ...
                                            * rand(ndo,1)) * vax(4) ;
@@ -759,9 +862,9 @@ if indivplotflag == 0 ;    %  then can plot everything with a single plot call
         end ;
 
         if ibigdot == 1 ;   %  plot deliberately large dots
-          plot(data(vindol),hts,[dotcolor 'o'],'MarkerSize',1,'LineWidth',2) ;
+          plot(vproj(vindol),hts,[dotcolor 'o'],'MarkerSize',1,'LineWidth',2) ;
         else ;    %  use input marker
-          plot(data(vindol),hts,[dotcolor markerstr]) ;
+          plot(vproj(vindol),hts,[dotcolor markerstr]) ;
         end ;
 
       end ;
@@ -801,8 +904,8 @@ elseif indivplotflag == 1 ;    %  then need to do individual plot calls
           hts = (datovlaymin + (datovlaymax - datovlaymin) ...
                                            * (0.5:ndo)' / ndo) * vax(4) ;
         else ;    %  then use a random ordering
-          if idatovlay > 2 ;
-            rng(idatovlay) ;
+          if ~(idatovlay == 2) ;
+            rand('seed',idatovlay) ;
           end ;
           hts = (datovlaymin + (datovlaymax - datovlaymin) ...
                                            * rand(ndo,1)) * vax(4) ;
@@ -811,13 +914,15 @@ elseif indivplotflag == 1 ;    %  then need to do individual plot calls
 
         for idato = 1:ndo ;
           if ibigdot == 1 ;   %  plot deliberately large dots
-            hC = plot(data(vindol(idato)),hts(vindol(idato)), ...
+            hC = plot(vproj(vindol(idato)),hts(vindol(idato)), ...
                         'o','Color',colmap(vindol(idato),:), ...
                         'MarkerSize',1,'LineWidth',2) ;
+            
           else ;    %  use input marker
-            hC = plot(data(vindol(idato)),hts(idato), ...
+            hC = plot(vproj(vindol(idato)),hts(idato), ...
                          mmarks(vindol(idato)), ...
                          'Color',colmap(vindol(idato),:)) ;
+
           end ;
         end ;
 
@@ -868,12 +973,18 @@ end ;
 
 %  Save output (if needed)
 %
-if ~isempty(savestr) ;   %  then save graphics
+if ~isempty(savestr) ;   %  then create postscript file
 
-  printSM(savestr,savetype) ;
+  orient landscape ;
+
+  if icolorprint ~= 0 ;     %  then make color postscript
+    print('-dpsc',savestr) ;
+  else ;                %  then make black and white
+    print('-dps',savestr) ;
+  end ;
 
 end ;
 
-
+%}
 
 

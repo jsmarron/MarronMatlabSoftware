@@ -33,60 +33,60 @@ function mat = vec2matSM(vec,num, iscalhand)
 %    Copyright (c) J. S. Marron 1996, 1997, 2001, 2023
 
 
-if nargin > 2 ;
+if nargin > 2 
   iscalh = iscalhand ;    %  input value
-else ;
+else 
   iscalh = 1 ;    %  default value
-end ;
+end 
 
 
 [nr,nc] = size(vec) ;
 
 
-if nc == 1 & nr == 1 ;     %  scalar, not vector input
+if nc == 1 && nr == 1      %  scalar, not vector input
 
-  if  iscalh == 1  |  iscalh == 2  ;    %  then treat as column vector
+  if  iscalh == 1  ||  iscalh == 2      %  then treat as column vector
     mat = vec * ones(1,num) ;
 
-    if iscalh == 1 ;    %  print warning message
+    if iscalh == 1     %  print warning message
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from vec2matSM: scalar input, returning row vector   !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    end ;
+    end 
 
-  elseif  iscalh == 3  |  iscalh == 4 ;    %  then treat as row vector
+  elseif  iscalh == 3  ||  iscalh == 4     %  then treat as row vector
     mat = ones(num,1) * vec ;
 
-    if iscalh == 3 ;    %  print warning message
+    if iscalh == 3     %  print warning message
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from vec2matSM: scalar input, returning column vector  !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    end ;
+    end 
 
-  else ;    %  then print warning and return empty matrix
+  else     %  then print warning and return empty matrix
     mat = [] ;
 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from vec2matSM: not a vector, returning empty matrix !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  end ;
+  end 
 
 
-elseif nc == 1 ;     %  then treat as column vector
+elseif nc == 1      %  then treat as column vector
 
   mat = vec * ones(1,num) ;
 
 
-elseif nr == 1 ; %  then treat as row vector
+elseif nr == 1      %  then treat as row vector
 
   mat = ones(num,1) * vec ;
 
 
-else ;            %  then not a vector, give warning
+else              %  then not a vector, give warning
                   %  and return empty matrix
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!! Error from vec2matSM: invalid input, returning empty matrix !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   mat = [] ;
-end ;
+end 
 

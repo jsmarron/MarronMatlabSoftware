@@ -226,7 +226,7 @@ slideids = [];
 if nargin > 1 ;   %  then paramstruct is an argument
 
 paramstruct
-paramstruct.(icolor)
+paramstruct.icolor
   if isfield(paramstruct,'icolor') ;    %  then change to input value
     icolor = paramstruct.icolor ; 
 %    icolor = getfield(paramstruct,'icolor') ; 

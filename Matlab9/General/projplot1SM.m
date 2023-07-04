@@ -148,27 +148,24 @@ function projplot1SM(data,vdir,paramstruct)
 %    savestr          string controlling saving of output,
 %                         either a full path, or a file prefix to
 %                         save in matlab's current directory
-%                         Will add .ps, and save as either
-%                             color postscript (icolor is neither 0 nor 3)
-%                         or
-%                             black&white postscript (when icolor = 0 or 3)
+%                       Will add file suffix determined by savetype
 %                         unspecified:  results only appear on screen
-%                     Note:  when savestr is nonempty, and ifigure = 0,
+%                       Note:  when savestr is nonempty, and ifigure = 0,
 %                            give warning and reset ifigure to 1
+%
+%    savetype         indicator of output file type:
+%                         1 - (default)  Matlab figure file (.fig)
+%                         2 - (.png)  raster graphics
+%                         3 - (.pdf)  vector graphics
+%                         4 - (.eps)  Color vector 
+%                                     (use when icolor is not 0)
+%                         5 - (.eps)  Black and White vector 
+%                                     (use when icolor = 0)
+%                         6 - (.jpg)  raster
+%                         7 - (.svg)  vector
 %
 %    iscreenwrite     0  (default)  no screen writes
 %                     1  write to screen to show progress
-%
-%         These parameters create data for use by Marc Niethammer's mexplorer
-%         They require savestr, and either icolor or markerstr to be manually set
-%         Also, all but cellsubtypes must be non-empty
-%         Then they create a figure file, which is used by mexplorer
-%
-%    celltypes 
-%    cellsubtypes
-%    slidenames
-%    slideids 
-%
 %
 %
 % Outputs:
@@ -180,6 +177,7 @@ function projplot1SM(data,vdir,paramstruct)
 %
 %
 % Assumes path can find personal functions:
+%    Plot1dSM.m
 %    axisSM.m
 %    bwsjpiSM.m
 %    kdeSM.m
@@ -195,7 +193,7 @@ function projplot1SM(data,vdir,paramstruct)
 %    cquantSM.m
 
 
-%    Copyright (c) J. S. Marron 2004-2013
+%    Copyright (c) J. S. Marron 2004-2023
 
 
 
@@ -219,12 +217,9 @@ ylabelstr = '' ;
 labelfontsize = [] ;
 ifigure = 0 ;
 savestr = [] ;
+savetype = 1 ;
 iscreenwrite = 0 ;
 
-celltypes = [];
-cellsubtypes = [];
-slidenames = [];
-slideids = [];
 
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
@@ -301,53 +296,17 @@ if nargin > 2 ;   %  then paramstruct is an argument
   
   if isfield(paramstruct,'savestr') ;    %  then use input value
     savestr = getfield(paramstruct,'savestr') ; 
-    if ~(ischar(savestr) | isempty(savestr)) ;    %  then invalid input, so give warning
-      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Warning from projplot1SM.m:  !!!') ;
-      disp('!!!   Invalid savestr,             !!!') ;
-      disp('!!!   using default of no save     !!!') ;
-      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      savestr = [] ;
-    end ;
+  end ;
+  
+  if isfield(paramstruct,'savetype') ;    %  then use input value
+    savetype = getfield(paramstruct,'savetype') ; 
   end ;
 
   if isfield(paramstruct,'iscreenwrite') ;    %  then change to input value
     iscreenwrite = getfield(paramstruct,'iscreenwrite') ; 
   end ;
 
-
-  if isfield(paramstruct,'celltypes' );  % then change to input value
-    celltypes = paramstruct.celltypes;
-  end ;
-  
-  if isfield(paramstruct,'cellsubtypes' );  % then change to input value
-    cellsubtypes = paramstruct.cellsubtypes;
-  end ;
-  
-  if isfield(paramstruct,'slidenames' );  % then change to input value
-    slidenames = paramstruct.slidenames;
-  end ;
-  
-  if isfield(paramstruct,'slideids' );  % then change to input value
-    slideids = paramstruct.slideids;
-  end ;
-
-
 end ;    %  of resetting of input parameters
-
-
-%  Set up output for mexplorer
-%  i.e.  set flag to augment with user data
-%
-if ( ~isempty( slidenames ) & ~isempty( slideids ) & ~isempty( celltypes ) )
-  augmentWithUserData = 1;
-  if ( isempty( cellsubtypes ) )
-    cellsubtypes = cell( size( celltypes ) ); % just initialize it empty
-  end
-else
-  augmentWithUserData = 0;
-end
-
 
 
 %  set preliminary stuff
@@ -377,6 +336,7 @@ if ~(1 == size(vdir,2)) ;
   return ;
 end ;
 
+%{
 if  (size(icolor,1) > 1)  |  (size(icolor,2) > 1)  ;    %  if have color matrix
   if ~(3 == size(icolor,2)) ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -394,7 +354,6 @@ if  (size(icolor,1) > 1)  |  (size(icolor,2) > 1)  ;    %  if have color matrix
     icolor = 1 ;
   end ;
 end ;
-
 
 if  (isubpopkde == 1)  |  (isubpopkde == 2) ;    
                      %  Then have requested subpop kdes
@@ -698,6 +657,7 @@ if ~isempty(legendcellstr) ;
         %  all black when unspecified
   end ;
 end ;
+%}
 
 
 
@@ -727,6 +687,35 @@ else ;    %  need to adjust length to be 1
 end ;
 vproj = vdirn' * data ;
     %  row vector of inner products with data
+
+
+P1dParamstruct = struct('icolor',icolor, ...
+                        'markerstr',markerstr, ...
+                        'isubpopkde',isubpopkde, ...
+                        'ibigdot',ibigdot, ...
+                        'idatovlay',idatovlay, ...
+                        'ndatovlay',ndatovlay, ...
+                        'datovlaymax',datovlaymax, ...
+                        'datovlaymin',datovlaymin, ...
+                        'legendcellstr',legendcellstr, ...
+                        'mlegendcolor',mlegendcolor, ...
+                        'vaxlim',vaxlim, ...
+                        'titlestr',titlestr, ...
+                        'titlefontsize',titlefontsize, ...
+                        'xlabelstr',xlabelstr, ...
+                        'ylabelstr',ylabelstr, ...
+                        'labelfontsize',labelfontsize, ...
+                        'ifigure',ifigure, ...
+                        'savestr',savestr, ...
+                        'savetype',savetype, ...
+                        'iscreenwrite',iscreenwrite) ;
+
+Plot1dSM(vproj,P1dParamstruct) ;
+
+
+
+
+%{
 vproj = vproj' ;
     %  turn into a column vector
 
@@ -846,6 +835,13 @@ elseif ifigure < 0 ;
 end ;
 
 
+
+
+
+
+
+
+
 if indivplotflag == 0 ;    %  then can plot everything with a single plot call
 
   plot(kdexgrid,kde,[kdecolor '-']) ;
@@ -921,17 +917,11 @@ elseif indivplotflag == 1 ;    %  then need to do individual plot calls
             hC = plot(vproj(vindol(idato)),hts(vindol(idato)), ...
                         'o','Color',colmap(vindol(idato),:), ...
                         'MarkerSize',1,'LineWidth',2) ;
-            if ( augmentWithUserData )
-              set(hC,'UserData', struct( 'celltype', celltypes{idato}, 'cellsubtype', cellsubtypes{idato}, 'slidename', slidenames{idato}, 'slidenr', slideids(idato), 'marker', 'o', 'color', colmap(vindol(idato),:) ) );
-            end
             
           else ;    %  use input marker
             hC = plot(vproj(vindol(idato)),hts(idato), ...
                          mmarks(vindol(idato)), ...
                          'Color',colmap(vindol(idato),:)) ;
-            if ( augmentWithUserData )
-              set(hC,'UserData', struct( 'celltype', celltypes{idato}, 'cellsubtype', cellsubtypes{idato}, 'slidename', slidenames{idato}, 'slidenr', slideids(idato), 'marker', mmarks(vindol(idato)), 'color', colmap(vindol(idato),:) ) );
-            end
 
           end ;
         end ;
@@ -993,12 +983,8 @@ if ~isempty(savestr) ;   %  then create postscript file
     print('-dps',savestr) ;
   end ;
 
-  if ( augmentWithUserData )
-    saveas(gcf, savestr, 'fig')
-  end ;
-
 end ;
 
-
+%}
 
 

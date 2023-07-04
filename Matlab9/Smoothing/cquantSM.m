@@ -37,7 +37,7 @@ function vquant = cquantSM(data,vprob,isort)
 
 
 %  Check have a column vector input
-if size(data,2) > 1 ;
+if size(data,2) > 1 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!  Error from cquantSM.m   !!!') ;
   disp('!!!  Input  data  must be    !!!') ;
@@ -46,21 +46,21 @@ if size(data,2) > 1 ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   vquant = [] ;
   return ;
-end ;
+end 
 
 %  Now decide whether or not to sort, based on number of inputs
-if nargin == 2 ;
+if nargin == 2 
   iisort = 1 ;       %  default is to sort, when isort unpsecified    
-else ;
+else 
   iisort = isort ;   %  use input value
-end ;
+end 
 
 %  Do sort if needed
-if iisort ~= 0 ;    %  then do a sort
+if iisort ~= 0     %  then do a sort
   sdata = sort(data) ;
-else ;              %  data assumed to be already sorted
+else               %  data assumed to be already sorted
   sdata = data ;  
-end ;
+end 
 
 %  Set up initial parameters
 n = size(sdata,1) ;    %  number of rows in data matrix (#obs each set)
@@ -75,9 +75,9 @@ tdata(1) = sdata(1) ;
 tvdatp(1) = vdatp(1) ;
 nintie = 1 ;
           %  number in last tie
-for i = 2:n ;    %  loop through rest of data
+for i = 2:n     %  loop through rest of data
 
-  if sdata(i) == sdata(i - 1) ;   %  then have tie with last
+  if sdata(i) == sdata(i - 1)    %  then have tie with last
     tvdatp(length(tvdatp)) = ...
                  (nintie / (nintie + 1)) * tvdatp(length(tvdatp)) + ...
                  (1 / (nintie + 1)) * vdatp(i) ;
@@ -86,7 +86,7 @@ for i = 2:n ;    %  loop through rest of data
     nintie = nintie + 1 ;
           %  now have one more in last tie
 
-  else ;                          %  then have no tie with last
+  else                           %  then have no tie with last
 
   tdata = [tdata; sdata(i)] ;
           %  No tie, so tack on new data point
@@ -95,20 +95,20 @@ for i = 2:n ;    %  loop through rest of data
   nintie = 1 ;
           %  number in last tie
 
-  end ;
+  end 
 
-end ;
+end 
 tn = length(tdata) ;
 
 
 
-if length(tdata) == 1 ;    %  then all data points are same
+if length(tdata) == 1     %  then all data points are same
 
   disp('!!!   Warning from cquantSM: all input same   !!!') ;
   disp('!!!   Returning that value for all probs      !!!') ;
   vquant = tdata(1) * ones(np,1) ;
 
-else ;   %  have at least two different data points
+else    %  have at least two different data points
 
   %  Move out endpoints according to last piecwise line
   tdata(1) = (tvdatp(2) / (tvdatp(2) - tvdatp(1))) * tdata(1) - ...
@@ -134,5 +134,5 @@ else ;   %  have at least two different data points
           %  flags prob's above 1
   vquant(flag) = tdata(tn) * ones(sum(flag),1) ;
 
-end ;
+end 
 

@@ -29,20 +29,20 @@ function vmin = minrSM(vx,vy,lflag,iout)
 %    Copyright (c) J. S. Marron 1996-2001
 
 %  Set parameters and defaults according to number of input arguments
-if nargin == 2 ;    %  only 2 arguments input
+if nargin == 2     %  only 2 arguments input
   ilflag = 0 ;      
           %  Use default: Global minimizer
-else ;              %  more than two arguments input
+else               %  more than two arguments input
   ilflag = lflag ;
           %  Use input local minimizer flag
-end ;
-if nargin <= 3 ;    %  2 or 3 arguments input
+end 
+if nargin <= 3     %  2 or 3 arguments input
   iiout = 1 ;
           %  Use default: Output only minimizing value
-else ;              %  4 argumnets input
+else               %  4 argumnets input
   iiout = iout ;
           %  Use input choice of output type
-end ;
+end 
 
 nx = length(vx) ;
 
@@ -58,29 +58,29 @@ minflag = [1; negflag] .* [posflag; 1] ;
           %  flags local minima
 nmin = sum(minflag) ;
           %  number of local minima
-if ilflag < 0 ;
-  [temp, imin] = max(minflag) ;
+if ilflag < 0 
+  [~, imin] = max(minflag) ;
   imin = imin - 1 ;
           %  index of first min
-elseif ilflag > 0 ;
-  [temp, imin] = max(flipud(minflag)) ;
+elseif ilflag > 0 
+  [~, imin] = max(flipud(minflag)) ;
   imin = nx + 2 - imin ;
           %  index of first min
-else ;
-  [temp, imin] = min(vy) ;
-end ;
+else 
+  [~, imin] = min(vy) ;
+end 
 
 
 %  Check endpts
-if imin <= 1 ;
+if imin <= 1 
   disp('!!!   Warning: minrSM hit left end   !!!') ;
   xmin = vx(1) ;
   errflag = -1 ;
-elseif imin >= nx ;
+elseif imin >= nx 
   disp('!!!   Warning: minrSM hit right end   !!!') ;
   xmin = vx(nx) ;
   errflag = 1 ;
-else ;     % have min in interior, so fit a parabola
+else      % have min in interior, so fit a parabola
   locx = vx((imin-1):(imin+1)) ;
   locy = vy((imin-1):(imin+1)) ;
           %  x & y values around min
@@ -91,15 +91,15 @@ else ;     % have min in interior, so fit a parabola
   xmin = roots(dcoeffs) ;
           %  vector of roots, which give approx to min'r
   errflag = 0 ;
-end ;
+end 
 
 
 %  Construct output vector
-if iiout == 1 ;   %  then only output x to min
+if iiout == 1    %  then only output x to min
   vmin = xmin ;
-elseif iiout == 2 ;   %  then output x & # local mins
+elseif iiout == 2    %  then output x & # local mins
   vmin = [xmin; nmin] ;
-elseif iiout == 3 ;   %  then output x, # mins, and errflag
+elseif iiout == 3    %  then output x, # mins, and errflag
   vmin = [xmin; nmin; errflag] ;
-end ;
+end 
 

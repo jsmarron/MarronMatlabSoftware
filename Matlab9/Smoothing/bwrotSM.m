@@ -18,11 +18,11 @@ function hrot = bwrotSM(data,irot)
 
 %    Copyright (c) J. S. Marron 1996-2004
 
-if nargin == 1 ;   %  Then use default: ROT2
+if nargin == 1    %  Then use default: ROT2
   iirot = 2 ;
-else ;             %  Use what was read in
+else              %  Use what was read in
   iirot = irot ;
-end ;
+end 
 
 n = length(data) ;
 dsd = std(data) ;
@@ -32,9 +32,9 @@ diqr = iqrSM(data) ;
 a = min([dsd; (diqr / 1.34)]) ;
           %  Using Silverman's notation
 
-if iirot == 1 ;
+if iirot == 1 
   hrot = 1.06 * a * n^(-1/5) ;
-else ;
+else 
   hrot = .9 * a * n^(-1/5) ;
-end ;
+end 
 

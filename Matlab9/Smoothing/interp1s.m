@@ -26,28 +26,28 @@ yi = zeros(ni,1) ;
 %
 flagl = (xi < x(1)) ;
 nflagl = sum(flagl) ;
-if nflagl > 0 ;     %  If there are new arguments below the left end,
+if nflagl > 0      %  If there are new arguments below the left end,
                         %  then need to use smallest value
   yi(flagl) = y(1) * ones(nflagl,1) ;
-end ;
+end 
 
 
 %  Fill output with entries above right end
 %
 flagr = (xi > x(nx)) ;
 nflagr = sum(flagr) ;
-if nflagr > 0 ;     %  If there are new arguments above the right end,
+if nflagr > 0      %  If there are new arguments above the right end,
                         %  then need to use largest value
   yi(flagr) = y(nx) * ones(nflagr,1) ;
-end ;
+end 
 
 
 %  Fill rest of output vector
 %
 flag = (~flagl) & (~flagr) ;
 nflag = sum(flag) ;
-if nflag > 0 ;     %  If there some interior arguments,
+if nflag > 0      %  If there some interior arguments,
                        %  then use interp1
   yi(flag) = interp1(x,y,xi(flag)) ;
-end ;
+end 
 

@@ -216,114 +216,114 @@ iplot = 0 ;
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct has been added
+if nargin > 1    %  then paramstruct has been added
 
-  if isfield(paramstruct,'vh') ;    %  then change to input value
+  if isfield(paramstruct,'vh')     %  then change to input value
     vh = getfield(paramstruct,'vh') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'vxgrid') ;    %  then change to input value
+  if isfield(paramstruct,'vxgrid')     %  then change to input value
     vxgrid = getfield(paramstruct,'vxgrid') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'imptyp') ;    %  then change to input value
+  if isfield(paramstruct,'imptyp')     %  then change to input value
     imptyp = getfield(paramstruct,'imptyp') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'eptflag') ;    %  then change to input value
+  if isfield(paramstruct,'eptflag')     %  then change to input value
     eptflag = getfield(paramstruct,'eptflag') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'ibdryadj') ;    %  then change to input value
+  if isfield(paramstruct,'ibdryadj')     %  then change to input value
     ibdryadj = getfield(paramstruct,'ibdryadj') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'idatovlay') ;    %  then change to input value
+  if isfield(paramstruct,'idatovlay')     %  then change to input value
     idatovlay = getfield(paramstruct,'idatovlay') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'ndatovlay') ;    %  then change to input value
+  if isfield(paramstruct,'ndatovlay')     %  then change to input value
     ndatovlay = getfield(paramstruct,'ndatovlay') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'datovlaymax') ;    %  then change to input value
+  if isfield(paramstruct,'datovlaymax')     %  then change to input value
     datovlaymax = getfield(paramstruct,'datovlaymax') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'datovlaymin') ;    %  then change to input value
+  if isfield(paramstruct,'datovlaymin')     %  then change to input value
     datovlaymin = getfield(paramstruct,'datovlaymin') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'dolcolor') ;    %  then change to input value
+  if isfield(paramstruct,'dolcolor')     %  then change to input value
     dolcolor = getfield(paramstruct,'dolcolor') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'dolmarkerstr') ;    %  then change to input value
+  if isfield(paramstruct,'dolmarkerstr')     %  then change to input value
     dolmarkerstr = getfield(paramstruct,'dolmarkerstr') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'ibigdot') ;    %  then change to input value
+  if isfield(paramstruct,'ibigdot')     %  then change to input value
     ibigdot = getfield(paramstruct,'ibigdot') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'linewidth') ;    %  then change to input value
+  if isfield(paramstruct,'linewidth')     %  then change to input value
     linewidth = getfield(paramstruct,'linewidth') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'linecolor') ;    %  then change to input value
+  if isfield(paramstruct,'linecolor')     %  then change to input value
     linecolor = getfield(paramstruct,'linecolor') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'titlestr') ;    %  then change to input value
+  if isfield(paramstruct,'titlestr')     %  then change to input value
     titlestr = getfield(paramstruct,'titlestr') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'titlefontsize') ;    %  then change to input value
+  if isfield(paramstruct,'titlefontsize')     %  then change to input value
     titlefontsize = getfield(paramstruct,'titlefontsize') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'xlabelstr') ;    %  then change to input value
+  if isfield(paramstruct,'xlabelstr')     %  then change to input value
     xlabelstr = getfield(paramstruct,'xlabelstr') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'ylabelstr') ;    %  then change to input value
+  if isfield(paramstruct,'ylabelstr')     %  then change to input value
     ylabelstr = getfield(paramstruct,'ylabelstr') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'labelfontsize') ;    %  then change to input value
+  if isfield(paramstruct,'labelfontsize')     %  then change to input value
     labelfontsize = getfield(paramstruct,'labelfontsize') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'plotbottom') ;    %  then change to input value
+  if isfield(paramstruct,'plotbottom')     %  then change to input value
     plotbottom = getfield(paramstruct,'plotbottom') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'plottop') ;    %  then change to input value
+  if isfield(paramstruct,'plottop')     %  then change to input value
     plottop = getfield(paramstruct,'plottop') ; 
-  end ;
+  end 
 
-  if isfield(paramstruct,'iplot') ;    %  then change to input value
+  if isfield(paramstruct,'iplot')     %  then change to input value
     iplot = getfield(paramstruct,'iplot') ; 
-  end ;
+  end 
 
 
-end ;  %  of resetting of input parameters
+end   %  of resetting of input parameters
 
 
-if size(data,2) > 1 ;
+if size(data,2) > 1 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from kdeSM.m:            !!!') ;
     disp('!!!   data must be a column vector   !!!') ;
     disp('!!!   Terminating Execution          !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     return ;
-end ;
+end 
 
 n = length(data) ;
 
-if imptyp == -1 ;
+if imptyp == -1 
 
-  if length(vxgrid) > 3 ;
+  if length(vxgrid) > 3 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from kdeSM.m:      !!!') ;
     disp('!!!   cannot use full vxgrid,  !!!') ;
@@ -331,9 +331,9 @@ if imptyp == -1 ;
     disp('!!!   Terminating Execution    !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     return ;
-  end ;
+  end 
 
-  if idatovlay ~= 0 ;
+  if idatovlay ~= 0 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from kdeSM.m:        !!!') ;
     disp('!!!   cannot have idatovlay ~= 0   !!!') ;
@@ -341,72 +341,71 @@ if imptyp == -1 ;
     disp('!!!   Resetting: idatovlay = 0     !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     idatovlay = 0 ;
-  end ;
+  end 
 
-end ;
+end 
 
 
-if  ~(idatovlay == 0)   &  imptyp >= 0  ;    %  then will add data to plot
+if  ~(idatovlay == 0)   &&  imptyp >= 0      %  then will add data to plot
 
-  if ndatovlay == 1 ;
+  if ndatovlay == 1 
     ndo = min(n,1000) ;
-  elseif ndatovlay == 2 ;
+  elseif ndatovlay == 2 
     ndo = n ;
-  else ;
+  else 
     ndo = min(n,ndatovlay) ;
-  end ;
+  end 
 
-  if ~isstr(dolmarkerstr) ;
+  if ~isstr(dolmarkerstr) 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from kdeSM.m:                    !!!') ;
       disp('!!!   dolmarkerstr must be of type string      !!!') ;
       disp('!!!   Resetting to default dolmarkerstr: ''.''   !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       dolmarkerstr = '.' ;
-  else ;
-    if ~(size(dolmarkerstr,2) == 1) ;
+  else 
+    if ~(size(dolmarkerstr,2) == 1) 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from kdeSM.m:                    !!!') ;
       disp('!!!   dolmarkerstr must have 1 column          !!!') ;
       disp('!!!   Resetting to default dolmarkerstr: ''.''   !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       dolmarkerstr = '.' ;
-    end ;
-    if  ~(size(dolmarkerstr,1) == n)  &  ~(size(dolmarkerstr,1) == 1)  ;
+    end 
+    if  ~(size(dolmarkerstr,1) == n)  &&  ~(size(dolmarkerstr,1) == 1)  
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from kdeSM.m:                    !!!') ;
       disp(['!!!   dolmarkerstr must have ' num2str(n) ' rows']) ;
       disp('!!!   Resetting to default dolmarkerstr: ''.''   !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       dolmarkerstr = '.' ;
-    end ;
-  end ;
+    end 
+  end 
 
   %  Now check inputs for Data Over Lay Colors
-  if ~isstr(dolcolor) ;
+  if ~isstr(dolcolor) 
 
-    if size(dolcolor,1) > 1 ;    %  then should have a color matrix entered
-      if ~(size(dolcolor,2) == 3) ;
+    if size(dolcolor,1) > 1     %  then should have a color matrix entered
+      if ~(size(dolcolor,2) == 3) 
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         disp('!!!   Warning from kdeSM.m:                     !!!') ;
         disp('!!!   dolcolor as a matrix must have 3 columns  !!!') ;
         disp('!!!   Resetting to default color: ''g''           !!!') ;
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         dolcolor = 'g' ;
-      elseif ~(size(dolcolor,1) == n) ;
+      elseif ~(size(dolcolor,1) == n) 
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         disp('!!!   Warning from kdeSM.m:                     !!!') ;
         disp(['!!!   dolcolor as a matrix must have ' num2str(n) ' rows']) ;
         disp('!!!   Resetting to default color: ''g''           !!!') ;
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         dolcolor = 'g' ;
-      end ;
+      end 
 
-    else ;
+    else 
     
-      if dolcolor == 1 ;    %  Use Matlab 7 color default
+      if dolcolor == 1     %  Use Matlab 7 color default
 
-        kdecolor = 'k' ;
         colmap1 = [     0         0    1.0000 ; ...
                         0    0.5000         0 ; ...
                    1.0000         0         0 ; ...
@@ -416,12 +415,12 @@ if  ~(idatovlay == 0)   &  imptyp >= 0  ;    %  then will add data to plot
                    0.2500    0.2500    0.2500 ] ;
             %  color of projection dots, matlab default
         colmap = colmap1 ;
-        while size(colmap,1) < n ;
+        while size(colmap,1) < n 
           colmap = [colmap; colmap1] ;
-        end ;
+        end 
         dolcolor = colmap(1:n,:) ;
 
-      elseif dolcolor == 2 ;    %  Use ordered spectrum of colors
+      elseif dolcolor == 2     %  Use ordered spectrum of colors
 
         dolcolor = RainbowColorsQY(n) ;
 
@@ -459,7 +458,7 @@ if  ~(idatovlay == 0)   &  imptyp >= 0  ;    %  then will add data to plot
         dolcolor = colmap(1:n,:) ;
 %}
 
-      else ;
+      else 
 
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         disp('!!!   Warning from kdeSM.m:              !!!') ;
@@ -468,24 +467,24 @@ if  ~(idatovlay == 0)   &  imptyp >= 0  ;    %  then will add data to plot
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         dolcolor = 'g' ;
 
-      end ;
+      end 
 
-    end ;
+    end 
 
-  end ;
+  end 
 
 
-end ;
+end 
 
 
 
 %  Special handling of all data points the same
 %
 datarange = (max(data) - min(data)) ;
-if  imptyp > -0.5  &  ...
-    datarange <= 0  ;    %  No variation in (raw) data
+if  imptyp > -0.5  &&  ...
+    datarange <= 0      %  No variation in (raw) data
 
-  if length(vxgrid) < 1.5 ;    %  No indication given for length of output,
+  if length(vxgrid) < 1.5     %  No indication given for length of output,
                                %  Give message and empty outputs
 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -499,9 +498,9 @@ if  imptyp > -0.5  &  ...
     mker = [] ;
     return ;
 
-  else ;
+  else 
 
-    if vh <= 0 ;    %  Automatic bandwidth was requested
+    if vh <= 0     %  Automatic bandwidth was requested
                     %  Give warning message and modify bandwidth
 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -512,68 +511,68 @@ if  imptyp > -0.5  &  ...
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       vh = (vxgrid(2) - vxgrid(1)) / 4 ;
 
-    end ;
+    end 
 
-  end ;
+  end 
 
-end ;
+end 
 
 
 
 %  Calculate kde
 %
-if imptyp > 0 ;    %  Then do direct implementation
+if imptyp > 0     %  Then do direct implementation
 
-  if min(vh) > 0 ;    %  Then have valid bandwidths, so proceed
+  if min(vh) > 0     %  Then have valid bandwidths, so proceed
 
-    if length(vxgrid) > 3 ;  %  Then use input grid
+    if length(vxgrid) > 3   %  Then use input grid
       xgrid = vxgrid ;
       nbin = length(xgrid) ;
       lend = min(xgrid) ;
       rend = max(xgrid) ;
-    else ;                    %  Need to generate a grid
+    else                     %  Need to generate a grid
       nbin = 401 ;         %  Default
       lend = min(data) ;   %  Default
       rend = max(data) ;   %  Default
-      if  length(vxgrid) == 1  &  vxgrid > 0  ;      %  use AxisSM
+      if  length(vxgrid) == 1  &&  vxgrid > 0        %  use AxisSM
         vax = axisSM(data) ;
         lend = vax(1) ;
         rend = vax(2) ;
-      end ;
-      if length(vxgrid) >= 2 ;      %  use input endpoints
+      end 
+      if length(vxgrid) >= 2       %  use input endpoints
         lend = vxgrid(1) ;
         rend = vxgrid(2) ;
-      end ;
-      if length(vxgrid) == 3 ;      %  use number of grid points
+      end 
+      if length(vxgrid) == 3       %  use number of grid points
         nbin = vxgrid(3) ;
-      end ;
+      end 
 
-      if lend > rend ;    %  Then bad range has been input
+      if lend > rend     %  Then bad range has been input
         disp('!!!   Error in kdeSM: invalid range chosen  !!!') ;
         xgrid = [] ;
-      else ;
+      else 
         xgrid = linspace(lend,rend,nbin)' ;
-      end ;
-    end ;
+      end 
+    end 
 
 
     %  do boundary adjustment if needed
     %
-    if ibdryadj == 1 ;    %  then do mirror image adjustment
+    if ibdryadj == 1     %  then do mirror image adjustment
       badata = [(lend - (data - lend)); data; (rend + (rend - data))] ;
-    elseif ibdryadj == 2 ;    %  then do circular design adjustment
+    elseif ibdryadj == 2     %  then do circular design adjustment
       badata = [(data - (rend - lend)); data; (rend - lend + data)] ;
-    else ;
+    else 
       badata = data ;
-    end ;
+    end 
 
 
     %  Loop through bandwidths
     kde = [] ;
-    for ih = 1:length(vh) ;
+    for ih = 1:length(vh) 
       h = vh(ih) ;
 
-      if imptyp ~= 2 ;  %  Then do direct matrix implementation
+      if imptyp ~= 2   %  Then do direct matrix implementation
         kdeh = vec2matSM((badata ./ h),nbin) - vec2matSM((xgrid' ./ h),n) ;
           %  efficient way to divide all dif's by h
           %  variable name "kde" is used to avoid creating too many biggies
@@ -584,127 +583,127 @@ if imptyp > 0 ;    %  Then do direct implementation
         kdeh = kdeh / (n * h * sqrt(2 * pi)) ;
           %  normalize, and mult by Gaussain density constant
         kde = [kde kdeh] ;
-      else ;   %  Do slower looped implementation
+      else    %  Do slower looped implementation
         kdeh = [] ;
-        for ixg = 1:nbin ;    %  Loop through grid points
+        for ixg = 1:nbin     %  Loop through grid points
           kdehx = (badata - xgrid(ixg)) / h ;
           kdehx = sum(exp(-(kdehx .^2) / 2)) ;
           kdeh = [kdeh; kdehx] ;
-        end ;
+        end 
         kdeh = kdeh / (n * h * sqrt(2 * pi)) ;
         kde = [kde kdeh] ;
-      end ;
-    end ;
+      end 
+    end 
 
-  else ;    %  Have invalid bandwidths
+  else     %  Have invalid bandwidths
 
     disp('!!!   Error in kdeSM: A bandwidth is invalid   !!!') ;
     disp('!!!   Terminating Execution                    !!!') ;
     disp('    (Note: cannot use data driven, with direct impl''s)') ;
     return ;
 
-  end ;
+  end 
 
-else ;     %  Then do binned implementation
+else      %  Then do binned implementation
 
-  if imptyp == -1 ;   %  Then data have already been binned
+  if imptyp == -1    %  Then data have already been binned
 
-    if (length(vxgrid) == 1) | (length(vxgrid) > 3) ;
+    if (length(vxgrid) == 1) || (length(vxgrid) > 3) 
                          %  Then can't proceed because don't have bin ends
       disp('!!!   Error: kdeSM needs to know the endpoints   !!!') ;
       disp('!!!            to use this implementation        !!!') ;
       disp('!!!   Terminating Execution                      !!!') ;
-      return ;
       bincts = [] ;
-    else ;
+      return ;
+    else 
       bincts = data ;
 
       nbin = 401 ;
       lend = vxgrid(1) ;
       rend = vxgrid(2) ;
-      if length(vxgrid) == 3 ;          %  then use number of grid points
+      if length(vxgrid) == 3           %  then use number of grid points
         nbin = vxgrid(3) ;
-      end ;
+      end 
 
-      if nbin ~= length(bincts) ;    %  Then something is wrong
+      if nbin ~= length(bincts)     %  Then something is wrong
         disp('!!!   Warning: kdeSM was told the wrong number of bins   !!!') ;
         disp('!!!            will just use the number of counts.       !!!') ;
         nbin = size(bincts,1) ;
-      end ;
-    end ;
+      end 
+    end 
 
-  else ;               %  Then need to bin data
+  else                %  Then need to bin data
 
-    if length(vxgrid) > 3 ;  %  Then need to warn of change to default
+    if length(vxgrid) > 3   %  Then need to warn of change to default
       disp('!!!   Warning: kdeSM was given an xgrid, and also   !!!') ;
       disp('!!!       asked to bin; will bin and ignore xgrid   !!!') ;
-    end ;
+    end 
 
     %  Specify grid parameters
     nbin = 401 ;         %  Default
     lend = min(data) ;   %  Default
     rend = max(data) ;   %  Default
-    if  length(vxgrid) == 1  &  vxgrid > 0  ;      %  use AxisSM
+    if  length(vxgrid) == 1  &&  vxgrid > 0        %  use AxisSM
       vax = axisSM(data) ;
       lend = vax(1) ;
       rend = vax(2) ;
-    end ;
-    if (length(vxgrid) == 2) | (length(vxgrid) == 3) ;
+    end 
+    if (length(vxgrid) == 2) || (length(vxgrid) == 3) 
                                      %  then use input endpoints
       lend = vxgrid(1) ;
       rend = vxgrid(2) ;
-    end ;
-    if length(vxgrid) == 3 ;          %  then use number of grid points
+    end 
+    if length(vxgrid) == 3           %  then use number of grid points
       nbin = vxgrid(3) ;
-    end ;
+    end 
 
-    if lend > rend ;    %  Then bad range has been input
+    if lend > rend     %  Then bad range has been input
       disp('!!!   Error in kdeSM: invalid range chosen  !!!') ;
       disp('!!!   Terminating Execution                      !!!') ;
-      return ;
       bincts = [] ;
-    else ;
+      return ;
+    else 
       bincts = lbinrSM(data,[lend,rend,nbin],eptflag) ;
-    end ;
+    end 
 
     %  Can do data-based bandwidth selection here, if specified
-    if vh == -1 ;        %  Then use Simple Normal Reference
+    if vh == -1         %  Then use Simple Normal Reference
       vh = bwsnrSM(data) ;
     elseif vh == -2 ;    %  Then use Silverman's Rule Of Thumb 2 
                           %  (~10% Smaller than min of sd and IQR)
       vh = bwrotSM(data) ;
-    elseif vh == -3 ;    %  Then use Terrell's Oversmoother
+    elseif vh == -3     %  Then use Terrell's Oversmoother
       vh = bwosSM(data) ;
-    elseif min(vh) <= 0 ;     %  Then be sure to use default SJPI 
+    elseif min(vh) <= 0      %  Then be sure to use default SJPI 
                           %    (in case an unsupported value was input)
       vh = 0 ;
-    end ;
+    end 
 
-  end ;
+  end 
   n = round(sum(bincts)) ;
           %  put this here in case of truncations during binning
 
 
   %  do boundary adjustment if needed
   %
-  if ibdryadj == 1 ;    %  then do mirror image adjustment
+  if ibdryadj == 1     %  then do mirror image adjustment
     babincts = [flipud(bincts); bincts; flipud(bincts)] ;
-  elseif ibdryadj == 2 ;    %  then do circular design adjustment
+  elseif ibdryadj == 2     %  then do circular design adjustment
     babincts = [bincts; bincts; bincts] ;
-  else ;
+  else 
     babincts = bincts ;
-  end ;
+  end 
 
 
   %  Get bandwidth (if still not yet specified)
-  if vh == 0 ;    %  Then use SJPI bandwidth
+  if vh == 0     %  Then use SJPI bandwidth
       vh = bwsjpiSM(bincts,[lend; rend; nbin],0,-1) ;
-  end ;
+  end 
 
 
   %  Loop through bandwidths
   kde = [] ;
-  for ih = 1:length(vh) ;
+  for ih = 1:length(vh) 
     h = vh(ih) ;
 
     %  Create vector of kernel values, at equally spaced grid
@@ -717,81 +716,81 @@ else ;     %  Then do binned implementation
     %  Do actual kernel density estimation
     kdeh = conv(babincts,kvec) ;
 
-    if  ibdryadj == 1  |  ibdryadj == 2 ;    %  then did boundary adjustment
+    if  ibdryadj == 1  ||  ibdryadj == 2     %  then did boundary adjustment
       kdeh = kdeh(nbin+k+1:k+2*nbin) / (n * h) ;
-    else ;
+    else 
       kdeh = kdeh(k+1:k+nbin) / (n * h) ;
-    end ;
+    end 
 
-    if h < 3 * delta ;    %  Then need to normalize
+    if h < 3 * delta     %  Then need to normalize
                              %  to make numerical integral roughly 1
       kdeh = kdeh / (sum(kdeh) * delta) ;
-    end ;
+    end 
 
     kde = [kde kdeh] ;
-  end ;
+  end 
 
   xgrid = linspace(lend,rend,nbin)' ;
 
-end ;
+end 
 
 
 
 %  Create matrix of kernels, if this is needed
 %
-if nargout == 3 ;
+if nargout == 3 
   cent = mean([lend; rend]) ;
           %  centerpoint of evaluation grid
-  if length(vh) > 1 ;
+  if length(vh) > 1 
     mih = vec2matSM(1 ./ vh',nbin) ;
     mker = vec2matSM((xgrid - cent),length(vh)) .* mih;
           %  argument of gaussian kernel
-  else ;
+  else 
     mih = 1 / vh ;
     mker = (xgrid - cent) .* mih;
           %  argument of gaussian kernel
-  end ;
+  end 
   mker = exp(-mker.^2 / 2) .* mih / sqrt(2 * pi) ;
           %  Gaussian kernels with mass 1
   mker = 0.05 * mker ;
           %  Make masses = 0.05
-end ;
+end 
 
 
 
 %  Make plots if no numerical output requested, or if plot requested
 %
-if  nargout == 0  | ...
-      iplot == 1  ;  %  Then make a plot
+if  nargout == 0  || ...
+      iplot == 1    %  Then make a plot
 
 
-  if  length(vh) > 3  &  ~isfield(paramstruct,'linewidth')  ;
+  if  length(vh) > 3  &&  ~isfield(paramstruct,'linewidth')  
                               %  then need to change default value of linewidth
     linewidth = 0.5 ;
-  end ;
+  end 
 
 
-  if isempty(linecolor) ;
+  if isempty(linecolor) 
     plot(xgrid,kde,'LineWidth',linewidth) ;
-  else ;
+  else 
     plot(xgrid,kde,'LineWidth',linewidth,'Color',linecolor) ;
-  end ;
+  end 
 
-  if  isempty(plottop)  &  isempty(plotbottom)  ;    %  then adjust top and bottom
+  if  isempty(plottop)  &&  isempty(plotbottom)      %  then adjust top and bottom
     plotbottom = 0 ;
     plottop = max(max(kde)) ;
     plotrange = plottop - plotbottom ;
     plotbottom = plotbottom - 0.05 * plotrange ;
     plottop = plottop + 0.05 * plotrange ;
-  elseif isempty(plottop) ;                          %  then only adjust top
+  elseif isempty(plottop)                           %  then only adjust top
     plottop = max(max(kde)) ;
     plotrange = plottop - plotbottom ;
     plottop = plottop + 0.05 * plotrange ;
-  elseif isempty(plotbottom) ;                       %  then only adjust bottom
+  elseif isempty(plotbottom)                        %  then only adjust bottom
     plotbottom = 0 ;
     plotrange = plottop - plotbottom ;
     plotbottom = plotbottom - 0.05 * plotrange ;
-  end ;
+  end 
 
   vax = [lend,rend,plotbottom,plottop] ;
   axis(vax) ;
@@ -801,32 +800,32 @@ if  nargout == 0  | ...
 
   %  Set up data overlay
   %
-  if  ~(idatovlay == 0)   &  imptyp >= 0  ;    %  then add data to plot
+  if  ~(idatovlay == 0)   &&  imptyp >= 0      %  then add data to plot
 
-    if idatovlay > 2 ;
+    if idatovlay > 2 
 %      rand('seed',idatovlay) ;
       rng(idatovlay) ;
-    end ;
+    end 
 
-    if ndo < length(data) ;    %  then need to subsample
-      [temp,randind] = sort(rand(length(data),1)) ;
+    if ndo < length(data)     %  then need to subsample
+      [~,randind] = sort(rand(length(data),1)) ;
             %  randind is a random permutation of 1,2,...,n
       vindol = randind(1:ndo) ;
             %  indices of points to overlay
       vindol = sort(vindol) ;
             %  put back in order to preserve ordering
-    else ;    %  overlay full data set
+    else     %  overlay full data set
       vindol = (1:length(data))' ;
-    end ;
+    end 
 
 
     dataol = data(vindol) ;
-    if ~isstr(dolcolor) ;
+    if ~isstr(dolcolor) 
       dolcolorol = dolcolor(vindol,:) ;
-    end ;
-    if size(dolmarkerstr,1) > 1 ;
+    end 
+    if size(dolmarkerstr,1) > 1 
       dolmarkerstrol = dolmarkerstr(vindol) ;
-    end ;
+    end 
 
 
     flagleft = (dataol < lend) ;
@@ -835,57 +834,57 @@ if  nargout == 0  | ...
         %  ones where data above right end
     nleft = sum(flagleft) ;
     nright = sum(flagright) ;
-    if nleft + nright > 0 ;    %  then need to deal with points outside range
+    if nleft + nright > 0     %  then need to deal with points outside range
 
-      if eptflag == 1 ;    %  then truncate data outside range
+      if eptflag == 1     %  then truncate data outside range
         datatrunc = dataol(~(flagleft | flagright)) ;
             %  keep data that is not (outside left or outside right)
-        if ~isstr(dolcolor) ;
+        if ~ischar(dolcolor) 
           dolcolortrunc = dolcolorol(~(flagleft | flagright),:) ;
-        end ;
-        if size(dolmarkerstr,1) > 1 ;
+        end 
+        if size(dolmarkerstr,1) > 1 
           dolmarkerstrtrunc = dolmarkerstrol(~(flagleft | flagright)) ;
-        end ;
+        end 
         ndo = length(datatrunc) ;
 
-      else ;    %  then move outside points to nearest end
+      else     %  then move outside points to nearest end
         datatrunc = dataol ;
-        if ~isstr(dolcolor) ;
+        if ~ischar(dolcolor) 
           dolcolortrunc = dolcolorol ;
-        end ;
-        if size(dolmarkerstr,1) > 1 ;
+        end 
+        if size(dolmarkerstr,1) > 1 
           dolmarkerstrtrunc = dolmarkerstrol ;
-        end ;
-        if nleft > 0 ;    %  then replace those points with lend
+        end 
+        if nleft > 0     %  then replace those points with lend
           datatrunc(flagleft) = lend * ones(nleft,1) ;
-        end ;
-        if nright > 0 ;    %  then replace those points with rend
+        end 
+        if nright > 0     %  then replace those points with rend
           datatrunc(flagright) = rend * ones(nright,1) ;
-        end ;
+        end 
 
-      end ;
+      end 
 
-    else ;
+    else 
 
       datatrunc = dataol ;
-      if ~isstr(dolcolor) ;
+      if ~isstr(dolcolor) 
         dolcolortrunc = dolcolorol ;
-      end ;
-      if size(dolmarkerstr,1) > 1 ;
+      end 
+      if size(dolmarkerstr,1) > 1 
         dolmarkerstrtrunc = dolmarkerstrol ;
-      end ;
+      end 
 
-    end ;
+    end 
 
 
-    if idatovlay == 1 ;    %  then take heights to be natural ordering
+    if idatovlay == 1     %  then take heights to be natural ordering
       hts = (datovlaymin + (datovlaymax - datovlaymin) ...
                                        * (0.5:ndo)' / ndo) * vax(4) ;
-    else ;    %  then use a random ordering
+    else     %  then use a random ordering
       hts = (datovlaymin + (datovlaymax - datovlaymin) ...
                                        * rand(ndo,1)) * vax(4) ;
         %  random heights
-    end ;
+    end 
 
 
     %  overlay selected data
@@ -893,33 +892,33 @@ if  nargout == 0  | ...
     vax = axis ;
     hold on ;
 
-      if  isstr(dolcolor)  &  (size(dolmarkerstr,1) == 1)  ;    %  then can plot points all together
-        if ibigdot == 1 ;   %  plot deliberately large dots
+      if  isstr(dolcolor)  &&  (size(dolmarkerstr,1) == 1)      %  then can plot points all together
+        if ibigdot == 1    %  plot deliberately large dots
           plot(datatrunc,hts,[dolcolor 'o'],'MarkerSize',1,'LineWidth',2) ;
-        else ;    %  use matlab default dots
+        else     %  use matlab default dots
           plot(datatrunc,hts,[dolcolor dolmarkerstr]) ;
-        end ;
-      elseif isstr(dolcolor) ;    %  need to plot points individually, but use string color
-        for idol = 1:length(datatrunc) ;
-          if ibigdot == 1 ;   %  plot deliberately large dots
+        end 
+      elseif ischar(dolcolor)     %  need to plot points individually, but use string color
+        for idol = 1:length(datatrunc) 
+          if ibigdot == 1    %  plot deliberately large dots
             plot(datatrunc(idol),hts(idol),[dolcolor 'o'],'MarkerSize',1,'LineWidth',2) ;
-          else ;    %  use markers
+          else     %  use markers
             plot(datatrunc(idol),hts(idol),dolmarkerstrtrunc(idol),'Color',dolcolor) ;
-          end ;
-        end ;
-      else ;    %  need to plot points individually
-        for idol = 1:length(datatrunc) ;
-          if ibigdot == 1 ;   %  plot deliberately large dots
+          end 
+        end 
+      else     %  need to plot points individually
+        for idol = 1:length(datatrunc) 
+          if ibigdot == 1    %  plot deliberately large dots
             plot(datatrunc(idol),hts(idol),'o','MarkerSize',1,'LineWidth',2,'Color',dolcolortrunc(idol,:)) ;
-          else ;    %  use markers
-            if (size(dolmarkerstr,1) == 1) ;
+          else     %  use markers
+            if (size(dolmarkerstr,1) == 1) 
               plot(datatrunc(idol),hts(idol),dolmarkerstr(1),'Color',dolcolortrunc(idol,:)) ;
-            else ;
+            else 
               plot(datatrunc(idol),hts(idol),dolmarkerstrtrunc(idol),'Color',dolcolortrunc(idol,:)) ;
-            end ;
-          end ;
-        end ;
-      end ;
+            end 
+          end 
+        end 
+      end 
 
     hold off ;
 
@@ -932,35 +931,35 @@ if  nargout == 0  | ...
     set(gca,'Children',vachil) ;
     
 
-  end ;
+  end 
 
 
-  if ~isempty(titlestr) ;
-    if isempty(titlefontsize) ;
+  if ~isempty(titlestr) 
+    if isempty(titlefontsize) 
       title(titlestr) ;
-    else ;
+    else 
       title(titlestr,'FontSize',titlefontsize) ;
-    end ;
-  end ;
+    end 
+  end 
 
 
-  if ~isempty(xlabelstr) ;
-    if isempty(labelfontsize) ;
+  if ~isempty(xlabelstr) 
+    if isempty(labelfontsize) 
       xlabel(xlabelstr) ;
-    else ;
+    else 
       xlabel(xlabelstr,'FontSize',labelfontsize) ;
-    end ;
-  end ;
+    end 
+  end 
 
 
-  if ~isempty(ylabelstr) ;
-    if isempty(labelfontsize) ;
+  if ~isempty(ylabelstr) 
+    if isempty(labelfontsize) 
       ylabel(ylabelstr) ;
-    else ;
+    else 
       ylabel(ylabelstr,'FontSize',labelfontsize) ;
-    end ;
-  end ;
+    end 
+  end 
 
 
-end ;
+end 
 

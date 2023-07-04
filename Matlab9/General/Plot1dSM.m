@@ -215,10 +215,6 @@ savestr = [] ;
 savetype = 1 ;
 iscreenwrite = 0 ;
 
-celltypes = [];
-cellsubtypes = [];
-slidenames = [];
-slideids = [];
 
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)

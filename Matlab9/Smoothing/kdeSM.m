@@ -218,6 +218,98 @@ iplot = 0 ;
 %
 if nargin > 1    %  then paramstruct has been added
 
+%paramstruct
+%pauseSM
+
+  if isfield(paramstruct,'vh')     %  then change to input value
+    vh = paramstruct.vh ; 
+  end 
+
+  if isfield(paramstruct,'vxgrid')     %  then change to input value
+    vxgrid = paramstruct.vxgrid ; 
+  end 
+
+  if isfield(paramstruct,'imptyp')     %  then change to input value
+    imptyp = paramstruct.imptyp ; 
+  end 
+
+  if isfield(paramstruct,'eptflag')     %  then change to input value
+    eptflag = paramstruct.eptflag ; 
+  end 
+
+  if isfield(paramstruct,'ibdryadj')     %  then change to input value
+    ibdryadj = paramstruct.ibdryadj ; 
+  end 
+
+  if isfield(paramstruct,'idatovlay')     %  then change to input value
+    idatovlay = paramstruct.idatovlay ; 
+  end 
+
+  if isfield(paramstruct,'ndatovlay')     %  then change to input value
+    ndatovlay = paramstruct.ndatovlay ; 
+  end 
+
+  if isfield(paramstruct,'datovlaymax')     %  then change to input value
+    datovlaymax = paramstruct.datovlaymax ; 
+  end 
+
+  if isfield(paramstruct,'datovlaymin')     %  then change to input value
+    datovlaymin = paramstruct.datovlaymin ; 
+  end 
+
+  if isfield(paramstruct,'dolcolor')     %  then change to input value
+    dolcolor = paramstruct.dolcolor ; 
+  end 
+
+  if isfield(paramstruct,'dolmarkerstr')     %  then change to input value
+    dolmarkerstr = paramstruct.dolmarkerstr ; 
+  end 
+
+  if isfield(paramstruct,'ibigdot')     %  then change to input value
+    ibigdot = paramstruct.ibigdot ; 
+  end 
+
+  if isfield(paramstruct,'linewidth')     %  then change to input value
+    linewidth = paramstruct.linewidth ; 
+  end 
+
+  if isfield(paramstruct,'linecolor')     %  then change to input value
+    linecolor = paramstruct.linecolor ; 
+  end 
+
+  if isfield(paramstruct,'titlestr')     %  then change to input value
+    titlestr = paramstruct.titlestr ; 
+  end 
+
+  if isfield(paramstruct,'titlefontsize')     %  then change to input value
+    titlefontsize = paramstruct.titlefontsize ; 
+  end 
+
+  if isfield(paramstruct,'xlabelstr')     %  then change to input value
+    xlabelstr = paramstruct.xlabelstr ; 
+  end 
+
+  if isfield(paramstruct,'ylabelstr')     %  then change to input value
+    ylabelstr = paramstruct.ylabelstr ; 
+  end 
+
+  if isfield(paramstruct,'labelfontsize')     %  then change to input value
+    labelfontsize = paramstruct.labelfontsize ; 
+  end 
+
+  if isfield(paramstruct,'plotbottom')     %  then change to input value
+    plotbottom = paramstruct.plotbottom ; 
+  end 
+
+  if isfield(paramstruct,'plottop')     %  then change to input value
+    plottop = paramstruct.plottop ; 
+  end 
+
+  if isfield(paramstruct,'iplot')     %  then change to input value
+    iplot = paramstruct.iplot ; 
+  end 
+
+%{
   if isfield(paramstruct,'vh')     %  then change to input value
     vh = getfield(paramstruct,'vh') ; 
   end 
@@ -305,6 +397,8 @@ if nargin > 1    %  then paramstruct has been added
   if isfield(paramstruct,'iplot')     %  then change to input value
     iplot = getfield(paramstruct,'iplot') ; 
   end 
+
+%}
 
 
 end   %  of resetting of input parameters

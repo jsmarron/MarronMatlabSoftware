@@ -269,7 +269,7 @@ if  imptyp < 3  &&  polydeg > 1
   imptyp = 3 ;
 end 
 
-if  vh <= 0  &&  imptyp ~= 0  
+if  vh <= 0  &  imptyp ~= 0  
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from nprSM.m:          !!!') ;
   disp('!!!   vh <= 0 requires imptyp = 0    !!!') ;

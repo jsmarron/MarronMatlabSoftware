@@ -2,8 +2,8 @@ disp('Running MATLAB script file kdeSMtest.m') ;
 %
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION kdeSM,
 %    General Purpose Kernel Density Estimation
-print
-itest = 22 ;     %  1,2,...,31
+
+itest = 31 ;     %  1,2,...,31
 
 format compact ;
 format short ;
@@ -1203,7 +1203,7 @@ elseif itest == 29 ;  %  test error message when input is not a column vector
   disp('Check Get Error and Termination when input is a matrix') ;
   kdeSM(indat)
 
-  disp('Check Get Error and Termination when input is a mrow vector') ;
+  disp('Check Get Error and Termination when input is a row vector') ;
   kdeSM(indat(:,1)')
 
 

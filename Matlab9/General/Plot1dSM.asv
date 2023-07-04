@@ -610,8 +610,7 @@ else    %  then are using default, or have entered single symbol
   if indivplotflag == 1     %  the need to create full char array
     mmarks = [] ;
     for i=1:n 
-      mmarks = char(mmarks,markerstr) ;
-%      mmarks = strvcat(mmarks,markerstr) ;
+      mmarks = strvcat(mmarks,markerstr) ;
     end 
   end 
 end 
@@ -843,27 +842,27 @@ end     %  of indivplotflag if block
 %  Add title and labels
 %
 if ~isempty(titlestr) 
-  if isempty(titlefontsize) 
+  if isempty(titlefontsize) ;
     title(titlestr) ;
-  else 
+  else ;
     title(titlestr,'FontSize',titlefontsize) ;
-  end 
-end 
-if ~isempty(xlabelstr) 
-  if isempty(labelfontsize) 
+  end ;
+end ;
+if ~isempty(xlabelstr) ;
+  if isempty(labelfontsize) ;
     xlabel(xlabelstr) ;
-  else 
+  else ;
     xlabel(xlabelstr,'FontSize',labelfontsize) ;
-  end 
-end 
+  end ;
+end ;
 
-if ~isempty(ylabelstr) 
-  if isempty(labelfontsize) 
+if ~isempty(ylabelstr) ;
+  if isempty(labelfontsize) ;
     ylabel(ylabelstr) ;
   else 
     ylabel(ylabelstr,'FontSize',labelfontsize) ;
-  end 
-end 
+  end ;
+end ;
 
 
 
@@ -873,7 +872,7 @@ if ~isempty(savestr)    %  then save graphics
 
   printSM(savestr,savetype) ;
 
-end 
+end ;
 
 
 

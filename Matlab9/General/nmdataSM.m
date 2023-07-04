@@ -23,15 +23,15 @@ function vdata = nmdataSM(nobs,vmu,vsig2,vw)
 
 %  Set parameters according to number of input arguments
 %
-if nargin == 2 ;       %  only 1 argument input, use columns as params
+if nargin == 2        %  only 1 argument input, use columns as params
   w = vmu(:,3) ;
   sig2 = vmu(:,2) ;
   mu = vmu(:,1) ;
-elseif nargin == 4 ;   %  then parameter vector vectors input separately
+elseif nargin == 4    %  then parameter vector vectors input separately
   mu = vmu ;
   sig2 = vsig2 ;
   w = vw ;
-end ;
+end 
 
 sig = sqrt(sig2) ;
 ncomp = length(mu) ;
@@ -46,10 +46,10 @@ vunif = rand(nobs,1) ;
           %  Unif(0,1)
 vind = ones(nobs,1) ;
 cumw = cumsum(w) ;
-for icomp = 2:ncomp ;
+for icomp = 2:ncomp 
   flag = (vunif > cumw(icomp - 1)) ;
   vind(flag) = icomp * ones(sum(flag),1) ;
-end ;
+end 
 
 
 %  Do mean and var adjustment according to vind

@@ -1,4 +1,4 @@
-function vax = axisSM(xmat,ymat,alpha) ; 
+function vax = axisSM(xmat,ymat,alpha)  
 % AXISSM, sets graphics AXIS
 %   Steve Marron's matlab function
 %     For convenient (and useful) setting of graphics axes.
@@ -27,20 +27,20 @@ function vax = axisSM(xmat,ymat,alpha) ;
 
 %  Initialize
 %
-if nargin == 1 ;
+if nargin == 1 
   numlim = 1 ;
   ymat = [] ;
   alpha = 0.05 ;
-elseif nargin == 2 ;
+elseif nargin == 2 
   numlim = 2 ;
   alpha = 0.05 ;
-else ;
+else 
   numlim = 2 ;
-end ;
+end 
 
-if isempty(ymat) ;
+if isempty(ymat) 
   numlim = 1 ;
-end ;
+end 
 
 
 
@@ -50,50 +50,50 @@ left = min(min(xmat)) ;
 right = max(max(xmat)) ;
 range = right - left ;
 
-if range > 0 ;
+if range > 0 
   left = left - alpha * range ;
   right = right + alpha * range ;
-else ;
+else 
   left = left - alpha ;
   right = right + alpha ;
-end ;  
+end   
 
 vax = [left, right] ;
 
 
-if numlim > 1 ;
+if numlim > 1 
 
   bottom = min(min(ymat)) ;
   top = max(max(ymat)) ;
   range = top - bottom ;
 
-  if range > 0 ;
+  if range > 0 
     bottom = bottom - alpha * range ;
     top = top + alpha * range ;
-  else ;
+  else 
     left = left - alpha ;
     right = right + alpha ;
-  end ;  
+  end   
 
   vax = [vax, bottom, top] ;
   
-end ;
+end 
 
 
 
 %  Reset current axis if needed
 %
-if nargout == 0 ;
-  if numlim == 2 ;
+if nargout == 0 
+  if numlim == 2 
     axis(vax) ;
-  else ;
+  else 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!  Error from axisSM.m:       !!!') ;
     disp('!!!  Can''t reset axes without   !!!') ;
     disp('!!!  both sets of data input    !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  end ;
-end ;
+  end 
+end 
 
 
 

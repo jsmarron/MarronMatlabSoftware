@@ -25,23 +25,23 @@ function printSM(savestr,itype)
 
 %    Copyright (c) J. S. Marron 2023
 
-if nargin == 1 ;   %  then set itype to default .fig
+if nargin == 1    %  then set itype to default .fig
   itype = 1 ;      
-end ;
+end 
 
-if itype == 1 ;    %  (.fig)
+if itype == 1     %  (.fig)
   savefig(savestr) ;
-elseif itype == 2 ;    %  (.png)
+elseif itype == 2     %  (.png)
   print(savestr,'-dpng') ;
-elseif itype == 3 ;    %]  (.pdf)
+elseif itype == 3     %]  (.pdf)
   print(savestr,'-dpdf') ;
-elseif itype == 4 ;    %  (.eps) Color
+elseif itype == 4     %  (.eps) Color
   print(savestr,'-depsc') ;
-elseif itype == 5 ;    %  (.eps) B&W
+elseif itype == 5     %  (.eps) B&W
   print(savestr,'-deps') ;
-elseif itype == 6 ;    %  (.jpg)
+elseif itype == 6     %  (.jpg)
   print(savestr,'-djpeg') ;
-elseif itype == 7 ;    %  (.svg)
+elseif itype == 7     %  (.svg)
   print(savestr,'-dsvg') ;
-end ;
+end 
 

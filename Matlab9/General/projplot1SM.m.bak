@@ -186,6 +186,7 @@ function projplot1SM(data,vdir,paramstruct)
 %    bwrfphSM.m
 %    bwosSM.m
 %    rootfSM
+%    vec2matSM.m
 %    bwrotSM.m
 %    bwsnrSM.m
 %    iqrSM.m

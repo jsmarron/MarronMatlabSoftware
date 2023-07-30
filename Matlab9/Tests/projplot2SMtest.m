@@ -4,7 +4,7 @@ disp('Running MATLAB script file projplot2SMtest.m') ;
 %    PROJection PLOT on 2 directions
 
 
-itest = 85 ;     %  0,...,85
+itest = 0 ;     %  0,...,85
 
 
 figure(1) ;

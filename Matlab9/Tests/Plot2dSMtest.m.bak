@@ -1238,7 +1238,7 @@ elseif itest == 76 ;
 elseif itest == 77 ; 
 
   mdata = (ones(2,1) * (1:100) - 50) / 25 ;
-  mdata = mdata + 0.1 * randn(2,100) ;
+  mdata = mdata + 0.1 * randn(3,100) ;
   mdc = [(1:99)' (2:100)'] ;
 
   paramstruct = struct('icolor',3, ...

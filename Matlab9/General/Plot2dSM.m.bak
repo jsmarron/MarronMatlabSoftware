@@ -295,6 +295,26 @@ d = size(data,1) ;
          %  dimension of each data curve
 n = size(data,2) ;
          %  number of data curves
+%{
+if ~(d == size(mdir,1)) 
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  disp('!!!   Error from projplot2SM.m:   !!!') ;
+  disp('!!!   Dimension of mdir must be   !!!') ;
+  disp('!!!   same as dimension of data   !!!') ;
+  disp('!!!   Terminating execution       !!!') ;
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  return ;
+end 
+
+if ~(2 == size(mdir,2)) 
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  disp('!!!   Error from projplot2SM.m:         !!!') ;
+  disp('!!!   mdir must be two column vectors   !!!') ;
+  disp('!!!   Terminating execution             !!!') ;
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  return ;
+end 
+%}
 
 if  (size(icolor,1) > 1)  ||  (size(icolor,2) > 1)      %  if have color matrix
   if ~(3 == size(icolor,2)) 
@@ -456,12 +476,14 @@ if  size(icolor,1) == 1   &&  size(icolor,2) == 1     %  then have scalar input
     dotcolor = 'k' ;
         %  color of projection dots
     indivplotflag = 0 ;
+    icolorprint = 0 ;
 
   elseif ischar(icolor) 
 
     dotcolor = icolor ;
         %  string for color of projection dots
     indivplotflag = 0 ;
+    icolorprint = 1 ;
 
   elseif icolor == 1     %  then do MATLAB 7 color default
 
@@ -480,12 +502,14 @@ if  size(icolor,1) == 1   &&  size(icolor,2) == 1     %  then have scalar input
     colmap = colmap(1:n,:) ;
 
     indivplotflag = 1 ;
+    icolorprint = 1 ;
 
   elseif icolor == 2     %  then do spectrum for ordered time series
 
     colmap = RainbowColorsQY(n) ;
 
     indivplotflag = 1 ;
+    icolorprint = 1 ;
 
   elseif icolor == 3     %  then do gray levels for ordered time series
 
@@ -496,6 +520,7 @@ if  size(icolor,1) == 1   &&  size(icolor,2) == 1     %  then have scalar input
     colmap = vgray' * ones(1,3) ;
 
     indivplotflag = 1 ;
+    icolorprint = 1 ;
         %  Leave this as "color" to get gray levels to show up in .ps file
 
   end     %  of icolor if-block
@@ -506,6 +531,7 @@ elseif  size(icolor,2) == 3      %  then have valid color matrix
   colmap = icolor ;
 
   indivplotflag = 1 ;
+  icolorprint = 1 ;
 
 else     %   invalid color matrix input
 
@@ -591,6 +617,78 @@ if ~isempty(legendcellstr)
         %  all black when unspecified
   end 
 end 
+
+
+
+%{
+%  Compute Projections
+%
+mdirn = [] ;
+for i = 1:2 
+  vdirlen2 = sum(mdir(:,i).^2) ;
+  if abs(vdirlen2 - 1) < 10^(-10)     %  already has length 1
+    mdirn = [mdirn mdir(:,i)] ;
+  else     %  need to adjust length to be 1
+    if iscreenwrite == 1     %  then give a warning about adjustment
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+      disp('!!!   Warning from projplot2SM.m:               !!!') ;
+      disp(['!!!   mdir(:,' num2str(i) ') should be a direction vector,   !!!']) ;
+      disp('!!!   will adjust to length 1                   !!!') ;
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    end 
+    if vdirlen2 < 10^(-10)      %  then can't proceed, so quit
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+      disp('!!!   Error from projplot2SM.m:  !!!') ;
+      disp(['!!!   mdir(:,' num2str(i) ') has length 0     !!!']) ;
+      disp('!!!   Terminating execution      !!!') ;
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+      return ;
+    end 
+    mdirn = [mdirn mdir(:,i) / sqrt(vdirlen2)] ;
+  end 
+end 
+
+
+if ~(mdirn(:,1)' * mdirn(:,2) == 0) 
+                        %  then directions are not orthogonal,
+                        %  so need to carefully handle
+
+  if ~(iforcenaivesp == 1)     %  Do default of projecting data onto 
+                               %  2-d plane determined by input directions
+    vdirn1 = mdirn(:,1) ;
+    vdirn2 = mdirn(:,2) ;
+    vd2c1 = vdirn2' * vdirn1 ;
+        %  component of direction 2 in direction 1
+    vdirn2 = vdirn2 - vd2c1 * vdirn1 ;
+        %  subtract component of vdirn2, in direction of vdirn1
+    ldirn2 = sqrt(sum(vdirn2.^2)) ;
+    if abs(ldirn2) <= eps     %  then component is too small
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+      disp('!!!   Error from projplot2SM.m:          !!!') ;
+      disp('!!!   mdir(:,2) too close to mdir(:,1)   !!!') ;
+      disp('!!!   to determine 2-d plane             !!!') ;
+      disp('!!!   Terminating execution              !!!') ;
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+      return ;
+    end 
+    vd2c1 = [vd2c1; sqrt(1 - vd2c1^2)] ;
+    mdirn(:,2) = vdirn2 / ldirn2 ;
+        %  renormalize to a direction vector
+  else     %  Have forced naive scatterplot, with 1-d projections on axes
+    vd2c1 = [0; 1] ;
+  end 
+
+else     %  Input directions are orthogonal
+  vd2c1 = [0; 1] ;
+end 
+
+
+mproj = mdirn' * data ;
+    %  matrix of inner products with data
+mproj = mproj' ;
+    %  turn so have two columns for the 2 directions
+
+%}
 
 
 %  Set Axes

@@ -196,7 +196,7 @@ function projplot2SM(data,mdir,paramstruct)
 %                 (B & W postscript for icolor = 0)
 %
 % Assumes path can find personal functions:
-%    Plot1dSM.m
+%    Plot2dSM.m
 %    vec2matSM.m
 %    axisSM.m
 %    lbinrSM.m
@@ -959,7 +959,8 @@ end
 
 %}
 
-P2dParamstruct. =  ;
+%P2dParamstruct. =  ;
+
 
 P2dParamstruct.icolor = icolor ;
 P2dParamstruct.markerstr = markerstr ;

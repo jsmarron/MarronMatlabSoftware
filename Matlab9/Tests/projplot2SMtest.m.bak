@@ -1,10 +1,10 @@
-disp('Running MATLAB script file Plot2dSMtest.m') ;
+disp('Running MATLAB script file projplot2SMtest.m') ;
 %
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION projplot2SM,
 %    PROJection PLOT on 2 directions
 
 
-itest = 77 ;     %  0,...,77
+itest = 85 ;     %  0,...,85
 
 
 figure(1) ;
@@ -15,94 +15,121 @@ disp(['    itest = ' num2str(itest)]) ;
 
 if itest == 0 ;     %  input data only
 
-  mdata = randn(2,20) ;
+  mdata = randn(3,20) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
-  Plot2dSM(mdata) ;
+  projplot2SM(mdata,mdir) ;
   disp('Test All Defaults') ;
 
 
 elseif itest == 1 ;  
 
-  mdata = randn(2,20) ;
+  mdata = randn(3,20) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
   disp('Test iscreenwrite') ;
 
 
 elseif itest == 2 ; 
 
-  mdata = randn(2,20) ;
+  mdata = randn(3,20) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('titlestr','Check Title & Default Colors', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 3 ; 
 
-  mdata = randn(2,20) ;
+  mdata = randn(3,20) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('ifigure',1, ...
                        'titlestr','Check ifigure & Default Colors', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 4 ; 
 
-  mdata = randn(2,20) ;
+  mdata = randn(3,20) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',1, ...
                        'ifigure',1, ...
                        'titlestr','Force Matlab Default Colors', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 5 ; 
 
-  mdata = randn(2,20) ;
+  mdata = randn(3,20) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',0, ...
                        'ifigure',1, ...
                        'titlestr','Check All Black', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 6 ; 
 
   mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
                        'titlestr','Check Rainbow', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 7 ; 
 
   mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor','m', ...
                        'ifigure',1, ...
                        'titlestr','Check Magenta Color', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 8 ; 
 
   mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   mcolor = ones(50,1) * [1 0 0] ; 
   mcolor = [mcolor; ones(50,1) * [0 0 1]] ;
@@ -112,34 +139,43 @@ elseif itest == 8 ;
                        'titlestr','Check 1/2 Red, 1/2 Blue', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 9 ; 
 
-  mdata = randn(2,20) ;
+  mdata = randn(3,20) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('ifigure',1, ...
                        'titlestr','Check Default Colors, and n = 3*7', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 10 ; 
 
-  mdata = randn(2,20) ;
+  mdata = randn(3,20) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('ifigure',1, ...
                        'titlestr','Check Default Colors, and n = 3*7+1', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 11 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'titlestr','Check Upper Right subplot', ...
@@ -147,12 +183,15 @@ elseif itest == 11 ;
 
   subplot(2,2,2) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 12 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',0, ...
@@ -161,12 +200,15 @@ elseif itest == 12 ;
 
   subplot(2,2,2) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 13 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',-1, ...
@@ -174,15 +216,18 @@ elseif itest == 13 ;
                        'iscreenwrite',1) ;
 
   subplot(2,2,2) ;
-    Plot2dSM(mdata,paramstruct) ;
+    projplot2SM(mdata,mdir,paramstruct) ;
 
   subplot(2,2,3) ;
-    Plot2dSM(mdata,paramstruct) ;
+    projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 14 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
@@ -191,12 +236,12 @@ elseif itest == 14 ;
 
   subplot(2,2,2) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 15 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
   mdir = [1 0 ; ...
           0 1 ] ;
   disp('Test input dir vectors too short') ;
@@ -208,26 +253,33 @@ elseif itest == 15 ;
 
   subplot(2,2,2) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 16 ; 
+  mdir = [1 0 0 ; ...
+          0 1 0 ; ...
+          0 0 1] ;
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  disp('Test 3 input dir vectors') ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
-                       'savestr','temp2', ...
-                       'savetype',5, ...
-                       'titlestr','Check save to file temp2.eps (black & white)', ...
+                       'titlestr','Check messages for funny inputs', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  subplot(2,2,2) ;
+
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 17 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   disp('Test vaxlim = 2') ;
 
   paramstruct = struct('icolor',2, ...
@@ -238,12 +290,15 @@ elseif itest == 17 ;
 
   subplot(2,2,2) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 18 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   disp('Test vaxlim = [2 3]') ;
 
   paramstruct = struct('icolor',2, ...
@@ -254,12 +309,15 @@ elseif itest == 18 ;
 
   subplot(2,2,2) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 19 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'vaxlim',[], ...
@@ -269,12 +327,15 @@ elseif itest == 19 ;
 
   subplot(2,2,2) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 20 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'vaxlim',1, ...
@@ -284,12 +345,15 @@ elseif itest == 20 ;
 
   subplot(2,2,2) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 21 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'vaxlim',[-50 60 30 60], ...
@@ -299,51 +363,63 @@ elseif itest == 21 ;
 
   subplot(2,2,2) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 22 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
                        'savestr','temp2', ...
-                       'titlestr','Check save to file temp2.fig', ...
+                       'titlestr','Check save to file temp2.ps', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 23 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
-                       'savestr','temp2.fig', ...
-                       'titlestr','Check save to file temp2.fig (can include .fig, or not)', ...
+                       'savestr','temp2.ps', ...
+                       'titlestr','Check save to file temp2.ps (can include .ps, or not)', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 24 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',0, ...
                        'ifigure',1, ...
-                       'savestr','temp2', ...
-                       'titlestr','Check black and white save to file temp2.fig', ...
+                       'savestr','temp2.ps', ...
+                       'titlestr','Check black and white save to file temp2.ps', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 25 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
@@ -351,12 +427,15 @@ elseif itest == 25 ;
                        'titlestr','Check savestr is not a string', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 26 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',0, ...
@@ -364,99 +443,112 @@ elseif itest == 26 ;
                        'titlestr','Check over-ride of ifigure=0 by savestr', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 27 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [0.5 0 ; ...
+          0 3 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
-                       'savestr','temp2.png', ...
-                       'savetype',2, ...
-                       'titlestr','Check save to file temp2.png', ...
+                       'titlestr','Check differing length direction vectors (in R^3)', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 28 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [0.5 0 ; ...
+          0 3 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
-                       'savestr','temp2.pdf', ...
-                       'savetype',3, ...
-                       'titlestr','Check save to file temp2.pdf', ...
-                       'iscreenwrite',1) ;
+                       'titlestr','Check silencing of dir vec length warning, using iscreenwrite = 0', ...
+                       'iscreenwrite',0) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 29 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 0 ; ...
+          0 0 ] ;
+  disp('Test 2nd dirvec is a 0 vector in R3') ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
-                       'savestr','temp2.eps', ...
-                       'savetype',4, ...
-                       'titlestr','Check save to file temp2.eps', ...
-                       'iscreenwrite',1) ;
+                       'titlestr','Check error for 0 length dir vec', ...
+                       'iscreenwrite',0) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 30 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',0.5 * ones(100,3), ...
                        'ifigure',1, ...
                        'titlestr','Check for all gray color', ...
                        'iscreenwrite',0) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 31 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   subplot(2,2,1) ;
     disp('Test icolor transpose') ;
     paramstruct = struct('icolor',0.5 * ones(3,100), ...
                          'titlestr','Test icolor transpose', ...
                          'iscreenwrite',0) ;
-    Plot2dSM(mdata,paramstruct) ;
+    projplot2SM(mdata,mdir,paramstruct) ;
 
   subplot(2,2,2) ;
     disp('Test 2 column icolor') ;
     paramstruct = struct('icolor',0.5 * ones(100,2), ...
                          'titlestr','Test 2 column icolor', ...
                          'iscreenwrite',0) ;
-    Plot2dSM(mdata,paramstruct) ;
+    projplot2SM(mdata,mdir,paramstruct) ;
 
   subplot(2,2,3) ;
     disp('Test icolor too long') ;
     paramstruct = struct('icolor',0.5 * ones(110,3), ...
                          'titlestr','Test icolor too long', ...
                          'iscreenwrite',0) ;
-    Plot2dSM(mdata,paramstruct) ;
+    projplot2SM(mdata,mdir,paramstruct) ;
 
   subplot(2,2,4) ;
     disp('Test icolor too short') ;
     paramstruct = struct('icolor',0.5 * ones(90,3), ...
                          'titlestr','Test icolor too short', ...
                          'iscreenwrite',0) ;
-    Plot2dSM(mdata,paramstruct) ;
+    projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 32 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
@@ -465,12 +557,15 @@ elseif itest == 32 ;
                        'ylabelstr','Y', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 33 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
@@ -481,12 +576,15 @@ elseif itest == 33 ;
                        'labelfontsize',6, ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 34 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   legendcellstr = {{'Legend 1' 'Legend 2' 'Legend 3' 'Legend 4'}} ;
 
@@ -496,12 +594,15 @@ elseif itest == 34 ;
                        'titlestr','Check out legends', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 35 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   legendcellstr = {{'Legend 1'}} ;
 
@@ -511,12 +612,15 @@ elseif itest == 35 ;
                        'titlestr','Check out single legend', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 36 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   legendcellstr = {{'Legend 1' 'Legend 2' 'Legend 3' 'Legend 4'}} ;
   mlegendcolor = [1 0 0 ; ...
@@ -531,12 +635,15 @@ elseif itest == 36 ;
                        'titlestr','Check out legends and colors', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 37 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   legendcellstr = {{'Legend 1' 'Legend 2' 'Legend 3' 'Legend 4'}} ;
   mlegendcolor = [1 0 0 ; ...
@@ -550,12 +657,15 @@ elseif itest == 37 ;
                        'titlestr','Check out incompatible color size', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 38 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   legendcellstr = {{'Legend 1' 'Legend 2' 'Legend 3' 'Legend 4'}} ;
 
@@ -566,12 +676,15 @@ elseif itest == 38 ;
                        'titlestr','Check out invalid mlegendcolor', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 39 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
@@ -579,12 +692,15 @@ elseif itest == 39 ;
                        'titlestr','Check chosen symbol', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 40 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
@@ -592,12 +708,15 @@ elseif itest == 40 ;
                        'titlestr','Check chosen symbol', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 41 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor','b', ...
                        'ifigure',1, ...
@@ -605,12 +724,15 @@ elseif itest == 41 ;
                        'titlestr','Check chosen symbol & common colors', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 42 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
@@ -619,26 +741,32 @@ elseif itest == 42 ;
                        'titlestr','Check reset of ibigdot, for non-dot', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 43 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
                        'markerstr','.', ...
-                       'titlestr','Check effect of ibigdot, recall need to see temp2.fig', ...
+                       'titlestr','Check effect of ibigdot, recall need to see temp2.ps', ...
                        'savestr','temp2', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 44 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   markerstr = strvcat('r+','bo') ;
   disp(['Check effect of wrong size markerstr = strvcat(''r+'',''bo'')']) ;
 
@@ -648,12 +776,15 @@ elseif itest == 44 ;
                        'titlestr','Check effect of wrong size of markerstr', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 45 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   markerstr = ones(100,1) ;
   disp(['Check effect of non-char array markerstr = ones(100,1)']) ;
 
@@ -663,12 +794,15 @@ elseif itest == 45 ;
                        'titlestr','Check effect of non-char array markerstr', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 46 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   markerstr = [] ;
   for i=1:100 ;
     markerstr = strvcat(markerstr,'+') ;
@@ -680,12 +814,15 @@ elseif itest == 46 ;
                        'titlestr','Check manual feed of char array markerstr', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 47 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   markerstr = [] ;
   for i=1:100 ;
     markerstr = strvcat(markerstr,'.') ;
@@ -698,12 +835,15 @@ elseif itest == 47 ;
                        'titlestr','Check reset of ibigdot for multiple entries in markerstr', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 48 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   markerstr = [] ;
   for i=1:50 ;
     markerstr = strvcat(markerstr,'+') ;
@@ -718,12 +858,15 @@ elseif itest == 48 ;
                        'titlestr','Check multiple entries in markerstr', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 49 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   markerstr = [] ;
   for i=1:50 ;
     markerstr = strvcat(markerstr,'+') ;
@@ -737,12 +880,15 @@ elseif itest == 49 ;
                        'titlestr','Check default color, input different markers', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 50 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   markerstr = [] ;
   for i=1:50 ;
     markerstr = strvcat(markerstr,'+') ;
@@ -757,12 +903,15 @@ elseif itest == 50 ;
                        'titlestr','Check input single color, input different markers', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 51 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   markerstr = [] ;
   for i=1:50 ;
     markerstr = strvcat(markerstr,'+') ;
@@ -777,12 +926,15 @@ elseif itest == 51 ;
                        'titlestr','Check black and white, input different markers', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 52 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mcol = [] ;
   for i=1:50 ;
     mcol = [mcol; [0 0 1]] ;
@@ -796,12 +948,15 @@ elseif itest == 52 ;
                        'titlestr','Check input colors, default markers', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 53 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mcol = [] ;
   for i=1:50 ;
     mcol = [mcol; [0 0 1]] ;
@@ -816,12 +971,15 @@ elseif itest == 53 ;
                        'titlestr','Check input colors, single input marker', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 54 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mcol = [] ;
   for i=1:50 ;
     mcol = [mcol; [0 0 1]] ;
@@ -837,26 +995,20 @@ elseif itest == 54 ;
                        'titlestr','Check input colors, and ibigdot', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 55 ; 
 
-  mdata = ones(2,1) * (1:100) ;
-
-  paramstruct = struct('icolor',2, ...
-                       'ifigure',1, ...
-                       'savestr','temp2', ...
-                       'savetype',6, ...
-                       'titlestr','Check save to file temp2.jpg', ...
-                       'iscreenwrite',1) ;
-
-  Plot2dSM(mdata,paramstruct) ;
+   disp('    Have skipped this test, no output expected') ;
 
 
 elseif itest == 56 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor','m', ...
                        'ifigure',1, ...
@@ -864,12 +1016,15 @@ elseif itest == 56 ;
                        'titlestr','Single input color, single input marker', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 57 ; 
 
-  mdata = (ones(2,1) * (1:100) - 50) / 25 ;
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',2, ...
                        'ifigure',1, ...
@@ -877,12 +1032,134 @@ elseif itest == 57 ;
                        'titlestr','Check Axis Plot', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 58 ; 
 
-  mdata = (ones(2,1) * (1:100) - 50) / 25 ;
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
+
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',1, ...
+                       'iplotdirvec',1, ...
+                       'titlestr','Check Dir Vector Plot', ...
+                       'iscreenwrite',1) ;
+
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+
+elseif itest == 59 ; 
+
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
+
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',1, ...
+                       'iplotaxes',1, ...
+                       'iplotdirvec',1, ...
+                       'titlestr','Check Axis & Dir Vector Plot', ...
+                       'iscreenwrite',1) ;
+
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+
+elseif itest == 60 ; 
+
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdir = [1 1 ; ...
+          0 0 ; ...
+          0 0 ] ;
+  disp(['Check out same directions']) ;
+
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',1, ...
+                       'iplotaxes',1, ...
+                       'iplotdirvec',1, ...
+                       'titlestr','Check out same directions', ...
+                       'iscreenwrite',1) ;
+
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+
+elseif itest == 61 ; 
+
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdir = [1 1 ; ...
+          0 1 ; ...
+          0 0 ] ;
+
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',1, ...
+                       'iplotaxes',1, ...
+                       'iplotdirvec',1, ...
+                       'titlestr','Check out non-orthonormal directions', ...
+                       'iscreenwrite',1) ;
+
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+
+elseif itest == 62 ; 
+
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdir = [1 -1 ; ...
+          0 1 ; ...
+          0 0 ] ;
+
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',1, ...
+                       'iplotaxes',1, ...
+                       'iplotdirvec',1, ...
+                       'titlestr','Check out non-orthonormal directions', ...
+                       'iscreenwrite',1) ;
+
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+
+elseif itest == 63 ; 
+
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdir = [1 -1 ; ...
+          0 -10 ; ...
+          0 0 ] ;
+
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',1, ...
+                       'iplotaxes',1, ...
+                       'iplotdirvec',1, ...
+                       'titlestr','Check out non-othonormal directions', ...
+                       'iscreenwrite',1) ;
+
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+
+elseif itest == 64 ; 
+
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdir = [1 10 ; ...
+          0 -1 ; ...
+          0 0 ] ;
+
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',1, ...
+                       'iplotaxes',1, ...
+                       'iplotdirvec',1, ...
+                       'titlestr','Check out non-orthonormal directions', ...
+                       'iscreenwrite',1) ;
+
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+
+elseif itest == 65 ; 
+
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   disp(['Check bad feed of idataconn = 1']) ;
 
   paramstruct = struct('icolor',2, ...
@@ -892,13 +1169,16 @@ elseif itest == 58 ;
                        'titlestr','Check bad feed of idataconn', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 59 ; 
+elseif itest == 66 ; 
 
-  mdata = (ones(2,1) * (1:100) - 50) / 25 ;
-  mdata = mdata + 0.1 * randn(2,100) ;
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdata = mdata + 0.1 * randn(3,100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:99)' (2:100)'] ;
 
   paramstruct = struct('icolor',2, ...
@@ -907,14 +1187,17 @@ elseif itest == 59 ;
                        'titlestr','Check idataconn for time series (default color)', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 60 ; 
+elseif itest == 67 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
 
@@ -924,14 +1207,17 @@ elseif itest == 60 ;
                        'titlestr','Check idataconn for Bias adjustment (default color)', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 61 ; 
+elseif itest == 68 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
 
@@ -942,14 +1228,17 @@ elseif itest == 61 ;
                        'titlestr',['Check idataconncolor = ''g'''], ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 62 ; 
+elseif itest == 69 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
 
@@ -960,14 +1249,19 @@ elseif itest == 62 ;
                        'titlestr','Check idataconncolor = [0 1 0]', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 63 ; 
+elseif itest == 70 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+
+
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
 
@@ -978,14 +1272,17 @@ elseif itest == 63 ;
                        'titlestr','Check idataconncolor = (ones(50,1) * [0 1 0])', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 64 ; 
+elseif itest == 71 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
 
@@ -996,14 +1293,17 @@ elseif itest == 64 ;
                        'titlestr','Check different idataconncolor', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 65 ; 
+elseif itest == 72 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
 
@@ -1014,14 +1314,17 @@ elseif itest == 65 ;
                        'titlestr','Check bad idataconncolor (wrong #)', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 66 ; 
+elseif itest == 73 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
 
@@ -1033,14 +1336,17 @@ elseif itest == 66 ;
                        'titlestr',['Check idataconntype = ''--'''], ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 67 ; 
+elseif itest == 74 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
   mdctype = [] ;
@@ -1056,14 +1362,17 @@ elseif itest == 67 ;
                        'titlestr','Check alternating idataconntypes', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 68 ; 
+elseif itest == 75 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
   mdctype = [] ;
@@ -1079,14 +1388,17 @@ elseif itest == 68 ;
                        'titlestr',['Check idataconntype, alternating ''- '' & ''--'''], ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 69 ; 
+elseif itest == 76 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
   mdctype = [] ;
@@ -1102,14 +1414,17 @@ elseif itest == 69 ;
                        'titlestr',['Check too few idataconntypes'], ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 70 ; 
+elseif itest == 77 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [0 1; 1 2] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
 
@@ -1120,14 +1435,17 @@ elseif itest == 70 ;
                        'titlestr','bad mdc = [0 1; 1 2] (note: no 0 index data)', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 71 ; 
+elseif itest == 78 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [49 50; 50 51; 100 101] ;
   mcol = [ones(50,1) * [1 0 0]; ones(50,1) * [0 0 1]] ;
   mdctype = [] ;
@@ -1142,14 +1460,17 @@ elseif itest == 71 ;
                        'idataconntype',mdctype, ...
                        'titlestr','bad mdc = [49 50; 50 51; 100 101]', ...
                        'iscreenwrite',1) ;
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 72 ; 
+elseif itest == 79 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:99)' (2:100)'] ;
 
   paramstruct = struct('icolor',2, ...
@@ -1159,14 +1480,17 @@ elseif itest == 72 ;
                        'idataconntype','--', ...
                        'titlestr','Rainbow colors and connections', ...
                        'iscreenwrite',1) ;
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 73 ; 
+elseif itest == 80 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:50)' (51:100)'] ;
 
   paramstruct = struct('icolor',2, ...
@@ -1176,14 +1500,17 @@ elseif itest == 73 ;
                        'idataconntype','--', ...
                        'titlestr','Non standard use of rainbow idataconncolor', ...
                        'iscreenwrite',1) ;
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 74 ; 
+elseif itest == 81 ; 
 
-  mdata = [2 * ones(2,50),  -2 * ones(2,50) + 0.5 * randn(2,50)] ;
-  mnoise = randn(2,50) ;
+  mdata = [2 * ones(3,50),  -2 * ones(3,50) + 0.5 * randn(3,50)] ;
+  mnoise = randn(3,50) ;
   mdata = mdata + [mnoise mnoise] ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [[(1:99)' (2:100)']; [(1:50)' (51:100)']] ;
 
   paramstruct = struct('icolor',2, ...
@@ -1193,16 +1520,19 @@ elseif itest == 74 ;
                        'idataconntype','--', ...
                        'titlestr','Too many connections for the colors', ...
                        'iscreenwrite',1) ;
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 75 ; 
+elseif itest == 82 ; 
 
   disp('Note:  This is similar to itest = 22,24, ') ;
   disp('       except that it tests .ps save with') ;
   disp('       an input color matrix') ;
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   mcolor = ones(50,1) * [1 0 1] ; 
   mcolor = [mcolor; ones(50,1) * [0 1 1]] ;
@@ -1213,32 +1543,38 @@ elseif itest == 75 ;
 
   paramstruct = struct('icolor',mcolor, ...
                        'ifigure',1, ...
-                       'savestr','temp2', ...
-                       'titlestr','Check color save to file temp2.fig', ...
+                       'savestr','temp2.ps', ...
+                       'titlestr','Check color save to file temp2.ps', ...
                        'iscreenwrite',1) ;
 
   paramstruct = setfield(paramstruct,'legendcellstr',legendcellstr) ;
   paramstruct = setfield(paramstruct,'mlegendcolor',mlegendcolor) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 76 ; 
+elseif itest == 83 ; 
 
-  mdata = ones(2,1) * (1:100) ;
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
 
   paramstruct = struct('icolor',3, ...
                        'ifigure',1, ...
                        'titlestr','Check Gray Levels', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 77 ; 
+elseif itest == 84 ; 
 
-  mdata = (ones(2,1) * (1:100) - 50) / 25 ;
-  mdata = mdata + 0.1 * randn(2,100) ;
+  mdata = (ones(3,1) * (1:100) - 50) / 25 ;
+  mdata = mdata + 0.1 * randn(3,100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
   mdc = [(1:99)' (2:100)'] ;
 
   paramstruct = struct('icolor',3, ...
@@ -1247,10 +1583,51 @@ elseif itest == 77 ;
                        'titlestr','Check idataconn for time series (gray color)', ...
                        'iscreenwrite',1) ;
 
-  Plot2dSM(mdata,paramstruct) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
 
 
-elseif itest == 78 ; 
+elseif itest == 85 ; 
+
+  mdata = (ones(2,1) * (1:100) - 50) / 25 ;
+  mdata = mdata + 0.1 * randn(2,100) ;
+  mdir = [0.49 0.51 ; ...
+          -0.51 -0.49 ] ;
+
+  subplot(2,2,1) ;
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',0, ...
+                       'iforcenaivesp',2, ...
+                       'titlestr','Raw Data', ...
+                       'iscreenwrite',1) ;
+  projplot2SM(mdata,eye(2),paramstruct) ;
+
+  subplot(2,2,2) ;
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',0, ...
+                       'titlestr','Default View, Close Directions', ...
+                       'iscreenwrite',1) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+  subplot(2,2,3) ;
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',0, ...
+                       'iforcenaivesp',0, ...
+                       'titlestr','Force Default View, Close Directions', ...
+                       'iscreenwrite',1) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+  subplot(2,2,4) ;
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',0, ...
+                       'iforcenaivesp',1, ...
+                       'titlestr','Force Naive View, Close Directions', ...
+                       'iscreenwrite',1) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+  disp('Note:  Direction vectors are close to 135 degree line,') ;
+  disp('        i.e. negative diagonal, thus projections have ') ;
+  disp('        very small range (horizontal axes) ') ;
+  disp('        and do not have length 1 (hence get normalization messages)') ;
 
 
 

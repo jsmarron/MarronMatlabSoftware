@@ -959,13 +959,14 @@ end
 
 %}
 
-P2dParamstruct. =  ;
+%P2dParamstruct. =  ;
+
 
 P2dParamstruct.icolor = icolor ;
 P2dParamstruct.markerstr = markerstr ;
-P2dParamstruct.dataconn = dataconn ;
-P2dParamstruct.dataconncolor = dataconncolor ;
-P2dParamstruct.dataconntype = dataconntype ;
+P2dParamstruct.idataconn = idataconn ;
+P2dParamstruct.idataconncolor = idataconncolor ;
+P2dParamstruct.idataconntype = idataconntype ;
 P2dParamstruct.ibigdot = ibigdot ;
 P2dParamstruct.legendcellstr = legendcellstr ;
 P2dParamstruct.mlegendcolor = mlegendcolor ;

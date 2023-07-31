@@ -270,7 +270,7 @@ if nargin > 1    %  then paramstruct is an argument
     savestr = paramstruct.savestr ; 
     if ~(ischar(savestr) || isempty(savestr))     %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Warning from projplot2SM.m:  !!!') ;
+      disp('!!!   Warning from Plot2dSM.m:     !!!') ;
       disp('!!!   Invalid savestr,             !!!') ;
       disp('!!!   using default of no save     !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -299,14 +299,14 @@ n = size(data,2) ;
 if  (size(icolor,1) > 1)  ||  (size(icolor,2) > 1)      %  if have color matrix
   if ~(3 == size(icolor,2)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot2SM.m:               !!!') ;
+    disp('!!!   Warning from Plot2dSM.m:                  !!!') ;
     disp('!!!   icolor as a matrix must have 3 columns    !!!') ;
     disp('!!!   Resetting to icolor = 1, Matlab default   !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     icolor = 1 ;
   elseif ~(n == size(icolor,1)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot2SM.m:               !!!') ;
+    disp('!!!   Warning from Plot2dSM.m:                  !!!') ;
     disp(['!!!   icolor as a matrix must have ' num2str(n) ' rows']) ;
     disp('!!!   Resetting to icolor = 1, Matlab default   !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -317,7 +317,7 @@ end
 if  ~isempty(vaxlim)  &  ~(vaxlim == 1)  
   if ~((size(vaxlim,1) == 1)  &&  (size(vaxlim,2) == 4)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Error from projplot2SM.m:   !!!') ;
+    disp('!!!   Error from Plot2dSM.m:      !!!') ;
     disp('!!!   vaxlim must be empty, = 1   !!!') ;
     disp('!!!   or a 1 x 4 row vector       !!!') ;
     disp('!!!   Terminating execution       !!!') ;
@@ -328,7 +328,7 @@ end
 
 if  ~isempty(savestr) && ifigure == 0 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  disp('!!!   Warning from projplot2SM.m:    !!!') ;
+  disp('!!!   Warning from Plot2dSM.m:       !!!') ;
   disp('!!!   savestr = [], and ifigure = 0  !!!') ;
   disp('!!!   are inconsistent,              !!!') ;
   disp('!!!   Resetting ifigure to 1         !!!') ;
@@ -340,7 +340,7 @@ if ~isempty(idataconn)
 
   if ~(size(idataconn,2) == 2) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot2SM.m:      !!!') ;
+    disp('!!!   Warning from Plot2dSM.m:         !!!') ;
     disp('!!!   invalid idataconn                !!!') ;
     disp('!!!   Will not draw connecting lines   !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -348,7 +348,7 @@ if ~isempty(idataconn)
 
   elseif (min(min(idataconn)) < 1  ||  max(max(idataconn)) > n) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot2SM.m:      !!!') ;
+    disp('!!!   Warning from Plot2dSM.m:         !!!') ;
     disp('!!!   entries in idataconn outside     !!!') ;
     disp('!!!   range of data                    !!!') ;
     disp('!!!   Will not draw connecting lines   !!!') ;
@@ -361,7 +361,7 @@ if ~isempty(idataconn)
       if ~(size(idataconncolor,1) == size(idataconn,1)  && ...
                size(idataconncolor,2) == 3) 
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-        disp('!!!   Warning from projplot2SM.m:      !!!') ;
+        disp('!!!   Warning from Plot2dSM.m:         !!!') ;
         disp('!!!   invalid idataconncolor           !!!') ;
         disp('!!!   Resetting idataconncolor to ''k''  !!!') ;
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -373,7 +373,7 @@ if ~isempty(idataconn)
         ~((size(idataconntype,1) == 1)  | ...
           (size(idataconntype,1) == size(idataconn,1))) 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Warning from projplot2SM.m:     !!!') ;
+      disp('!!!   Warning from Plot2dSM.m:        !!!') ;
       disp('!!!   invalid idataconntype           !!!') ;
       disp('!!!   Resetting idataconntype to ''-''  !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -389,7 +389,7 @@ end
 if  ~isempty(mlegendcolor) 
   if ~(size(legendcellstr,2) == size(mlegendcolor,1)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot2SM.m:    !!!') ;
+    disp('!!!   Warning from Plot2dSM.m:       !!!') ;
     disp('!!!   legendcellstr &  mlegendcolor  !!!') ;
     disp('!!!   must have the same number      !!!') ;
     disp('!!!   of entries                     !!!') ;
@@ -402,7 +402,7 @@ end
 if  ~isempty(mlegendcolor) 
   if ~(size(mlegendcolor,2) == 3) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot2SM.m:   !!!') ;
+    disp('!!!   Warning from Plot2dSM.m:      !!!') ;
     disp('!!!   mlegendcolor                  !!!') ;
     disp('!!!   must have 3 columns           !!!') ;
     disp('!!!   Resetting to no legend        !!!') ;
@@ -414,7 +414,7 @@ end
 if  size(markerstr,1) == 1  &&  size(markerstr,2) == 1  
   if  (ibigdot == 1)  &&  ~strcmp(markerstr,'.')  
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot2SM.m:   !!!') ;
+    disp('!!!   Warning from Plot2dSM.m:      !!!') ;
     disp('!!!   ibigdot is set to 1,          !!!') ;
     disp('!!!   but a non-dot appears         !!!') ;
     disp('!!!   in markerstr                  !!!') ;
@@ -427,7 +427,7 @@ else
        size(markerstr,2) == 1  && ...
        ischar(markerstr)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Error from projplot2SM.m:             !!!') ;
+    disp('!!!   Error from Plot2dSM.m:                !!!') ;
     disp('!!!   markerstr must be a character array   !!!') ;
     disp('!!!   with n rows and one column            !!!') ;
     disp('!!!   Terminating execution                 !!!') ;
@@ -436,7 +436,7 @@ else
   end 
   if ibigdot == 1 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot2SM.m:   !!!') ;
+    disp('!!!   Warning from Plot2dSM.m:      !!!') ;
     disp('!!!   ibigdot is set to 1,          !!!') ;
     disp('!!!   but markerstr has             !!!') ;
     disp('!!!   multiple entries              !!!') ;
@@ -510,7 +510,7 @@ elseif  size(icolor,2) == 3      %  then have valid color matrix
 else     %   invalid color matrix input
 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  disp('!!!   Error from projplot2SM.m:           !!!') ;
+  disp('!!!   Error from Plot2dSM.m:              !!!') ;
   disp('!!!   Invalid icolor input,               !!!') ;
   disp('!!!   must be a scalar, or color matrix   !!!') ;
   disp('!!!   Terminating execution               !!!') ;
@@ -533,7 +533,7 @@ if  size(idataconncolor,1) == 1  &  (idataconncolor == 2  | ...
   else     %  then not enough colors, so write error message, and reset
 
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-        disp('!!!   Warning from projplot2SM.m:              !!!') ;
+        disp('!!!   Warning from Plot2dSM.m:                 !!!') ;
         disp('!!!   invalid idataconncolor, corresponding    !!!') ;
         disp('!!!   color map does not have                  !!!') ;
         disp('!!!   as many rows as idataconn.               !!!') ;

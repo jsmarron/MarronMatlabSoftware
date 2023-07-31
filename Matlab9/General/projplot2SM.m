@@ -359,6 +359,17 @@ if ~(2 == size(mdir,2))
   return ;
 end 
 
+if  ~isempty(savestr) && ifigure == 0 
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  disp('!!!   Warning from projplot2SM.m:    !!!') ;
+  disp('!!!   savestr = [], and ifigure = 0  !!!') ;
+  disp('!!!   are inconsistent,              !!!') ;
+  disp('!!!   Resetting ifigure to 1         !!!') ;
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  ifigure = 1 ;
+end 
+
+
 %{
 if  (size(icolor,1) > 1)  ||  (size(icolor,2) > 1)      %  if have color matrix
   if ~(3 == size(icolor,2)) 
@@ -874,13 +885,6 @@ if iplotaxes == 1
   hold off ;
 end 
 
-if iplotdirvec == 1 
-  hold on ;
-    plot([0;1],[0;0],'k-','LineWidth',4) ;
-    plot([0;vd2c1(1)],[0;vd2c1(2)],'k-','LineWidth',4) ;
-  hold off ;
-end 
-
 
 
 %  Add title and labels
@@ -972,15 +976,30 @@ P2dParamstruct.legendcellstr = legendcellstr ;
 P2dParamstruct.mlegendcolor = mlegendcolor ;
 P2dParamstruct.vaxlim = vaxlim ;
 P2dParamstruct.iplotaxes = iplotaxes ;
-P2dParamstruct.iplotdirvec = iplotdirvec ;
 P2dParamstruct.titlestr = titlestr ;
 P2dParamstruct.titlefontsize = titlefontsize ;
 P2dParamstruct.xlabelstr = xlabelstr ;
 P2dParamstruct.ylabelstr = ylabelstr ;
 P2dParamstruct.labelfontsize = labelfontsize ;
 P2dParamstruct.ifigure = ifigure ;
-P2dParamstruct.savestr = savestr ;
-P2dParamstruct.savetype = savetype ;
 P2dParamstruct.iscreenwrite = iscreenwrite ;
 
 Plot2dSM(mproj,P2dParamstruct) ;
+
+
+if iplotdirvec == 1 
+  hold on ;
+    plot([0;1],[0;0],'k-','LineWidth',4) ;
+    plot([0;vd2c1(1)],[0;vd2c1(2)],'k-','LineWidth',4) ;
+  hold off ;
+end 
+
+
+%  Save output (if needed)
+%
+if ~isempty(savestr)    %  then save graphics
+
+  printSM(savestr,savetype) ;
+
+end 
+

@@ -58,7 +58,7 @@ elseif itest == 4 ;
 elseif itest == 5 ;   
 
   disp('For small seeded data set of 20 N(5,1)s, try out k = 2') ;
-  randn('state',349857304957) ;
+  rng(34985730) ;
   data = randn(20,1) + 5
   k = 2
   Lstat = LstatisticSM(data,k)
@@ -66,7 +66,7 @@ elseif itest == 5 ;
 elseif itest == 6 ;   
 
   disp('For small seeded data set of 20 N(5,1)s, try out k = 3') ;
-  randn('state',349857304957) ;
+  rng(34985730) ;
   data = randn(20,1) + 5
   k = 3
   Lstat = LstatisticSM(data,k)
@@ -74,7 +74,7 @@ elseif itest == 6 ;
 elseif itest == 7 ;   
 
   disp('For small seeded data set of 20 N(5,1)s, try out k = 4') ;
-  randn('state',349857304957) ;
+  rng(34985730) ;
   data = randn(20,1) + 5
   k = 4
   Lstat = LstatisticSM(data,k)

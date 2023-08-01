@@ -5,7 +5,7 @@ disp('Running MATLAB script file MargDistPlotSMtest.m') ;
 
 
 
-itest = 55 ;     %  1,2,...,58       tests beased on d = 50, n = 100
+itest = 102 ;     %  1,2,...,58       tests beased on d = 50, n = 100
                  %  71,72     tests based on d = 16, n = 100
                  %  101 shifting normal means: mean, sd, skewness, kurtosis
                  %  102 shifting sd: mean, sd, skewness, kurtosis

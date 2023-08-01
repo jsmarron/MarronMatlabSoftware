@@ -190,7 +190,7 @@ function projplot1SM(data,vdir,paramstruct)
 %    bwsnrSM.m
 %    iqrSM.m
 %    cquantSM.m
-
+%    printSM.m
 
 %    Copyright (c) J. S. Marron 2004-2023
 

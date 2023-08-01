@@ -186,7 +186,6 @@ function Plot1dSM(data,paramstruct)
 %    bwsnrSM.m
 %    iqrSM.m
 %    cquantSM.m
-%    printSM.m
 
 
 %    Copyright (c) J. S. Marron 2023

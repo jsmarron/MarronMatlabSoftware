@@ -202,6 +202,7 @@ function projplot2SM(data,mdir,paramstruct)
 %    lbinrSM.m
 %    bwrswSM.m
 %    interp1s.m
+%    printSM.m
 
 %    Copyright (c) J. S. Marron 2004-2023
 

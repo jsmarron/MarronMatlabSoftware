@@ -3,7 +3,7 @@ disp('Running MATLAB script file pcaSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION pcaSM,
 %    Principal Component Analysis
 
-itestdat = 2 ;     %  1 - random 5 x 3 matrix
+itestdat = 1 ;     %  1 - random 5 x 3 matrix
                    %  2 - random 3 x 5 matrix
 
 %vitest = [1:13] ;

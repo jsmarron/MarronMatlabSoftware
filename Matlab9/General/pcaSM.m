@@ -266,14 +266,12 @@ if npc < d    %  do reduced SVD
 
 else    %  do full eigendecomposition
 
-  [meigvec,S,V] = svd(mdat,"econ") ;
+  [meigvec,S,V] = svd(mdat,'econ') ;
 
 end
 
 veigval = diag(S).^2 / (n - 1) ;
     %  Eigenvalues of covariance matrix 
-    %      (recall squares of singular values, 
-    %       scaled by 1 / (n - 1))
 
 
 if  viout(5) == 1  || ...
@@ -281,6 +279,7 @@ if  viout(5) == 1  || ...
     iorient == 2  || ...
     iorient == 3     %  then compute projections of data on eigenvectors
 
+%  mpc = sqrt(n - 1) * meigvec' * mdat ;
   mpc = S * V' ;
       %  npc x n matrix of projections of data on eigenvectors
 

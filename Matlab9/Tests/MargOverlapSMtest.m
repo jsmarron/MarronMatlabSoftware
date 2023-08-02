@@ -5,7 +5,7 @@ disp('Running MATLAB script file MargOverlapSMtest.m') ;
 
 
 
-itest = 64 ;     %  1,2,...,70
+itest = 101 ;     %  1,2,...,70
                  %  101 
 
 
@@ -631,9 +631,10 @@ elseif itest < 200 ;    %  test carefully chosen distributions
 
   if itest == 101 ;  %  shifting normal means: mean, sd, skewness, kurtosis
     datstr = 'Gaussian, Shifting Mean' ;
-    vistat = [1 2 3 4] ;
+    viol = [1 2 3 4 5] ;
     mdata = randn(d,n) ;
     mdata = mdata + (linspace(-5,5,d)' * ones(1,n)) ;
+  vflag = logical([ones(1,n/2) zeros(1,n/2)]) ;
 
 
 %{
@@ -661,15 +662,15 @@ elseif itest < 200 ;    %  test carefully chosen distributions
   [temp,vind] = sort(rand(d,1)) ;
   mdata = mdata(vind,:) ;
 
-  for ifig = 1:length(vistat) ;
+  for ifig = 1:length(viol) ;
     figure(ifig) ;
 
     titlecellstr = {{'' datstr 'Simulated Data' ['n = ' num2str(n) ',   d = ' num2str(d)]}} ;
-    savestr = ['MargOverlapSMtestPart' num2str(itest) 'Stat' num2str(vistat(ifig))] ;
-    paramstruct = struct('istat',vistat(ifig), ...
+    savestr = ['MargOverlapSMtestPart' num2str(itest) 'Overlap' num2str(viol(ifig))] ;
+    paramstruct = struct('ioverlap',viol(ifig), ...
                          'titlecellstr',titlecellstr, ...
                          'savestr',savestr) ;
-    MargOverlapSM(mdata,paramstruct) ;
+    MargOverlapSM(mdata,vflag,paramstruct) ;
 
   end ;
 

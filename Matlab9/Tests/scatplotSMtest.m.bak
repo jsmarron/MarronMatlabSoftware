@@ -4,7 +4,7 @@ disp('Running MATLAB script file scatplotSMtest.m') ;
 %    SCATterplot MATrix view of data
 
 
-itest = 83 ;     %  1,...,85
+itest = 82 ;     %  1,...,85
 
 
 

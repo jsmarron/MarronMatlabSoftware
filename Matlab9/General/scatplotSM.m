@@ -326,7 +326,7 @@ function scatplotSM(data,mdir,paramstruct)
 %
 npcadiradd = 0 ;
 irecenter = 1 ;
-iorient = 3 ;
+iorient = 1 ;
 iforcenaivesp = 0 ;
 icolor = 1 ;
 markerstr = 'o' ;

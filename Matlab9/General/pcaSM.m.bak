@@ -46,8 +46,8 @@ function outstruct = pcaSM(mdat,paramstruct)
 %                             direction.
 %                     2  re-orient each eigenvector to make largest 2nd moment
 %                             (on each side of the origin) go in positive direction
-%                     3  re-orient each eigenvector (NOT scores) to point  
-%                             mostly towards the "45 degree line", 
+%                     3  re-orient each eigenvector (NOT scores) to point mostly 
+%                             towards the "45 degree line", 
 %                             i. e. so that the sum of the entries is positive
 %                             Note: this tends to keep data scores
 %                             "mostly in the same quadrant" making it

@@ -4,7 +4,7 @@ disp('Running MATLAB script file scatplotSMtest.m') ;
 %    SCATterplot MATrix view of data
 
 
-itest = 83 ;     %  1,...,85
+itest = 82 ;     %  1,...,85
 
 
 
@@ -1921,25 +1921,36 @@ elseif itest == 78 ;
 
 elseif itest == 79 ;
 
-  mdata = (ones(2,1) * (1:100) - 100) / 25 ;
+  rng(20934847) ;
+      %  Set seed so can continue with same example 
+
+  mdata = (ones(2,1) * (1:100) - 80) / 25 ;
+  mdata(2,:) = -4 - mdata(2,:) ;
   mdata = mdata + 0.1 * randn(2,100) ;
 
   mdir = eye(2) ;
 
-  titlecellstr = {{'2-d Toy, High Correlation' 'Raw Data, Uncentered'}} ;
+  titlecellstr = {{'2-d Toy, High Correlation' ...
+                   'Raw Data, Uncentered, itest = 79'}} ;
 
   paramstruct = struct('irecenter',0, ...
                        'icolor',2, ...
                        'titlecellstr',titlecellstr, ...
                        'iscreenwrite',1) ;
 
-  figure(1) ;
+  figure(2) ;
+  clf
+  disp('Put in Figure 2, to compare with later examples') ;
   scatplotSM(mdata,mdir,paramstruct) ;
 
 
 elseif itest == 80 ;
 
-  mdata = (ones(2,1) * (1:100) - 100) / 25 ;
+  rng(20934847) ;
+      %  Use seed to continue with same data as in Figure 2
+
+  mdata = (ones(2,1) * (1:100) - 80) / 25 ;
+  mdata(2,:) = -4 - mdata(2,:) ;
   mdata = mdata + 0.1 * randn(2,100) ;
 
   mdir = eye(2) ;
@@ -1960,7 +1971,11 @@ elseif itest == 80 ;
 
 elseif itest == 81 ;
 
-  mdata = (ones(2,1) * (1:100) - 100) / 25 ;
+  rng(20934847) ;
+      %  Use seed to continue with same data as n Figure 2
+
+  mdata = (ones(2,1) * (1:100) - 80) / 25 ;
+  mdata(2,:) = -4 - mdata(2,:) ;
   mdata = mdata + 0.1 * randn(2,100) ;
 
   titlecellstr = {{'2-d Toy, High Correlation' 'Default PCA'}} ;
@@ -1976,7 +1991,11 @@ elseif itest == 81 ;
 
 elseif itest == 82 ;
 
-  mdata = (ones(2,1) * (1:100) - 100) / 25 ;
+  rng(20934847) ;
+      %  Use seed to continue with same data as n Figure 2
+
+  mdata = (ones(2,1) * (1:100) - 80) / 25 ;
+  mdata(2,:) = -4 - mdata(2,:) ;
   mdata = mdata + 0.1 * randn(2,100) ;
 
   titlecellstr = {{'2-d Toy, High Correlation' 'Default PCA, uncentered'}} ;
@@ -1993,14 +2012,18 @@ elseif itest == 82 ;
 
 elseif itest == 83 ;
 
-  mdata = (ones(2,1) * (1:100) - 100) / 25 ;
+  rng(20934847) ;
+      %  Use seed to continue with same data as n Figure 2
+
+  mdata = (ones(2,1) * (1:100) - 80) / 25 ;
+  mdata(2,:) = -4 - mdata(2,:) ;
   mdata = mdata + 0.1 * randn(2,100) ;
 
-  titlecellstr = {{'2-d Toy, High Correlation' 'PCA, iorient = 1'}} ;
+  titlecellstr = {{'2-d Toy, High Correlation' 'uncentered PCA, iorient = 0'}} ;
 
   paramstruct = struct('npcadiradd',2, ...
                        'irecenter',0, ...
-                       'iorient',1, ...
+                       'iorient',0, ...
                        'icolor',2, ...
                        'titlecellstr',titlecellstr, ...
                        'iscreenwrite',1) ;
@@ -2011,7 +2034,11 @@ elseif itest == 83 ;
 
 elseif itest == 84 ;
 
-  mdata = (ones(2,1) * (1:100) - 100) / 25 ;
+  rng(20934847) ;
+      %  Use seed to continue with same data as n Figure 2
+
+  mdata = (ones(2,1) * (1:100) - 80) / 25 ;
+  mdata(2,:) = -4 - mdata(2,:) ;
   mdata = mdata + 0.1 * randn(2,100) ;
 
   mdir = [0.49 0.51 ; ...
@@ -2036,7 +2063,11 @@ elseif itest == 84 ;
 
 elseif itest == 85 ;
 
-  mdata = (ones(2,1) * (1:100) - 100) / 25 ;
+  rng(20934847) ;
+      %  Use seed to continue with same data as n Figure 2
+
+  mdata = (ones(2,1) * (1:100) - 80) / 25 ;
+  mdata(2,:) = -4 - mdata(2,:) ;
   mdata = mdata + 0.1 * randn(2,100) ;
 
   mdir = [0.49 0.51 ; ...
@@ -2058,8 +2089,6 @@ elseif itest == 85 ;
   disp('        i.e. negative diagonal, thus projections have ') ;
   disp('        very small range (horizontal axes) ') ;
   disp('        and do not have length 1 (hence get normalization messages)') ;
-
-
 
 
 

@@ -75,14 +75,14 @@ function scatplotSM(data,mdir,paramstruct)
 %                             direction.
 %                     2  re-orient each eigenvector to make largest 2nd moment
 %                             (on each side of the origin) go in positive direction
-%                     3  re-orient each eigenvector to point mostly 
-%                             towards the "45 degree line", 
-%                             i. e. so that the sum of the entries is positive
-%                             Note: this tends to keep data scores
-%                             "mostly in the same quadrant" making it
-%                             useful for non mean centered data views
-%                     Note:  this only effects added pc directions 
-%                             (not input mdir directions)
+%                     3  re-orient each eigenvector (NOT scores) to point  
+%                             mostly towards the "45 degree line", 
+%                             i. e. so that the sum of the 
+%                             eigenvector entries is positive
+%                     Note:  these only effect added pc directions 
+%                               (NOT input mdir directions)
+%                     Note:  these are computed on object mean centered data
+%                               so may look different when not centering
 %
 %    iforcenaivesp    Indicator to FORCE NAIVE ScatterPlot (instead of default
 %                     of projection onto 2-d plane determined by two direction
@@ -206,7 +206,8 @@ function scatplotSM(data,mdir,paramstruct)
 %                        because defaults give "good visual impression
 %                        of decomposition".  It is mostly intended to allow
 %                        the highlighting of "visually different scales" in data.
-%                        But this comes at the cost of reduced detail being visible in the plots
+%                        But this comes at the cost of reduced detail 
+%                        being visible in the plots
 %
 %    iplotaxes        0 do not plot axes
 %                     1 (default) plot axes as determined by direction vectors, 
@@ -243,8 +244,11 @@ function scatplotSM(data,mdir,paramstruct)
 %                                needed for correct pass to subroutine
 %                                It may change in later versions of Matlab
 %                    default is an empty cell array, {}, which then gives
-%                        "Direction i", for the ith Direction Vector
-%???
+%                        "Input Dir'n i Scores", for the 
+%                            ith Input Direction Vector
+%                        "PCi Scores"  for added PC Directions
+%                        "Orthogonal PCi Scores"  for added PC Directions
+%                            in space orthogonal to input directions
 %                    For no labels, use {''; ''; ''}
 %                    Number of rows should be size(mdir,2) + abs(npcadiradd)
 %                        Empty entries default to "Direction i"
@@ -278,17 +282,6 @@ function scatplotSM(data,mdir,paramstruct)
 %
 %    iscreenwrite     0  (default)  no screen writes
 %                     1  write to screen to show progress
-%
-%         These parameters create data for use by Marc Niethammer's mexplorer
-%         They require savestr, and either icolor or markerstr to be manually set
-%         Also, all but cellsubtypes must be non-empty
-%         Then they create a figure file, which is used by mexplorer
-%
-%    celltypes 
-%    cellsubtypes
-%    slidenames
-%    slideids 
-%
 %
 %
 % Outputs:
@@ -353,12 +346,6 @@ savestr = [] ;
 savetype = 1 ;
 iscreenwrite = 0 ;
 
-%{
-celltypes = [];
-cellsubtypes = [];
-slidenames = [];
-slideids = [];
-%}
 
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
@@ -486,40 +473,9 @@ if nargin > 2   %  then paramstruct is an argument
     iscreenwrite = paramstruct.iscreenwrite ;
   end
 
-%{  
-  if isfield(paramstruct,'celltypes')    % then change to input value
-    celltypes = paramstruct.celltypes ;
-  end
-  
-  if isfield(paramstruct,'cellsubtypes')    % then change to input value
-    cellsubtypes = paramstruct.cellsubtypes ;
-  end
-  
-  if isfield(paramstruct,'slidenames')    % then change to input value
-    slidenames = paramstruct.slidenames ;
-  end
-  
-  if isfield(paramstruct,'slideids')    % then change to input value
-    slideids = paramstruct.slideids ;
-  end
-%}
-
 
 end    %  of resetting of input parameters
 
-%{
-%  Set up output for mexplorer
-%  i.e.  set flag to augment with user data
-%
-if ( ~isempty( slidenames ) & ~isempty( slideids ) & ~isempty( celltypes ) )
-  augmentWithUserData = 1;
-  if ( isempty( cellsubtypes ) )
-    cellsubtypes = cell( size( celltypes ) ); % just initialize it empty
-  end
-else
-  augmentWithUserData = 0;
-end
-%}
 
 %  set preliminary stuff
 %
@@ -723,13 +679,18 @@ if abs(npcadiradd) > 0    %  then add PCA Direction vectors to mdir
 
       for ipc = 1:abs(npcadiradd)
         if npcadiradd > 0
-          labelcellstr = cat(1,labelcellstr,{['PC' num2str(ipc) ' Direction']}) ;
+          labelcellstr = cat(1,labelcellstr,{['PC' num2str(ipc) ' Scores']}) ;
         else
-          labelcellstr = cat(1,labelcellstr,{['Ortho PC' num2str(ipc) ' Direction']}) ;
+          labelcellstr = cat(1,labelcellstr,{['Orthogonal PC' num2str(ipc) ' Scores']}) ;
         end
       end
 
     end
+%                        "Input Direction i Scores", for the 
+%                            ith Input Direction Vector
+%                        "PCi Scores"  for added PC Directions
+%                        "Orthogonal PCi Scores"  for added PC Directions
+%                            in space orthogonal to input directions
 
   else    % use default labels
 
@@ -742,9 +703,9 @@ if abs(npcadiradd) > 0    %  then add PCA Direction vectors to mdir
     end
     for ipc = 1:abs(npcadiradd)    %    fill in with "pc" labels for the rest
       if npcadiradd > 0
-        labelcellstr = cat(1,labelcellstr,{['PC' num2str(ipc) ' Direction']}) ;
+        labelcellstr = cat(1,labelcellstr,{['PC' num2str(ipc) ' Scores']}) ;
       else
-        labelcellstr = cat(1,labelcellstr,{['Ortho PC' num2str(ipc) ' Direction']}) ;
+        labelcellstr = cat(1,labelcellstr,{['Ortho PC' num2str(ipc) ' Scores']}) ;
       end
     end
 
@@ -784,7 +745,7 @@ for ic = 1:ncomp
   if vlabelflag(ic) == 0
     xlabstr = '' ;
   elseif vlabelflag(ic) == 1
-    xlabstr = ['Direction ' num2str(ic)]  ;
+    xlabstr = ['Input Dir''n ' num2str(ic) ' Scores']  ;
   else
     xlabstr = labelcellstr{ic} ;
   end
@@ -824,15 +785,6 @@ for ic = 1:ncomp
       end
     end
 
-%{
-    if ( augmentWithUserData )
-      paramstruct1.celltypes = celltypes;
-      paramstruct1.cellsubtypes = cellsubtypes;
-      paramstruct1.slidenames = slidenames;
-      paramstruct1.slideids = slideids;
-    end
-%}
-
     projplot1SM(datac,mdir(:,ic),paramstruct1) ;
 
 
@@ -847,7 +799,7 @@ for ic = 1:ncomp
   if vlabelflag(ic) == 0
     ylabstr = '' ;
   elseif vlabelflag(ic) == 1
-    ylabstr = ['Direction ' num2str(ic)]  ;
+    ylabstr = ['Input Dir''n ' num2str(ic) ' Scores']  ;
   else
     ylabstr = labelcellstr{ic} ;
   end
@@ -875,7 +827,7 @@ for ic = 1:ncomp
       if vlabelflag(jc) == 0
         xlabstr = '' ;
       elseif vlabelflag(jc) == 1
-        xlabstr = ['Direction ' num2str(jc)]  ;
+        xlabstr = ['Input Dir''n ' num2str(jc) ' Scores']  ;
       else
         xlabstr = labelcellstr{jc} ;
       end
@@ -909,15 +861,6 @@ for ic = 1:ncomp
                               'ifigure',0, ...
                               'savestr',[], ...
                               'iscreenwrite',iscreenwrite) ;
-
-%{
-        if ( augmentWithUserData )
-          paramstruct2.celltypes = celltypes;
-          paramstrcut2.cellsubtypes = cellsubtypes;
-          paramstruct2.slidenames = slidenames;
-          paramstruct2.slideids = slideids;
-        end
-%}
 
         projplot2SM(datac,[mdir(:,jc) mdir(:,ic)],paramstruct2) ;
 

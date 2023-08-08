@@ -48,10 +48,8 @@ function outstruct = pcaSM(mdat,paramstruct)
 %                             (on each side of the origin) go in positive direction
 %                     3  re-orient each eigenvector (NOT scores) to point  
 %                             mostly towards the "45 degree line", 
-%                             i. e. so that the sum of the entries is positive
-%                             Note: this tends to keep data scores
-%                             "mostly in the same quadrant" making it
-%                             useful for non mean centered data views
+%                             i. e. so that the sum of the 
+%                             eigenvector entries is positive
 %
 %    iprestd          0  (default)  treat as raw data and standardize,
 %                             i.e. subtract column object mean vector

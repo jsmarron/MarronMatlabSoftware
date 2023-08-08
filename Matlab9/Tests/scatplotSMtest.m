@@ -4,7 +4,7 @@ disp('Running MATLAB script file scatplotSMtest.m') ;
 %    SCATterplot MATrix view of data
 
 
-itest = 82 ;     %  1,...,85
+itest = 85 ;     %  1,...,85
 
 
 
@@ -42,7 +42,7 @@ elseif itest == 2 ;
 
 elseif itest == 3 ;
 
-  disp(['same as above, but sort data for bette rainbow view']) ;
+  disp(['same as above, but sort data for better rainbow view']) ;
   vunif = rand(1,50) - 0.4 ;
   vunif = sort(vunif) ;
   mdata = [vunif; vunif.^2 - 0.1; 10 * rand(1,50) - 1] ;
@@ -245,7 +245,7 @@ elseif itest == 11 ;
                        'savestr','temp', ...
                        'titlecellstr',titlecellstr, ...
                        'titlefontsize',15, ...
-                       'labelfontsize',18, ...
+                       'labelfontsize',6, ...
                        'iscreenwrite',1) ;
 
   figure(1) ;
@@ -1955,7 +1955,7 @@ elseif itest == 80 ;
 
   mdir = eye(2) ;
 
-  titlecellstr = {{'2-d Toy, High Correlation' 'Raw Data, iorient = 1'}} ;
+  titlecellstr = {{'2-d Toy, High Correlation' 'Raw Data, iorient = 1 (see note)'}} ;
 
   paramstruct = struct('irecenter',0, ...
                        'iorient',1, ...
@@ -1992,13 +1992,14 @@ elseif itest == 81 ;
 elseif itest == 82 ;
 
   rng(20934847) ;
-      %  Use seed to continue with same data as n Figure 2
+      %  Use seed to continue with same data as in Figure 2
 
   mdata = (ones(2,1) * (1:100) - 80) / 25 ;
   mdata(2,:) = -4 - mdata(2,:) ;
   mdata = mdata + 0.1 * randn(2,100) ;
 
-  titlecellstr = {{'2-d Toy, High Correlation' 'Default PCA, uncentered'}} ;
+  titlecellstr = {{'2-d Toy, High Correlation' ...
+                   'Default PCA, uncentered (see note)'}} ;
 
   paramstruct = struct('npcadiradd',2, ...
                        'irecenter',0, ...
@@ -2008,6 +2009,8 @@ elseif itest == 82 ;
 
   figure(1) ;
   scatplotSM(mdata,[],paramstruct) ;
+
+  disp('Recall iorient only computed on centered data') ;
 
 
 elseif itest == 83 ;
@@ -2019,7 +2022,8 @@ elseif itest == 83 ;
   mdata(2,:) = -4 - mdata(2,:) ;
   mdata = mdata + 0.1 * randn(2,100) ;
 
-  titlecellstr = {{'2-d Toy, High Correlation' 'uncentered PCA, iorient = 0'}} ;
+  titlecellstr = {{'2-d Toy, High Correlation' ...
+                   'Uncentered PCA, iorient = 0 (see note)'}} ;
 
   paramstruct = struct('npcadiradd',2, ...
                        'irecenter',0, ...
@@ -2030,6 +2034,8 @@ elseif itest == 83 ;
 
   figure(1) ;
   scatplotSM(mdata,[],paramstruct) ;
+
+  disp('Recall iorient only computed on centered data') ;
 
 
 elseif itest == 84 ;
@@ -2047,8 +2053,9 @@ elseif itest == 84 ;
   titlecellstr = {{'2-d Toy, High Correlation' 'Input dir''ns near negative diagonal'}} ;
 
   paramstruct = struct('npcadiradd',0, ...
-                       'irecenter',0, ...
+                       'irecenter',1, ...
                        'icolor',2, ...
+                       'iplotdirvec',1, ...
                        'titlecellstr',titlecellstr, ...
                        'iscreenwrite',1) ;
 
@@ -2056,8 +2063,7 @@ elseif itest == 84 ;
   scatplotSM(mdata,mdir,paramstruct) ;
   
   disp('Note:  Direction vectors are close to 135 degree line,') ;
-  disp('        i.e. negative diagonal, thus projections have ') ;
-  disp('        very small range (horizontal axes) ') ;
+  disp('        i.e. negative diagonal ') ;
   disp('        and do not have length 1 (hence get normalization messages)') ;
 
 
@@ -2079,6 +2085,7 @@ elseif itest == 85 ;
                        'irecenter',0, ...
                        'iforcenaivesp',1, ...
                        'icolor',2, ...
+                       'iplotdirvec',1, ...
                        'titlecellstr',titlecellstr, ...
                        'iscreenwrite',1) ;
 
@@ -2086,8 +2093,7 @@ elseif itest == 85 ;
   scatplotSM(mdata,mdir,paramstruct) ;
 
   disp('Note:  Direction vectors are close to 135 degree line,') ;
-  disp('        i.e. negative diagonal, thus projections have ') ;
-  disp('        very small range (horizontal axes) ') ;
+  disp('        i.e. negative diagonal ') ;
   disp('        and do not have length 1 (hence get normalization messages)') ;
 
 

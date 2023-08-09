@@ -1,12 +1,12 @@
-function [mapout,xgrid,vrowmax] = sz2SM(data,paramstruct) 
-% SZ2SM, Significant derivative Zero crossings
-%   Steve Marron's matlab function
+function [mapout,xgrid,vrowmax] = sc2SM(data,paramstruct) 
+% SC2SM, Significant Concav(vex)ity
+%  Steve Marron's matlab function
 %     Creates color map (function of location and bandwidth),
-%     showing statistical significance of slope of smooth
+%     showing statistical signicance of slope of smooth
 %     Colored (or gray level) as:
-%         blue (dark)    at points where deriv sig > 0
-%         red (light)    at points where deriv sig < 0
-%         purple (gray)  at points where deriv roughly 0
+%         orange (dark)    at points where 2nd deriv sig > 0
+%         cyan (light)    at points where 2nd deriv sig < 0
+%         green (gray)  at points where 2nd deriv roughly 0
 %         light gray where "effective sample size" < 5
 %
 % Inputs:
@@ -214,7 +214,7 @@ if nargin > 1   %  then paramstruct has been added
   end
 
 
-end   %  of resetting of input parameters
+end    %  of resetting of input parameters
 
 
 
@@ -228,7 +228,7 @@ if size(data,2) == 1    %  Then is density estimation
   idatyp = 1 ;
   itdist = 0 ;
       %  use Gaussian distribution, not t
-      
+
 else                    %  Then assume regression ;
   xdat = data(:,1) ;
   ydat = data(:,2) ;
@@ -240,7 +240,7 @@ else                    %  Then assume regression ;
     itdist = 0 ;
       %  use Gaussian distribution, not t
   end
-  
+
 end
 
 
@@ -276,7 +276,7 @@ else
     vh = logspace(log10(hmin),log10(hmax),nh) ;
   else    %  bad inputs, warn and quit
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Error from sz2SM.m:          !!!') ;
+    disp('!!!   Error from sc2SM.m:          !!!') ;
     disp('!!!   Bad inputs in vhgp,          !!!') ;
     disp('!!!   Reguires vhgp(1) < vhgp(2)   !!!') ;
     disp('!!!   Terminating execution        !!!') ;
@@ -315,12 +315,12 @@ n = sum(bincts(:,1)) ;
 
 %  Construct Surfaces
 %
-mdsurf = [] ;
+md2surf = [] ;
           %  Derivative surface
 mesurf = [] ;
           %  Effective sample size surface
 mvsurf = [] ;
-          %  Estimated Variance of Derivative
+          %  Estimated Variance of 2nd Derivative
 if itdist == 0
   vgq = [] ;
           %  Vector of Gaussian Quantiles (for simultaneous CI's)
@@ -334,35 +334,35 @@ delta = (right - left) / (ngrid - 1) ;    %  binwidth
 k = ngrid - 1 ;    %  index of last nonzero entry of kernel vector
 
 %  If simultaneity is global set up here for use later
-if simflag == 3         %  do Global Simultaneous C.I.'s 
-                        %    (using approximate independence of rows)
+if simflag == 3         %  do Global Simultaneous C.I.'s (using approximate independence of rows)
 
- numind=sum(ngrid*erf(sqrt((3/2)*log(ngrid)*delta^2./(4*vh.^2)))) ;
-                        %  Sum (across different scales) of effective 
-                        %    number of independent groups by Hsing  
+  numind=sum(ngrid*erf(sqrt((5/2)*log(ngrid)*delta^2./(4*vh.^2)))) ;
+                        %  Sum (across different scales) of effective number of independent groups by Hsing  
     
      
-elseif simflag == 4      % do Global Simultaneuous CI's 
-                         %   (accounting for row dependency)
+elseif simflag == 4      %  do Global Simultaneuous CI's 
+                         %     (accounting for row dependency)
 
-%{
+%{    
   integrand = ...
        inline('exp(-x).*(1+erf((A-x/(2*A))/sqrt(2))).*(1+erf((B-x/(2*B))/sqrt(2)))/4','x','A','B');
 %}
   integrand = @(x,A,B) (exp(-x).*(1+erf((A-x/(2*A))/sqrt(2))) ...
                                .*(1+erf((B-x/(2*B))/sqrt(2)))/4) ;
-
+    
   numind = 0 ;
-  for iint = 1:nh % average over rows to adjust for non-stationarity
-%{      
+  for iint = 1:nh    % average over rows to adjust for non-stationarity
+      
+%{
     numind=numind+quad(integrand,0,1000,[],[],...
-          sqrt(3*log(ngrid*nh))*delta/(2*vh(iint)),...
-          sqrt(3*log(ngrid*nh))*(vh(2)/vh(1)-1)/2 );
+          sqrt(5*log(ngrid*nh))*delta/(2*vh(iint)),...
+          sqrt(5*log(ngrid*nh))*(vh(2)/vh(1)-1)/2 );
 %}
-    numind=numind+integral(@(x)integrand(x, ...
-                               sqrt(3*log(ngrid*nh))*delta/(2*vh(iint)), ...
-                               sqrt(3*log(ngrid*nh))*(vh(2)/vh(1)-1)/2), ...
-                           0,1000);
+
+
+
+
+
   end
   
   numind = ngrid*numind;
@@ -407,26 +407,25 @@ for ih = 1:nh
           %  denominator of NW est.
           %    (same as sum for kde)
 
-    kvecd = -arg .* exp(-(arg.^2) / 2) / sqrt(2 * pi) ;
-    kvecd = [-flipud(kvecd(2:k+1)); kvecd] ;
+    kvecd2 = (arg.^2 - 1) .* exp(-(arg.^2) / 2) / sqrt(2 * pi) ;
+    kvecd2 = [flipud(kvecd2(2:k+1)); kvecd2] ;
         %  construct symmetric kernel
 
-    vd = conv(babincts,kvecd) ;
-    vv = conv(babincts,kvecd.^2) ;
+    vd2 = conv(babincts,kvecd2) ;
+    vv = conv(babincts,kvecd2.^2) ;
     if  ibdryadj == 1  ||  ibdryadj == 2    %  then did boundary adjustment
-      vd = vd(ngrid+k+1:k+2*ngrid) / (n * h^2) ;
-      vv = vv(ngrid+k+1:k+2*ngrid) / (n * h^4) ;
+      vd2 = vd2(ngrid+k+1:k+2*ngrid) / (n * h^3) ;
+      vv = vv(ngrid+k+1:k+2*ngrid) / (n * h^6) ;
     else
-      vd = vd(k+1:k+ngrid) / (n * h^2) ;
-      vv = vv(k+1:k+ngrid) / (n * h^4) ;
+      vd2 = vd2(k+1:k+ngrid) / (n * h^3) ;
+      vv = vv(k+1:k+ngrid) / (n * h^6) ;
     end
-    vv = vv - vd.^2 ;
+    vv = vv - vd2.^2 ;
     vv = vv / n ;
           %  did this outside loop in nmsur5.m
 
-  else    %    Doing regression
-            %  using modification of lines from gpnpr.m
-            %  main lines from gpnpr.m, via szeg4.m
+  else    %    Doing Local regression
+          %  using modification of lines from gpnpr.m
 
     %  Vector of Effective sample sizes 
     %          (notation "s0" is consistent with below)
@@ -436,80 +435,113 @@ for ih = 1:nh
           %    (same as sum for kde)
 
     flag = (ve < 1) ;
-        %  locations with effective sample size < 1
+          %  locations with effective sample size < 1
     ve(flag) = ones(sum(flag),1) ;
-        %  replace small sample sizes by 1 to avoid 0 divide
-        %  no problem below, since gets grayed out
+          %  replace small sample sizes by 1 to avoid 0 divide
+          %  no problem below, since gets grayed out
 
+    s0 = ve ;
     s1 = conv(bincts(:,1) .* cxgrid , kvec) ;
     s1 = s1(k+1:k+ngrid) ;
     s2 = conv(bincts(:,1) .* cxgrid.^2 , kvec) ;
     s2 = s2(k+1:k+ngrid) ;
+    s3 = conv(bincts(:,1) .* cxgrid.^3 , kvec) ;
+    s3 = s3(k+1:k+ngrid) ;
+    s4 = conv(bincts(:,1) .* cxgrid.^4 , kvec) ;
+    s4 = s4(k+1:k+ngrid) ;
     t0 = conv(bincts(:,2),kvec) ;
     t0 = t0(k+1:k+ngrid) ;
-        %  numerator of NW est.
-
-    xbar = conv(bincts(:,1) .* cxgrid , kvec) ;
-    xbar = xbar(k+1:k+ngrid) ;
-        %  Weighted sum of X_i
-    xbar = xbar ./ ve ;
-        %  Weighted avg of X_i
-
+          %  numerator of NW est.
     t1 = conv(bincts(:,2) .* cxgrid , kvec) ;
     t1 = t1(k+1:k+ngrid) ;
+    t2 = conv(bincts(:,2) .* cxgrid.^2 , kvec) ;
+    t2 = t2(k+1:k+ngrid) ;
 
-    numerd = t1 - t0 .* xbar ;
-        %  sum(Y_i * (X_i - xbar)) * W      (weighted cov(Y,X))
-    denomd = s2 - 2 * s1 .* xbar + ve .* xbar.^2 ;
-        %  sum((X_i - xbar)^2) * W      (weighted var(X))
 
-    flag2 = denomd < (10^(-10) * mean(denomd)) ;
-        %  for local linear, need to also flag locations where this
-        %  is small, because could have many observaitons piled up
-        %  at one location
+
+    xbar = s1 ./ s0 ;
+          %  Weighted sum of X_i   (0 denons covered by above protection)
+    ybar = t0 ;
+          %  Weighted sum of Y_i    (numerator of NW est.)
+
+    mhat = ybar ./ ve ;
+          %  Nadaraya Watson est.   (0 denons covered by above protection)
+
+    a = t1 - t0 .* xbar ;
+          %  sum(Y_i * (X_i - xbar)) * W      (weighted cov(Y,X))
+    b = t2 - 2 * t1 .* xbar + t0 .* xbar.^2 ;
+          %  sum(Y_i * (X_i - xbar)^2) * W  
+
+    v = s2 - 2 * s1 .* xbar + ve .* xbar.^2 ;
+          %  sum((X_i - xbar)^2) * W      (weighted var(X))
+    w = s3 - 3 * s2 .* xbar + 3 * s1 .* xbar.^2 - ve .* xbar.^3 ;
+          %  sum((X_i - xbar)^3) * W   
+    u = s4 - 4 * s3 .* xbar + 6 * s2 .* xbar.^2 ...
+                       - 4 * s1 .* xbar.^3 + ve .* xbar.^4 ;
+          %  sum((X_i - xbar)^4) * W   
+
+    detm = ve .* v .* u - ve .* w.^2 - v.^3 ;
+
+    flag2 = abs(detm) < (10^(-10) * mean(abs(detm))) ;
+          %  need to also flag locations where this
+          %  is small, because could have many observations piled up
+          %  at one location
     ve(flag2) = ones(sum(flag2),1) ;
-        %  also reset these, because could have more than 5 piled up
-        %  at a single point, but nothing else in window
+          %  also reset these, because could have more than 5 piled up
+          %  at a single point, but nothing else in window
     flag = flag | flag2 ;
-        %  logical "or", which flags both types of locations
-        %  to avoid denominator problems
+          %  logical "or", which flags both types of locations
+          %  to avoid denominator problems
+    detm(flag) = ones(sum(flag),1) ;
+          %  this avoids zero divide problems, OK, since grayed out later
 
-    denomd(flag) = ones(sum(flag),1) ;
-        %  this avoids zero divide problems, OK, since grayed out later
 
-    mhat = t0 ./ ve ;
-    vd = numerd ./ denomd ;
-        %  linear term from local linear fit (which est's deriv).
-        %       (sometimes called betahat)
+    gammahat = - v.^2 .* ybar - ve .* w .* a + ve .* v .* b ;
+    gammahat = gammahat ./ detm ;
+    vd2 = gammahat ;
+
+
+    minv11 = (v.* u - w.^2) ./ detm ;
+    minv12 = (w .* v) ./ detm ;
+    minv13 = (-v .^2) ./ detm ;
+    minv22 = (ve .* u - v.^2) ./ detm ;
+    minv23 = (-ve .* w) ./ detm ;
+    minv33 = (ve .* v) ./ detm ;
+
+    ctminvc = ybar.^2 .* minv11 + 2 * ybar .* a .* minv12 ...
+                       + 2 * ybar .* b .* minv13 + a.^2 .* minv22 ...
+                       + 2 * a .* b .* minv23 + b.^2 .* minv33 ;
+    ctminvc = ctminvc ./ ve ;  %   (0 denoms covered by above protection)
 
     sig2 = conv(bincts2(:,2),kvec) ;
     sig2 = sig2(k+1:k+ngrid) ;
-    sig2 = sig2 ./ ve - mhat.^ 2 ;
+    sig2 = sig2 ./ ve ;      %   (0 denoms covered by above protection)
+    sig2res = sig2 - ctminvc ;
 
-    flag2 = sig2 < (10^(-10) * mean(sig2)) ;
-    ve(flag2) = ones(sum(flag2),1) ;
-        %  also reset these
-    flag = flag | flag2 ;
-        %  logical "or", which flags both types of locations
-        %  to avoid denominator problems
-    sig2(flag) = ones(sum(flag),1) ;
-        %  this avoids zero divide problems, OK, since grayed out later
 
-    rho2 = vd.^2 .* (denomd ./ (sig2 .* ve)) ;
-    sig2res = (1 - rho2) .* sig2 ;
-        %  get the residual variance from local linear reg.
+    z0 = conv(bincts(:,1) .* sig2res , kvec.^2) ;
+    z0 = z0(k+1:k+ngrid) ;
+    z1 = conv(bincts(:,1) .* sig2res .* cxgrid , kvec.^2) ;
+    z1 = z1(k+1:k+ngrid) ;
+    z2 = conv(bincts(:,1) .* sig2res .* cxgrid.^2 , kvec.^2) ;
+    z2 = z2(k+1:k+ngrid) ;
+    z3 = conv(bincts(:,1) .* sig2res .* cxgrid.^3 , kvec.^2) ;
+    z3 = z3(k+1:k+ngrid) ;
+    z4 = conv(bincts(:,1) .* sig2res .* cxgrid.^4 , kvec.^2) ;
+    z4 = z4(k+1:k+ngrid) ;
 
-    u0 = conv(bincts(:,1) .* sig2res , kvec.^2) ;
-    u0 = u0(k+1:k+ngrid) ;
-    u1 = conv(bincts(:,1) .* sig2res .* cxgrid , kvec.^2) ;
-    u1 = u1(k+1:k+ngrid) ;
-    u2 = conv(bincts(:,1) .* sig2res .* cxgrid.^2 , kvec.^2) ;
-    u2 = u2(k+1:k+ngrid) ;
-    vv = u2 - 2 * u1 .* xbar + u0 .* xbar.^2 ;
-    vv = vv ./ denomd.^2 ;
-        %  vector of variances of slope est. (from local linear)
+    vv = v.^4 .* z0 + 2 * v.^2 .* w .* ve .* (z1 - z0 .* xbar) ...
+          + (-2 * v.^3 .* ve + w.^2 .* ve.^2) .* ...
+              (z2 - 2 * z1 .* xbar + z0 .* xbar.^2) ...
+          - 2 * w .* v .* ve.^2 .* ...
+              (z3 - 3 * z2 .* xbar + 3 * z1 .* xbar.^2 - z0 .* xbar.^3) ...
+          + v.^2 .* ve.^2 .* (z4 - 4 * z3 .* xbar + 6 * z2 .* xbar.^2 ...
+                       - 4 * z1 .* xbar.^3 + z0 .* xbar.^4) ;
+    vv = vv ./ detm.^2 ;
+          %  vector of variances of slope est. (from local linear)
 
   end
+
 
 
 
@@ -533,6 +565,7 @@ for ih = 1:nh
           %  Crude average effective sample size
       numind = n / nxbar ;
           %  Effective number of independent groups
+       
 
       beta = (1 - alpha)^(1/numind) ;
       if itdist == 0
@@ -540,15 +573,14 @@ for ih = 1:nh
       elseif itdist == 1
         vtquant = -tinv((1 - beta) / 2,ve-1) ;
       end
- 
-      
+
     elseif simflag == 2         %  do current row-wise simultaneous CI's
  
-       numind=ngrid*erf(sqrt((3/2)*log(ngrid)*delta^2/(4*h^2))) ;
+        numind=ngrid*erf(sqrt((5/2)*log(ngrid)*delta^2/(4*h^2))) ;
 
                %  Effective number of independent groups by Hsing
                %  Alternative formula is:
-               %  numind=ngrid*erf((3/2)*sqrt(log(ngrid)*(1-exp(-delta^2/(4*h^2))))) ;
+               %  numind=ngrid*erf((5/2)*sqrt(log(ngrid)*(1-exp(-delta^2/(4*h^2))))) ;
 
       beta = (1 - alpha)^(1/numind) ;
 
@@ -560,7 +592,7 @@ for ih = 1:nh
   
 
     elseif  simflag == 3  || ...
-            simflag == 4         %  do Global Simultaneous C.I.'s
+            simflag == 4          %  do Global Simultaneous C.I.'s
                % numind prepared earlier - line 332
         
       beta = (1 - alpha)^(1/numind) ;
@@ -572,7 +604,7 @@ for ih = 1:nh
       end
         
     end
-    
+
   else        % if all pixels on a row are grey
       
     if itdist == 0
@@ -580,11 +612,11 @@ for ih = 1:nh
     elseif itdist == 1
         vtquant = inf * ones(ngrid,1) ;
     end
-    
+
   end
 
 
-  mdsurf = [mdsurf vd] ;
+  md2surf = [md2surf vd2] ;
   mesurf = [mesurf ve] ;
   mvsurf = [mvsurf vv] ;
   if itdist == 0
@@ -602,20 +634,20 @@ end
 %
 if itdist == 0
   if nh > 1    %  then have full matrices
-    mloci = mdsurf - vec2matSM(vgq,ngrid) .* sqrt(mvsurf) ;
+    mloci = md2surf - vec2matSM(vgq,ngrid) .* sqrt(mvsurf) ;
             %  Lower confidence (simul.) surface for derivative
-    mhici = mdsurf + vec2matSM(vgq,ngrid) .* sqrt(mvsurf) ;
+    mhici = md2surf + vec2matSM(vgq,ngrid) .* sqrt(mvsurf) ;
             %  Upper confidence (simul.) surface for derivative
   else       %  have only vectors (since only one h)
-    mloci = mdsurf - vgq * sqrt(mvsurf) ;
+    mloci = md2surf - vgq * sqrt(mvsurf) ;
             %  Lower confidence (simul.) surface for derivative
-    mhici = mdsurf + vgq * sqrt(mvsurf) ;
+    mhici = md2surf + vgq * sqrt(mvsurf) ;
             %  Upper confidence (simul.) surface for derivative
   end
 elseif itdist == 1
-  mloci = mdsurf - mtq .* sqrt(mvsurf) ;
+  mloci = md2surf - mtq .* sqrt(mvsurf) ;
           %  Lower confidence (simul.) surface for derivative
-  mhici = mdsurf + mtq .* sqrt(mvsurf) ;
+  mhici = md2surf + mtq .* sqrt(mvsurf) ;
           %  Upper confidence (simul.) surface for derivative
 end
 
@@ -628,14 +660,14 @@ end
 %          4 (very light)   - Deriv. Sig. < 0 
 
 mapout = 3 * ones(size(mloci)) ;
-            %  default is purple (middle lighter gray)
+            %  default is middle lighter gray
 
 flag = (mloci > 0) ;
             %  matrix of ones where lo ci above 0
 ssflag = sum(sum(flag)) ;
 if ssflag > 0
   mapout(flag) = ones(ssflag,1) ;
-            %  put blue (dark grey) where significantly positive
+            %  put dark grey where significantly positive
 end
 
 
@@ -644,7 +676,7 @@ flag = (mhici < 0) ;
 ssflag = sum(sum(flag)) ;
 if ssflag > 0
   mapout(flag) = 4 * ones(ssflag,1) ;
-            %  put red (light gray) where significantly negative
+            %  put light grey where significantly negative
 end
 
 
@@ -654,7 +686,7 @@ ssflag = sum(sum(flag)) ;
 if ssflag > 0
 
   mapout(flag) = 2 * ones(ssflag,1) ;
-            %  put middle darker gray where effective sample size < 5
+            %  put middle darker grey where effective sample size < 5
 end
 
 
@@ -681,6 +713,10 @@ if  nargout == 0  || ...
                0,    1,   0; ...
                0,    1,   1] ; 
     colormap(cocomap) ;
+
+    mapout = mapout + 4 ;
+        %  add four to also allow SiZer colors before
+
 
   else     %  Then use gray scale maps everywhere
 
@@ -733,11 +769,9 @@ end
 %
 if nargout >= 3
 
-  vrowmax = max(abs(mdsurf' ./ sqrt(mvsurf')),[],2) ;
+  vrowmax = max(abs(md2surf' ./ sqrt(mvsurf')),[],2) ;
       %  column vector of row maxima
 
-
 end
-
 
 

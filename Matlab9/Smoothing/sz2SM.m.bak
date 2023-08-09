@@ -351,8 +351,8 @@ elseif simflag == 4      % do Global Simultaneuous CI's
 %}
   integrand = @(x,A,B) (exp(-x).*(1+erf((A-x/(2*A))/sqrt(2))) ...
                                .*(1+erf((B-x/(2*B))/sqrt(2)))/4) ;
-
   numind = 0 ;
+    
   for iint = 1:nh % average over rows to adjust for non-stationarity
 %{      
     numind=numind+quad(integrand,0,1000,[],[],...

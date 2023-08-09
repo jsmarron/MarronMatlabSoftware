@@ -151,70 +151,70 @@ iplot = 0 ;
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct has been added
+if nargin > 1   %  then paramstruct has been added
 
-  if isfield(paramstruct,'vxgp') ;    %  then change to input value
-    vxgp = getfield(paramstruct,'vxgp') ; 
-  end ;
+  if isfield(paramstruct,'vxgp')    %  then change to input value
+    vxgp = paramstruct.vxgp ; 
+  end
 
-  if isfield(paramstruct,'vhgp') ;    %  then change to input value
-    vhgp = getfield(paramstruct,'vhgp') ; 
-  end ;
+  if isfield(paramstruct,'vhgp')    %  then change to input value
+    vhgp = paramstruct.vhgp ; 
+  end
 
-  if isfield(paramstruct,'eptflag') ;    %  then change to input value
-    eptflag = getfield(paramstruct,'eptflag') ; 
-  end ;
+  if isfield(paramstruct,'eptflag')    %  then change to input value
+    eptflag = paramstruct.eptflag ; 
+  end
 
-  if isfield(paramstruct,'ibdryadj') ;    %  then change to input value
-    ibdryadj = getfield(paramstruct,'ibdryadj') ; 
-  end ;
+  if isfield(paramstruct,'ibdryadj')    %  then change to input value
+    ibdryadj = paramstruct.ibdryadj ; 
+  end
 
-  if isfield(paramstruct,'iregtdist') ;    %  then change to input value
-    iregtdist = getfield(paramstruct,'iregtdist') ; 
-  end ;
+  if isfield(paramstruct,'iregtdist')    %  then change to input value
+    iregtdist = paramstruct.iregtdist ; 
+  end
 
-  if isfield(paramstruct,'alpha') ;    %  then change to input value
-    alpha = getfield(paramstruct,'alpha') ; 
-  end ;
+  if isfield(paramstruct,'alpha')    %  then change to input value
+    alpha = paramstruct.alpha ; 
+  end
 
-  if isfield(paramstruct,'simflag') ;    %  then change to input value
-    simflag = getfield(paramstruct,'simflag') ; 
-  end ;
+  if isfield(paramstruct,'simflag')    %  then change to input value
+    simflag = paramstruct.simflag ; 
+  end
 
-  if isfield(paramstruct,'icolor') ;    %  then change to input value
-    icolor = getfield(paramstruct,'icolor') ; 
-  end ;
+  if isfield(paramstruct,'icolor')    %  then change to input value
+    icolor = paramstruct.icolor ; 
+  end
 
-  if isfield(paramstruct,'titlestr') ;    %  then change to input value
-    titlestr = getfield(paramstruct,'titlestr') ; 
-  end ;
+  if isfield(paramstruct,'titlestr')    %  then change to input value
+    titlestr = paramstruct.titlestr ; 
+  end
 
-  if isfield(paramstruct,'titlefontsize') ;    %  then change to input value
-    titlefontsize = getfield(paramstruct,'titlefontsize') ; 
-  end ;
+  if isfield(paramstruct,'titlefontsize')    %  then change to input value
+    titlefontsize = paramstructtitlefontsize ; 
+  end
 
-  if isfield(paramstruct,'xlabelstr') ;    %  then change to input value
-    xlabelstr = getfield(paramstruct,'xlabelstr') ; 
-  end ;
+  if isfield(paramstruct,'xlabelstr')    %  then change to input value
+    xlabelstr = paramstruct.xlabelstr ; 
+  end
 
-  if isfield(paramstruct,'ylabelstr') ;    %  then change to input value
-    ylabelstr = getfield(paramstruct,'ylabelstr') ; 
-  end ;
+  if isfield(paramstruct,'ylabelstr')    %  then change to input value
+    ylabelstr = paramstruct.ylabelstr ; 
+  end
 
-  if isfield(paramstruct,'labelfontsize') ;    %  then change to input value
-    labelfontsize = getfield(paramstruct,'labelfontsize') ; 
-  end ;
+  if isfield(paramstruct,'labelfontsize')    %  then change to input value
+    labelfontsize = paramstruct.labelfontsize ; 
+  end
 
-  if isfield(paramstruct,'iplot') ;    %  then change to input value
-    iplot = getfield(paramstruct,'iplot') ; 
-  end ;
+  if isfield(paramstruct,'iplot')    %  then change to input value
+    iplot = paramstruct.iplot ; 
+  end
 
-  if isfield(paramstruct,'imptyp') ;    %  then change to input value
-    imptyp = getfield(paramstruct,'imptyp') ; 
-  end ;
+  if isfield(paramstruct,'imptyp')    %  then change to input value
+    imptyp = paramstruct.imptyp ; 
+  end
 
 
-end ;  %  of resetting of input parameters
+end   %  of resetting of input parameters
 
 
 
@@ -223,33 +223,33 @@ end ;  %  of resetting of input parameters
 
 %  detect whether density or regression data
 %
-if size(data,2) == 1 ;    %  Then is density estimation
+if size(data,2) == 1    %  Then is density estimation
   xdat = data(:,1) ;
   idatyp = 1 ;
   itdist = 0 ;
       %  use Gaussian distribution, not t
       
-else ;                    %  Then assume regression ;
+else                    %  Then assume regression ;
   xdat = data(:,1) ;
   ydat = data(:,2) ;
   idatyp = 2 ;
-  if iregtdist == 1 ;
+  if iregtdist == 1
     itdist = 1 ;
       %  use t distribution
-  else ;
+  else
     itdist = 0 ;
       %  use Gaussian distribution, not t
-  end ;
+  end
   
-end ;
+end
 
 
 %  Set x grid stuff
 %
 n = length(xdat) ;
-if vxgp == 0 ;   %  then use standard default x grid
+if vxgp == 0   %  then use standard default x grid
   vxgp = [min(xdat),max(xdat),401] ;
-end ;
+end
 left = vxgp(1) ;
 right = vxgp(2) ;
 ngrid = vxgp(3) ;
@@ -261,20 +261,20 @@ cxgrid = xgrid - mean(xgrid) ;
 
 %  Set h grid stuff
 %
-if vhgp == 0 ;   %  then use standard default h grid
+if vhgp == 0   %  then use standard default h grid
   range = right - left ;
   binw = range / (ngrid - 1) ;
   vhgp = [2 * binw,range,21] ;
-end ;
+end
 hmin = vhgp(1) ;
 hmax = vhgp(2) ;
 nh = vhgp(3) ;
-if nh == 1 ;
+if nh == 1
   vh = hmax ;
-else ;
-  if hmin < hmax ;    %  go ahead with vh construction
+else
+  if hmin < hmax    %  go ahead with vh construction
     vh = logspace(log10(hmin),log10(hmax),nh) ;
-  else ;    %  bad inputs, warn and quit
+  else    %  bad inputs, warn and quit
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from sz2SM.m:          !!!') ;
     disp('!!!   Bad inputs in vhgp,          !!!') ;
@@ -282,32 +282,32 @@ else ;
     disp('!!!   Terminating execution        !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     return ;
-  end ;
-end ;
+  end
+end
 
 
 
 %  Bin the data (if needed)
 %
-if idatyp == 1 ;        %  Treating as density estimation
+if idatyp == 1        %  Treating as density estimation
 
-  if imptyp == -1 ;   %  Then data have already been binned
+  if imptyp == -1   %  Then data have already been binned
     bincts = data ;
-  else ;               %  Then need to bin data
+  else               %  Then need to bin data
     bincts = lbinrSM(xdat,vxgp,eptflag) ;
-  end ;
+  end
 
-elseif idatyp == 2 ;    %  Treating as regression
+elseif idatyp == 2    %  Treating as regression
 
-  if imptyp == -1 ;   %  Then data have already been binned
+  if imptyp == -1   %  Then data have already been binned
     bincts = data(:, [1 2]) ;
     bincts2 = data(:, [1 3]) ;
-  else ;               %  Then need to bin data
+  else               %  Then need to bin data
     bincts = lbinrSM([xdat ydat],vxgp,eptflag) ;
     bincts2 = lbinrSM([xdat, ydat.^2],vxgp,eptflag) ;
-  end ;
+  end
 
-end ;
+end
 n = sum(bincts(:,1)) ;
           %  put this here in case of truncations during binning
 
@@ -321,46 +321,56 @@ mesurf = [] ;
           %  Effective sample size surface
 mvsurf = [] ;
           %  Estimated Variance of Derivative
-if itdist == 0 ;
+if itdist == 0
   vgq = [] ;
           %  Vector of Gaussian Quantiles (for simultaneous CI's)
-elseif itdist == 1 ;
+elseif itdist == 1
   mtq = [] ;
           %  matrix of t Quantiles (for simultaneous CI's)
-end ;
+end
 
 %  Create grid for kernel values
 delta = (right - left) / (ngrid - 1) ;    %  binwidth
 k = ngrid - 1 ;    %  index of last nonzero entry of kernel vector
 
 %  If simultaneity is global set up here for use later
-if simflag == 3 ;         %  do Global Simultaneous C.I.'s (using approximate independence of rows)
+if simflag == 3         %  do Global Simultaneous C.I.'s 
+                        %    (using approximate independence of rows)
 
  numind=sum(ngrid*erf(sqrt((3/2)*log(ngrid)*delta^2./(4*vh.^2)))) ;
-                        %  Sum (across different scales) of effective number of independent groups by Hsing  
+                        %  Sum (across different scales) of effective 
+                        %    number of independent groups by Hsing  
     
      
-elseif simflag == 4      % do Global Simultaneuous CI's (accounting for row dependency)
-    
+elseif simflag == 4      % do Global Simultaneuous CI's 
+                         %   (accounting for row dependency)
+
+%{
   integrand = ...
        inline('exp(-x).*(1+erf((A-x/(2*A))/sqrt(2))).*(1+erf((B-x/(2*B))/sqrt(2)))/4','x','A','B');
+%}
+  integrand = @(x,A,B) (exp(-x).*(1+erf((A-x/(2*A))/sqrt(2))).*(1+erf((B-x/(2*B))/sqrt(2)))/4) ;
   numind = 0 ;
     
-  for iint = 1:nh ; % average over rows to adjust for non-stationarity
-      
+  for iint = 1:nh % average over rows to adjust for non-stationarity
+%{      
     numind=numind+quad(integrand,0,1000,[],[],...
           sqrt(3*log(ngrid*nh))*delta/(2*vh(iint)),...
           sqrt(3*log(ngrid*nh))*(vh(2)/vh(1)-1)/2 );
-  end;
+%}
+    numind=numind+quad(integrand,0,1000,[],[],...
+          sqrt(3*log(ngrid*nh))*delta/(2*vh(iint)),...
+          sqrt(3*log(ngrid*nh))*(vh(2)/vh(1)-1)/2 );
+  end
   
   numind = ngrid*numind;
      
-end;
+end
 
 
 
 %  Loop through bandwidths
-for ih = 1:nh ;
+for ih = 1:nh
   h = vh(ih) ;
 
   %  Set common values
@@ -370,28 +380,28 @@ for ih = 1:nh ;
         %  construct symmetric kernel
 
 
-  if idatyp == 1 ;       %  Doing density estimation
+  if idatyp == 1       %  Doing density estimation
           %  main lines from gpkde.m, via nmsur5.m
 
     %  do boundary adjustment if needed
     %
-    if ibdryadj == 1 ;    %  then do mirror image adjustment
+    if ibdryadj == 1    %  then do mirror image adjustment
       babincts = [flipud(bincts); bincts; flipud(bincts)] ;
-    elseif ibdryadj == 2 ;    %  then do circular design adjustment
+    elseif ibdryadj == 2    %  then do circular design adjustment
       babincts = [bincts; bincts; bincts] ;
-    else ;
+    else
       babincts = bincts ;
-    end ;
+    end
 
 
     %  Vector of Effective sample sizes 
     %          (notation "s0" is consistent with below)
     ve = conv(babincts,kvec) ;
-    if  ibdryadj == 1  |  ibdryadj == 2 ;    %  then did boundary adjustment
+    if  ibdryadj == 1  ||  ibdryadj == 2    %  then did boundary adjustment
       ve = ve(ngrid+k+1:k+2*ngrid) ;
-    else ;
+    else
       ve = ve(k+1:k+ngrid) ;
-    end ;
+    end
           %  denominator of NW est.
           %    (same as sum for kde)
 
@@ -401,18 +411,18 @@ for ih = 1:nh ;
 
     vd = conv(babincts,kvecd) ;
     vv = conv(babincts,kvecd.^2) ;
-    if  ibdryadj == 1  |  ibdryadj == 2 ;    %  then did boundary adjustment
+    if  ibdryadj == 1  ||  ibdryadj == 2    %  then did boundary adjustment
       vd = vd(ngrid+k+1:k+2*ngrid) / (n * h^2) ;
       vv = vv(ngrid+k+1:k+2*ngrid) / (n * h^4) ;
-    else ;
+    else
       vd = vd(k+1:k+ngrid) / (n * h^2) ;
       vv = vv(k+1:k+ngrid) / (n * h^4) ;
-    end ;
+    end
     vv = vv - vd.^2 ;
     vv = vv / n ;
           %  did this outside loop in nmsur5.m
 
-  else ;    %    Doing regression
+  else    %    Doing regression
             %  using modification of lines from gpnpr.m
             %  main lines from gpnpr.m, via szeg4.m
 
@@ -497,25 +507,25 @@ for ih = 1:nh ;
     vv = vv ./ denomd.^2 ;
         %  vector of variances of slope est. (from local linear)
 
-  end ;
+  end
 
 
 
   %  Get quantiles, for CI's
   flag = (ve >= 5) ;
           %  locations where effective sample size >= 5
-  if sum(flag) > 0 ;
+  if sum(flag) > 0
 
-    if simflag == 0 ;         %  do pt'wise CI's
+    if simflag == 0         %  do pt'wise CI's
 
-      if itdist == 0 ;
+      if itdist == 0
         gquant = norminv(1 - (alpha / 2)) ;
-      elseif itdist == 1 ;
+      elseif itdist == 1
         vtquant = tinv(1 - (alpha / 2),ve-1) ;
-      end ;
+      end
 
-    elseif simflag == 1 ;         %  do original (before July 2004)
-                                  %      row-wise simultaneous CI's2
+    elseif simflag == 1         %  do original (before July 2004)
+                                %      row-wise simultaneous CI's2
 
       nxbar = mean(ve(flag)) ;
           %  Crude average effective sample size
@@ -523,14 +533,14 @@ for ih = 1:nh ;
           %  Effective number of independent groups
 
       beta = (1 - alpha)^(1/numind) ;
-      if itdist == 0 ;
+      if itdist == 0
         gquant = -norminv((1 - beta) / 2) ;
-      elseif itdist == 1 ;
+      elseif itdist == 1
         vtquant = -tinv((1 - beta) / 2,ve-1) ;
-      end ;
+      end
  
       
-    elseif simflag == 2 ;         %  do current row-wise simultaneous CI's
+    elseif simflag == 2         %  do current row-wise simultaneous CI's
  
        numind=ngrid*erf(sqrt((3/2)*log(ngrid)*delta^2/(4*h^2))) ;
 
@@ -540,72 +550,72 @@ for ih = 1:nh ;
 
       beta = (1 - alpha)^(1/numind) ;
 
-      if itdist == 0 ;
+      if itdist == 0
         gquant = -norminv((1 - beta) / 2) ;
-      elseif itdist == 1 ;
+      elseif itdist == 1
         vtquant = -tinv((1 - beta) / 2,ve-1) ;
-      end ;
+      end
   
 
-    elseif  simflag == 3  | ...
-            simflag == 4  ;         %  do Global Simultaneous C.I.'s
+    elseif  simflag == 3  || ...
+            simflag == 4         %  do Global Simultaneous C.I.'s
                % numind prepared earlier - line 332
         
       beta = (1 - alpha)^(1/numind) ;
      
-      if itdist == 0 ;
+      if itdist == 0
         gquant = -norminv((1 - beta) / 2) ;
-      elseif itdist == 1 ;
+      elseif itdist == 1
         vtquant = -tinv((1 - beta) / 2,ve-1) ;
-      end ;
+      end
         
-    end;
+    end
     
-  else ;        % if all pixels on a row are grey
+  else        % if all pixels on a row are grey
       
-    if itdist == 0 ;
+    if itdist == 0
         gquant = inf ;
-    elseif itdist == 1 ;
+    elseif itdist == 1
         vtquant = inf * ones(ngrid,1) ;
-    end ;
+    end
     
-  end ;
+  end
 
 
   mdsurf = [mdsurf vd] ;
   mesurf = [mesurf ve] ;
   mvsurf = [mvsurf vv] ;
-  if itdist == 0 ;
+  if itdist == 0
     vgq = [vgq gquant] ;
-  elseif itdist == 1 ;
+  elseif itdist == 1
     mtq = [mtq vtquant] ;
-  end ;
+  end
 
-end ;
+end
 
 
 
 
 %  Construct scale space CI surfaces
 %
-if itdist == 0 ;
-  if nh > 1 ;    %  then have full matrices
+if itdist == 0
+  if nh > 1    %  then have full matrices
     mloci = mdsurf - vec2matSM(vgq,ngrid) .* sqrt(mvsurf) ;
             %  Lower confidence (simul.) surface for derivative
     mhici = mdsurf + vec2matSM(vgq,ngrid) .* sqrt(mvsurf) ;
             %  Upper confidence (simul.) surface for derivative
-  else ;       %  have only vectors (since only one h)
+  else       %  have only vectors (since only one h)
     mloci = mdsurf - vgq * sqrt(mvsurf) ;
             %  Lower confidence (simul.) surface for derivative
     mhici = mdsurf + vgq * sqrt(mvsurf) ;
             %  Upper confidence (simul.) surface for derivative
-  end ;
-elseif itdist == 1 ;
+  end
+elseif itdist == 1
   mloci = mdsurf - mtq .* sqrt(mvsurf) ;
           %  Lower confidence (simul.) surface for derivative
   mhici = mdsurf + mtq .* sqrt(mvsurf) ;
           %  Upper confidence (simul.) surface for derivative
-end ;
+end
 
 
 %  Construct "color map", really assignment
@@ -621,29 +631,29 @@ mapout = 3 * ones(size(mloci)) ;
 flag = (mloci > 0) ;
             %  matrix of ones where lo ci above 0
 ssflag = sum(sum(flag)) ;
-if ssflag > 0 ;
+if ssflag > 0
   mapout(flag) = ones(ssflag,1) ;
             %  put blue (dark grey) where significantly positive
-end ;
+end
 
 
 flag = (mhici < 0) ;
             %  matrix of ones where hi ci below 0
 ssflag = sum(sum(flag)) ;
-if ssflag > 0 ;
+if ssflag > 0
   mapout(flag) = 4 * ones(ssflag,1) ;
             %  put red (light gray) where significantly negative
-end ;
+end
 
 
 flag = (mesurf <= 5) ;
             %  matrix of ones where effective np <= 5 ;
 ssflag = sum(sum(flag)) ;
-if ssflag > 0 ;
+if ssflag > 0
 
   mapout(flag) = 2 * ones(ssflag,1) ;
             %  put middle darker gray where effective sample size < 5
-end ;
+end
 
 
 %  Transpose for graphics purposes
@@ -653,11 +663,11 @@ mapout = mapout' ;
 
 %  Make plots if no numerical output requested
 %
-if  nargout == 0  | ...
-      iplot == 1  ;  %  Then make a plot
+if  nargout == 0  || ...
+      iplot == 1   %  Then make a plot
 
 
-  if icolor ~= 0 ;     %  Then go for nice colors in sizer and sicon
+  if icolor ~= 0     %  Then go for nice colors in sizer and sicon
 
     %  Set up colorful color map
     cocomap = [0,    0,   1; ...
@@ -670,7 +680,7 @@ if  nargout == 0  | ...
                0,    1,   1] ; 
     colormap(cocomap) ;
 
-  else ;     %  Then use gray scale maps everywhere
+  else     %  Then use gray scale maps everywhere
 
     %  Set up gray level color map
     comap = [.2, .2, .2; ...
@@ -679,53 +689,53 @@ if  nargout == 0  | ...
              .8, .8, .8] ;
     colormap(comap) ;
 
-  end ;
+  end
 
 
   image([left,right],[log10(hmin),log10(hmax)],mapout) ;
     set(gca,'YDir','normal') ;
 
 
-  if ~isempty(titlestr) ;
-    if isempty(titlefontsize) ;
+  if ~isempty(titlestr)
+    if isempty(titlefontsize)
       title(titlestr) ;
-    else ;
+    else
       title(titlestr,'FontSize',titlefontsize) ;
-    end ;
-  end ;
+    end
+  end
 
 
-  if ~isempty(xlabelstr) ;
-    if isempty(labelfontsize) ;
+  if ~isempty(xlabelstr)
+    if isempty(labelfontsize)
       xlabel(xlabelstr) ;
-    else ;
+    else
       xlabel(xlabelstr,'FontSize',labelfontsize) ;
-    end ;
-  end ;
+    end
+  end
 
 
-  if ~isempty(ylabelstr) ;
-    if isempty(labelfontsize) ;
+  if ~isempty(ylabelstr)
+    if isempty(labelfontsize)
       ylabel(ylabelstr) ;
-    else ;
+    else
       ylabel(ylabelstr,'FontSize',labelfontsize) ;
-    end ;
-  end ;
+    end
+  end
 
 
-end ;
+end
 
 
 
 %  output vrowmax if needed
 %
-if nargout >= 3 ;
+if nargout >= 3
 
   vrowmax = max(abs(mdsurf' ./ sqrt(mvsurf')),[],2) ;
       %  column vector of row maxima
 
 
-end ;
+end
 
 
 

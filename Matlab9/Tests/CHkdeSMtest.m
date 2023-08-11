@@ -3,7 +3,8 @@ disp('Running MATLAB script file CHkdeSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION CHkdeSM,
 %    Censored, Hazard Kernel Density estimation
 
-itest = 20 ;       %  1,...,20  Simple Parameter Tests
+
+itest = 96 ;       %  1,...,20  Simple Parameter Tests
                   %  51,52,53,54  Uniform Tests
                   %  61,62,63,64  Gaussian Tests
                   %  71,72,73,74,75,76  Exponential Tests
@@ -23,6 +24,8 @@ clf ;
 
 
 if itest == 1 ;     %  test against kdeSM
+
+  disp('') ;
 
   data = rand(100,1) ;
   vh = [0.1; 1; 10] ;
@@ -45,6 +48,8 @@ if itest == 1 ;     %  test against kdeSM
 
 elseif itest == 2 ;    %   everything censored
 
+  disp('') ;
+
   data = rand(100,1) ;
   data = sort(data) ;
   vh = 1 ;
@@ -59,9 +64,9 @@ elseif itest == 2 ;    %   everything censored
   plot(kde) ;
 
 
-
-
 elseif itest == 3 ;    %   everything below left end
+
+  disp('') ;
 
   n = 100 ;
   vt = rand(n,1) ;
@@ -93,6 +98,8 @@ elseif itest == 3 ;    %   everything below left end
 
 
 elseif itest == 4 ;    %   everything above right end
+
+  disp('') ;
 
   n = 100 ;
   vt = rand(n,1) ;
@@ -126,6 +133,8 @@ elseif itest == 4 ;    %   everything above right end
 elseif itest == 5 ;    %   half the data hanging out at each end,
                        %   default truncation
 
+  disp('') ;
+
   n = 1000 ;
   vt = rand(n,1) ;
   vc = rand(n,1) ;
@@ -158,6 +167,8 @@ elseif itest == 5 ;    %   half the data hanging out at each end,
 
 elseif itest == 6 ;    %   half the data hanging out at each end,
                        %   chosen no truncation
+
+  disp('') ;
 
   n = 1000 ;
   vt = rand(n,1) ;

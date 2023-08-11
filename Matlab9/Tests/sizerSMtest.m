@@ -6,7 +6,7 @@ disp('Running MATLAB script file sizerSMtest.m') ;
 clear all
 close all
 
-itest = 20 ;    %  1  real data tests (density estimation)
+itest = 84 ;    %  1  real data tests (density estimation)
                 %  2  normal mixture tests (density estimation)
                 %  11 real data tests (regression)
                 %  12 NR book examples (regression)

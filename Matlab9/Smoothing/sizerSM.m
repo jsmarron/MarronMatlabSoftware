@@ -25,6 +25,11 @@ function makeplot = sizerSM(data,paramstruct)
 %                          these are optional, misspecified values
 %                          revert to defaults
 %
+%                    Version for easy copying and modification:
+%     paramstruct = struct('',, ...
+%                          '',, ...
+%                          '',) ;
+%
 %    fields            values
 %
 %    iout             1  (default)  use 2 panels: family overlay, 
@@ -38,9 +43,9 @@ function makeplot = sizerSM(data,paramstruct)
 %                     6  slope SiZer only
 %                     7  curvature SiZer only
 %
-%    imovie           1  (default)  make movie version
-%                     0  make a single still plot
+%    imovie           0  (default)  make a single still plot
 %                            (will force reset to this for iout > 4)
+%                     1  make movie version
 %
 %    savestr          string controlling saving of output,
 %                         either a full path, or a file prefix to
@@ -49,10 +54,20 @@ function makeplot = sizerSM(data,paramstruct)
 %                     movie version (imovie = 1):
 %                         add .mpg and create MPEG file
 %                     static version (imovie = 0):  
-%                         add .ps, and save as either
-%                              color postscript (icolor = 1)
-%                         or
-%                              black&white postscript (when icolor = 0)
+%                         Will add file suffix determined by savetype
+%                         Note:  when savestr is nonempty, and ifigure = 0,
+%                              give warning and reset ifigure to 1
+%
+%    savetype         indicator of output file type:
+%                         1 - (default)  Matlab figure file (.fig)
+%                         2 - (.png)  raster graphics
+%                         3 - (.pdf)  vector graphics
+%                         4 - (.eps)  Color vector 
+%                                     (use when icolor is not 0)
+%                         5 - (.eps)  Black and White vector 
+%                                     (use when icolor = 0)
+%                         6 - (.jpg)  raster
+%                         7 - (.svg)  vector
 %
 %    ihazard          0  (default)  give ordinary density or 
 %                            regression estimates
@@ -106,7 +121,7 @@ function makeplot = sizerSM(data,paramstruct)
 %                                   (15 is "fairly large")
 %
 %    famoltitle       Title for family overlay plot
-%                           (default is 'Family Overlay, date')
+%                           (default is 'Family Overlay')
 %
 %    famsurtitle      Title for family surface plot
 %                           (default is 'SiZer colored Scale Space')
@@ -141,7 +156,7 @@ function makeplot = sizerSM(data,paramstruct)
 %                       1  -  (default) overlay up to 1000 points 
 %                                           (random choice, when more)
 %                       2  -  overlay full data set
-%                       n > 2   -  overlay n random points
+%                       otherwise   -  overlay n random points
 %
 %    datovlaymax      maximum (on [0,1] scale, with 0 at bottom, 1 at top of plot)
 %                     of vertical range for overlaid data.  Default = 0.6
@@ -188,38 +203,20 @@ function makeplot = sizerSM(data,paramstruct)
 %                                 (only has effect for density estimation)
 %
 %    nfh              number of h's for family
-%                           (default, 41 for movies,  11 for static)
+%                           (default, 41 for movies,  21 for static)
 %
 %    fhmin            left end of family h range (default = binwd * 2) 
 %
 %    fhmax            right end of family h range (default = range)
 %
 %    nsh              number of h's for SiZer
-%                           (default, 41 for movies,  11 for static)
+%                           (default, 41 for movies,  21 for static)
 %
 %    shmin            left end of SiZer h range (default = binwd * 2) 
 %
 %    shmax            right end of SiZer h range (default = range)
 %
 %    moviefps         movie speed, in frames per second (default = 5)
-%
-%    moviecstr        movie compression string, for type of AVI compression:
-%                            most look bad with 256 color adapter,
-%                            so use a higher one
-%                       'MSVC'
-%                            requires 256 color graphic adapter,
-%                            streamlines and contours OK (on 1st run),
-%                            but dots look bad
-%                       'None'   (no compression)
-%                            looks good but big file
-%                       'Cinepak'   (default)
-%                            looks good, small file
-%                       'Indeo3'
-%                            gives warning about "frame size"
-%                            good color, but blurry, small file
-%                       'Indeo5'
-%                            gives warning about "frame size"
-%                            good color, but blurry, small file
 %
 %    nrepeat          number of times to repeat movie (default = 2)
 %
@@ -237,7 +234,7 @@ function makeplot = sizerSM(data,paramstruct)
 %     For iout = 1,2,3:   graphics in current Figure
 %     For iout = 4,5,6,7:   graphics in current axes
 %     When savestr exists,
-%        For imovie = 1:  MPEG file saved in 'savestr'.mpg
+%        For imovie = 1:  AVI (or other) file saved in 'savestr'.avi
 %        For imovie = 0:  Postscript file saved in 'savestr'.ps
 %                        (color postscript for icolor = 1)
 %                        (B & W postscript for icolor = 0)
@@ -267,6 +264,7 @@ function makeplot = sizerSM(data,paramstruct)
 %    LBcdfSM.m
 %    iqrSM
 %    cquantSM
+%    printSM.m
 
 %    Copyright (c) J. S. Marron 2000-2023
 
@@ -275,8 +273,9 @@ function makeplot = sizerSM(data,paramstruct)
 %  First set all parameters to defaults
 %
 iout = 1 ;
-imovie = 1 ;
+imovie = 0 ;
 savestr = [] ;
+savetype = 1 ;
 ihazard = 0 ;
 icensor = 0 ;
 ilengthb = 0 ;
@@ -286,7 +285,7 @@ icolor = 1 ;
 xlabelstr = [] ;
 ylabelstr = [] ;
 labelfontsize = [] ;
-famoltitle = ['Family Overlay, ' datetime('today')] ;
+famoltitle = 'Family Overlay' ;
 famsurtitle = 'SiZer colored Scale Space' ;
 sizertitle = 'Slope SiZer Map' ;
 curvsizertitle = 'Curvature SiZer Map' ;
@@ -313,7 +312,6 @@ nsh = [] ;
 shmin = [] ;
 shmax = [] ;
 moviefps = 5 ;
-moviecstr = 'Cinepak' ;
 nrepeat = 2 ;
 ishoweffwind = 1 ;
 hhighlight = -1 ;
@@ -336,7 +334,7 @@ if nargin > 1   %  then paramstruct is an argument
   end
 
   if isfield(paramstruct,'savestr')    %  then use input value
-    savestr = paramstructsavestr ; 
+    savestr = paramstruct.savestr ; 
     if ~ischar(savestr)    %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from sizerSM.m:    !!!') ;
@@ -346,6 +344,10 @@ if nargin > 1   %  then paramstruct is an argument
       savestr = [] ;
     end
   end
+
+  if isfield(paramstruct,'savetype')     %  then use input value
+    savetype = paramstruct.savetype ; 
+  end 
 
   if isfield(paramstruct,'ihazard')    %  then change to input value
     ihazard = paramstruct.ihazard ; 
@@ -489,10 +491,6 @@ if nargin > 1   %  then paramstruct is an argument
 
   if isfield(paramstruct,'moviefps')    %  then change to input value
     moviefps = paramstruct.moviefps ; 
-  end
-
-  if isfield(paramstruct,'moviecstr')    %  then change to input value
-    moviecstr = paramstruct.moviecstr ; 
   end
 
   if isfield(paramstruct,'nrepeat')    %  then change to input value
@@ -663,7 +661,7 @@ binw = range / (nbin - 1) ;
 
 if isempty(nfh)
   if imovie == 0
-    nfh = 11 ;
+    nfh = 21 ;
   else
     nfh = 41 ;
   end
@@ -700,7 +698,7 @@ end
 
 if isempty(nsh)
   if imovie == 0
-    nsh = 11 ;
+    nsh = 21 ;
   else
     nsh = 41 ;
   end
@@ -971,7 +969,6 @@ if  viplot(1) == 1  ||  viplot(2) == 1    %  Then will show a family plot
         paramstruct.iplot = 1 ;
       end
 
-
       if idatovlay == 0    %  then use bincounts, to avoid rebinning
         paramstruct.imptyp = -1 ;
             %  indicate use of previously binned data
@@ -1004,12 +1001,12 @@ if  viplot(1) == 1  ||  viplot(2) == 1    %  Then will show a family plot
                          'ibigdot',ibigdot) ;
 
     if viplot(1) == 1    %  then plot family overlay
-      paramstruct = setfield(paramstruct,'iplot',1) ;
+      paramstruct.iplot = 1 ;
     end
 
 
     if idatovlay == 0    %  then use bincounts, to avoid rebinning
-      paramstruct = setfield(paramstruct,'imptyp',-1) ;
+      paramstruct.imptyp = -1 ;
           %  indicate use of previously binned data
       [mfam, fxgrid] = nprSM(bincts(:,[1 2]),paramstruct) ;
           %  only need first two columns for this
@@ -1251,20 +1248,20 @@ if viplot(2) == 1
         colormap(comap) ;  
       end
 
-    else
+  else
 
-      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Error from sizerSM.m:   !!!') ;
-      disp('!!!   For surface plot,       !!!') ;
-      disp('!!!   must have nsh = nfh     !!!') ;
-      disp('!!!   Terminating execution   !!!') ;
-      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      return ;
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    disp('!!!   Error from sizerSM.m:   !!!') ;
+    disp('!!!   For surface plot,       !!!') ;
+    disp('!!!   must have nsh = nfh     !!!') ;
+    disp('!!!   Terminating execution   !!!') ;
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    return ;
 
-    end
+  end
 
 
-  end    %  of family surface plot construction if block
+end    %  of family surface plot construction if block
 
 
 
@@ -1446,24 +1443,21 @@ if ~isempty(savestr)     %  then save results
   end
 
 
-  if imovie == 0     %  then save as postscript file
+  if imovie == 0     %  then save as graphical output file
 
-    if  nplot == 1  ||  nplot == 4
-      orient landscape ;
-    else
-      orient tall ;
-    end
+    printSM(savestr,savetype) ;
 
-    if icolor ~= 0     %  then make color postscript
-      print('-dpsc',[savestr '.ps']) ;
-    else                %  then make black and white
-      print('-dps',[savestr '.ps']) ;
-    end
+  elseif imovie == 1    %  then save as .avi file
 
-  elseif imovie == 1    %  then save as mpeg file
-
+%{
     movie2avi(moviestruct,savestr,'compression',moviecstr, ...
                           'keyframe',moviefps,'fps',moviefps) ;
+%}
+    vh = VideoWriter(savestr) ;
+    vh.FrameRate = moviefps ;
+    open(vh) ;
+    writeVideo(vh,moviestruct) ;
+    close(vh) ;
 
   else
 

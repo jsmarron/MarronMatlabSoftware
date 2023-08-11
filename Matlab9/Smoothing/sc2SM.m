@@ -32,6 +32,11 @@ function [mapout,xgrid,vrowmax] = sc2SM(data,paramstruct)
 %                          these are optional, misspecified values
 %                          revert to defaults
 %
+%                    Version for easy copying and modification:
+%     paramstruct = struct('',, ...
+%                          '',, ...
+%                          '',) ;
+%
 %    fields            values
 %
 %    vxgp             vector of x grid parameters:
@@ -190,7 +195,7 @@ if nargin > 1   %  then paramstruct has been added
   end
 
   if isfield(paramstruct,'titlefontsize')    %  then change to input value
-    titlefontsize = paramstructtitlefontsize ; 
+    titlefontsize = paramstruct.titlefontsize ; 
   end
 
   if isfield(paramstruct,'xlabelstr')    %  then change to input value

@@ -92,7 +92,7 @@ function [kde,xgrid,mker] = kdeSM(data,paramstruct)
 %                       1  -  (default) overlay up to 1000 points 
 %                                           (random choice, when more)
 %                       2  -  overlay full data set
-%                       n > 2   -  overlay n random points
+%                       otherwise   -  overlay n random points
 %
 %    datovlaymax      maximum (on [0,1] scale, with 0 at bottom, 1 at top of plot)
 %                     of vertical range for overlaid data.  Default = 0.6
@@ -772,6 +772,7 @@ if  nargout == 0  || ...
       rng(idatovlay) ;
     end 
 
+
     if ndo < length(data)     %  then need to subsample
       [~,randind] = sort(rand(length(data),1)) ;
             %  randind is a random permutation of 1,2,...,n
@@ -857,13 +858,15 @@ if  nargout == 0  || ...
     vax = axis ;
     hold on ;
 
-      if  isstr(dolcolor)  &&  (size(dolmarkerstr,1) == 1)      %  then can plot points all together
+      if  isstr(dolcolor)  &&  (size(dolmarkerstr,1) == 1)      
+                                     %  then can plot points all together
         if ibigdot == 1    %  plot deliberately large dots
           plot(datatrunc,hts,[dolcolor 'o'],'MarkerSize',1,'LineWidth',2) ;
         else     %  use matlab default dots
           plot(datatrunc,hts,[dolcolor dolmarkerstr]) ;
         end 
-      elseif ischar(dolcolor)     %  need to plot points individually, but use string color
+      elseif ischar(dolcolor)     %  need to plot points individually, 
+                                  %      but use string color
         for idol = 1:length(datatrunc) 
           if ibigdot == 1    %  plot deliberately large dots
             plot(datatrunc(idol),hts(idol),[dolcolor 'o'],'MarkerSize',1,'LineWidth',2) ;

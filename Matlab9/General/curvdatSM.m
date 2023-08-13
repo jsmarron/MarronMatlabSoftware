@@ -229,7 +229,7 @@ function curvdatSM(data,paramstruct)
 %                                  Has no effect where viout = 3.
 %                                  (useful for manually creating single
 %                                   plot graphics for figures)
-%%
+%
 %    savestr          string controlling saving of output,
 %                         either a full path, or a file prefix to
 %                         save in matlab's current directory
@@ -269,6 +269,7 @@ function curvdatSM(data,paramstruct)
 %    vec2matSM.m
 %    rmeanSM.m
 %    madSM.m
+%    Plot1dSM.m
 %    projplot1SM.m
 %    qqLM.m
 %    scatplotSM.m
@@ -291,10 +292,7 @@ function curvdatSM(data,paramstruct)
 %    axisSM.m
 %    printSM.m
 
-
-
 %    Copyright (c) J. S. Marron 1998-2023
-
 
 
 %  First set all parameters to defaults
@@ -327,7 +325,6 @@ isingleaxis = 0 ;
 savestr = [] ;
 savetype = 1 ;
 iscreenwrite = 0 ;
-
 
 
 %  Now update parameters as specified,
@@ -539,13 +536,13 @@ end
 
 %  Set up appropriate colors
 %
-if  size(icolor,1) == 1   &&  size(icolor,2) == 1    %  then have scalar input
+if  size(icolor,1) == 1  &&  size(icolor,2) == 1    %  then have scalar input
 
   if icolor == 0    %  then do everything black and white
 
     datacolor = 'k' ;
     meancolor = 'k' ;
-    kdecolor = 'k' ;
+%    kdecolor = 'k' ;    %  Don't need, since set in Plot1dSM
     dotcolor = 'k' ;
         %  color of projection dots
     evcolor = 'k' ;
@@ -560,7 +557,7 @@ if  size(icolor,1) == 1   &&  size(icolor,2) == 1    %  then have scalar input
 
     datacolor = [] ;    % use default matlab mixed colors
     meancolor = 'k' ;
-    kdecolor = 'k' ;
+%    kdecolor = 'k' ;    %  Don't need, since set in Plot1dSM
     dotcolor = [] ;
         %  color of projection dots
     evcolor = 'b' ;
@@ -573,40 +570,10 @@ if  size(icolor,1) == 1   &&  size(icolor,2) == 1    %  then have scalar input
 
   elseif icolor == 2    %  then do spectrum for ordered time series
 
-    %  set up color map stuff
-    %
-    %  1st:    R  1      G  0 - 1    B  0
-    %  2nd:    R  1 - 0  G  1        B  0
-    %  3rd:    R  0      G  1        B  0 - 1
-    %  4th:    R  0      G  1 - 0    B  1
-    %  5th:    R  0 - 1  G  0        B  1
-
-    nfifth = ceil((n - 1) / 5) ;
-    del = 1 / nfifth ;
-    vwt = (0:del:1)' ;
-    colmap = [flipud(vwt), zeros(nfifth+1,1), ones(nfifth+1,1)] ;
-    colmap = colmap(1:size(colmap,1)-1,:) ;
-          %  cutoff last row to avoid having it twice
-    colmap = [colmap; ...
-              [zeros(nfifth+1,1), vwt, ones(nfifth+1,1)]] ;
-    colmap = colmap(1:size(colmap,1)-1,:) ;
-          %  cutoff last row to avoid having it twice
-    colmap = [colmap; ...
-              [zeros(nfifth+1,1), ones(nfifth+1,1), flipud(vwt)]] ;
-    colmap = colmap(1:size(colmap,1)-1,:) ;
-          %  cutoff last row to avoid having it twice
-    colmap = [colmap; ...
-              [vwt, ones(nfifth+1,1), zeros(nfifth+1,1)]] ;
-    colmap = colmap(1:size(colmap,1)-1,:) ;
-          %  cutoff last row to avoid having it twice
-    colmap = [colmap; ...
-              [ones(nfifth+1,1)], flipud(vwt), zeros(nfifth+1,1)] ;
-
-          %  note: put this together upside down
-
+    colmap = RainbowColorsQY(n) ;
 
     meancolor = 'k' ;
-    kdecolor = 'k' ;
+%    kdecolor = 'k' ;    %  Don't need, since set in Plot1dSM
     dotcolor = 'g' ;
         %  color of projection dots
     evcolor = 'm' ;
@@ -626,7 +593,7 @@ if  size(icolor,1) == 1   &&  size(icolor,2) == 1    %  then have scalar input
     colmap = vgray' * ones(1,3) ;
 
     meancolor = 'k' ;
-    kdecolor = 'k' ;
+%    kdecolor = 'k' ;    %  Don't need, since set in Plot1dSM
     dotcolor = 'k' ;
         %  color of projection dots
     evcolor = 'k' ;
@@ -645,7 +612,7 @@ else    %  then have color matrix (validity was checked in warnings above
   colmap = icolor ;
 
   meancolor = 'k' ;
-  kdecolor = 'k' ;
+%    kdecolor = 'k' ;    %  Don't need, since set in Plot1dSM
   dotcolor = 'g' ;
       %  color of projection dots
   evcolor = 'm' ;
@@ -695,7 +662,7 @@ if itype == 1    %  Standard PCA
 
   tmresid = mresid ;
       %  transformed version of residuals
-  sstmr = sscr ;
+%  sstmr = sscr ;
 
   centerst = 'Mean' ;
   typestr = 'Standard PCA' ;
@@ -718,7 +685,7 @@ elseif itype == 2    %  Correlation PCA
   end
   tmresid = mresid ./ vec2matSM(vsd,n) ;
       %  transformed version of residuals
-  sstmr = sum(sum(tmresid .^ 2)) ;
+%  sstmr = sum(sum(tmresid .^ 2)) ;
 
   centerst = 'Mean' ;
   typestr = 'Correlation PCA' ;
@@ -743,8 +710,8 @@ elseif itype == 3    %  Spearman Correlation PCA
 
   tmresid = mrank' ;
       %  transformed version of residuals
-  sstmr = sscr ;
-  sstmr = sum(sum(tmresid .^ 2)) ;
+%  sstmr = sscr ;
+%  sstmr = sum(sum(tmresid .^ 2)) ;
 
   centerst = 'Median' ;
   typestr = 'Spearman Corr PCA' ;
@@ -766,7 +733,7 @@ elseif itype == 4    %  Shrink to sphere PCA
 
   tmresid = sphereresid' ;
       %  transformed version of residuals
-  sstmr = sum(sum(tmresid .^ 2)) ;
+%  sstmr = sum(sum(tmresid .^ 2)) ;
 
   centerst = 'L1 M-est.' ;
   typestr = 'Spherical PCA' ;
@@ -813,7 +780,7 @@ elseif itype == 5    %  Shrink to Ellipse PCA
 
   tmresid = ellipsresid' ;
       %  transformed version of residuals
-  sstmr = sum(sum(tmresid .^ 2)) ;
+%  sstmr = sum(sum(tmresid .^ 2)) ;
 
   centerst = 'Ell. L1M' ;
   typestr = 'Elliptical PCA' ;
@@ -1182,7 +1149,7 @@ if vipageout(1) == 1
           if isingleaxis ~= 1
             subplot(npy,npx,npx * (iplotrow - 1) + iplotcol) ;
           end
-            ph = plot(xgrid,a3proj(:,:,ipc),[datacolor '-']) ;
+            plot(xgrid,a3proj(:,:,ipc),[datacolor '-']) ;
               if isempty(vaxlimproj)
                 vax = axisSM(a3proj(:,:,ipc)) ;
               else
@@ -1511,9 +1478,11 @@ if vipageout(1) == 1
 
 
 
-  if ~isempty(savestr)   %  then create postscript file
+  if ~isempty(savestr)   %  then create graphical output
 
   printSM(savestr,savetype) ;
+  
+  end
 
 end    %  of if-block for main output plot
 
@@ -1680,7 +1649,7 @@ if vipageout(2) == 1
 
 
 
-  if ~isempty(savestr)   %  then create postscript file
+  if ~isempty(savestr)   %  then create graphic output file
 
     printSM([savestr 'SZQQ'],savetype) ;
 

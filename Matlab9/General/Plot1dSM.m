@@ -166,10 +166,8 @@ function Plot1dSM(data,paramstruct)
 %
 % Outputs:
 %     Graphics in current Figure
-%     When savestr exists,
-%        Postscript files saved in 'savestr'.ps
-%                 (color postscript for icolor ~= 0)
-%                 (B & W postscript for icolor = 0)
+%     When savestr exists, generate output files, 
+%        as indicated by savetype
 %
 %
 % Assumes path can find personal functions:

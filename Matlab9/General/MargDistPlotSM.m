@@ -199,10 +199,9 @@ function MargDistPlotSM(mdata,paramstruct)
 % Outputs:
 %     Graphics in current figure (for nplot a prefect square)
 %          or figures 1,...,nplot
-%     When savestr exists,
-%        Postscript files saved in 'savestr'.ps (or 'savestr'1.ps, ...)
-%                 (color postscript for vcolor entries not all same)
-%                 (B & W postscript for vcolor entries same)
+%     When savestr exists, generate output files, 
+%        as indicated by savetype
+%
 %
 % Assumes path can find personal functions:
 %    projplot1SM.m

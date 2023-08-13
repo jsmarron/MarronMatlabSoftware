@@ -118,10 +118,9 @@ function [ROCcurve,AUC] = ROCcurveSM(dataplus,dataminus,paramstruct)
 %                                   dataplus or dataminus is)
 %
 %     Graphics in current Figure
-%     When savestr exists,
-%        Postscript files saved in 'savestr'.ps
-%                 (color postscript for icolor ~= 0)
-%                 (B & W postscript for icolor = 0)
+%     When savestr exists, generate output files, 
+%        as indicated by savetype
+%
 %
 % Output:
 %

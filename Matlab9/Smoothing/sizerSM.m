@@ -230,14 +230,13 @@ function makeplot = sizerSM(data,paramstruct)
 %                          Note: doesn't appear when no family plot
 %                                is computed
 %
+%
 % Outputs:
 %     For iout = 1,2,3:   graphics in current Figure
 %     For iout = 4,5,6,7:   graphics in current axes
 %     When savestr exists,
 %        For imovie = 1:  AVI (or other) file saved in 'savestr'.avi
-%        For imovie = 0:  Postscript file saved in 'savestr'.ps
-%                        (color postscript for icolor = 1)
-%                        (B & W postscript for icolor = 0)
+%        For imovie = 0:  generate output files, as indicated by savetype
 %    
 %
 % Assumes path can find personal functions:

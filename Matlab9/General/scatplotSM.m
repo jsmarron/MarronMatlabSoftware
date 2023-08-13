@@ -286,10 +286,9 @@ function scatplotSM(data,mdir,paramstruct)
 %
 % Outputs:
 %     Graphics in current Figure
-%     When savestr exists,
-%        Postscript files saved in 'savestr'.ps
-%                 (color postscript for icolor ~= 0)
-%                 (B & W postscript for icolor = 0)
+%     When savestr exists, generate output files, 
+%        as indicated by savetype
+%
 %
 % Assumes path can find personal functions:
 %    bwsjpiSM.m
@@ -309,6 +308,8 @@ function scatplotSM(data,mdir,paramstruct)
 %    iqrSM.m
 %    cquantSM.m
 %    axisSM.m
+%    printSM.m
+
 
 
 %    Copyright (c) J. S. Marron 2004-2023

@@ -553,19 +553,33 @@ if  size(icolor,1) == 1  &&  size(icolor,2) == 1    %  then have scalar input
     indivcolorflag = 0 ;
     icolorprint = 0 ;
 
-  elseif icolor == 1    %  then do full color 
+  elseif icolor == 1    %  then do Matlab 7 default colors
 
-    datacolor = [] ;    % use default matlab mixed colors
+    colmap1 = [     0         0    1.0000 ; ...
+                    0    0.5000         0 ; ...
+               1.0000         0         0 ; ...
+                    0    0.7500    0.7500 ; ...
+               0.7500         0    0.7500 ; ...
+               0.7500    0.7500         0 ; ...
+               0.2500    0.2500    0.2500 ] ;
+        %  color of projection dots, matlab default
+    colmap = colmap1 ;
+    while size(colmap,1) < n 
+      colmap = [colmap; colmap1] ;
+    end 
+    colmap = colmap(1:n,:) ;
+
+    datacolor = colmap ;    % use default matlab mixed colors
     meancolor = 'k' ;
 %    kdecolor = 'k' ;    %  Don't need, since set in Plot1dSM
-    dotcolor = [] ;
+    dotcolor = colmap ;
         %  color of projection dots
     evcolor = 'b' ;
         %  color of eigenvalues
     cevcolor = 'r' ;
         %  color of cumulative eigenvalues
 
-    indivcolorflag = 0 ;
+    indivcolorflag = 1 ;
     icolorprint = 1 ;
 
   elseif icolor == 2    %  then do spectrum for ordered time series
@@ -598,7 +612,7 @@ if  size(icolor,1) == 1  &&  size(icolor,2) == 1    %  then have scalar input
         %  color of projection dots
     evcolor = 'k' ;
         %  color of eigenvalues
-    cevcolor = [0.5 0.5 0.5] ;
+    cevcolor = 'k' ;
         %  color of cumulative eigenvalues
 
     indivcolorflag = 1 ;

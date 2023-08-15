@@ -4,7 +4,7 @@ disp('Running MATLAB script file curvdatSMtest.m') ;
 %    CURVes as DATa analysis
 
 
-itest = 3 ;     %  0,...,35
+itest = 29 ;     %  0,...,35
 
 
 idata = 5 ;    %  numbers, 1,...,18 and data generation from EGCurvDat1.m
@@ -24,7 +24,7 @@ if idata == 1 ;
   mu = [1; 0; .5] ;
   msig = [.3 0 .29; 0 .05 0; .29 0 .3] ;
   cmax = 2 ;
-  randn('seed',23729877) ;
+  rng(23729877) ;
   mz = randn(3,n) ;
   mdata = sqrtm(msig) * mz + vec2matSM(mu,n) ;
 
@@ -34,7 +34,7 @@ elseif idata == 2 ;
   mu = [0; .5; 1] ;
   msig = [.01 .01 .01; .01 .25 .25; .01 .25 .5] ;
   cmax = 2.5 ;
-  randn('seed',97987373) ;
+  rng(97987373) ;
   mz = randn(3,n) ;
   mdata = sqrtm(msig) * mz + vec2matSM(mu,n) ;
 
@@ -44,7 +44,7 @@ elseif idata == 3 ;
   n = 50 ;
   xgrid = (.5:1:d)' ;
   mdata = (xgrid - 6).^2 ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = 4 * randn(1,n) ;
     eps2 = .5 * randn(1,n) ;
     eps3 = 1 * randn(d,n) ;
@@ -58,7 +58,7 @@ elseif idata == 4 ;
   n = 50 ;
   xgrid = (.5:1:d)' ;
   mdata = (xgrid - 6).^2 ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = 4 * randn(1,n) ;
     eps2 = .5 * randn(1,n) ;
     eps3 = 1 * randn(d,n) ;
@@ -73,7 +73,7 @@ elseif idata == 5 ;
   n = 50 ;
   xgrid = (.5:1:d)' ;
   mdata = (xgrid - 6).^2 ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = 4 * randn(1,n) ;
     eps2 = .5 * randn(1,n) ;
     eps3 = 1 * randn(d,n) ;
@@ -87,7 +87,7 @@ elseif idata == 6 ;
   d = 10 ;
   n = 50 ;
   xgrid = (.5:1:d)' ;
-    randn('seed',33399845) ;
+    rng(33399845) ;
   mdata = vec2matSM(8 * randn(1,n),d) ;
     swave = vec2matSM(sin(2 * pi * xgrid / d),n) ;
   mdata = mdata + (4 * swave .* vec2matSM(randn(1,n),d)) ;
@@ -102,7 +102,7 @@ elseif idata == 7 ;
   d = 10 ;
   n = 50 ;
   xgrid = (.5:1:d)' ;
-    randn('seed',98723999) ;
+    rng(98723999) ;
   mdata = vec2matSM(1 * randn(1,n),d) ;
     swave = vec2matSM(sin(2 * pi * xgrid / d),n) ;
   mdata = mdata + (2 * swave .* vec2matSM(randn(1,n),d)) ;
@@ -117,9 +117,8 @@ elseif idata == 8 ;
   d = 10 ;
   n = 50 ;
   xgrid = (.5:1:d)' ;
-    randn('seed',23923874) ;
+    rng(23923874) ;
   mdata = (xgrid - 5).^2 - 5 ;
-    randn('seed',88769874) ;
     mflag = vec2matSM(2 * (randn(1,n) > .5) - 1,d) ;
     eps1 = 2 * randn(1,n) ;
     eps2 = .5 * randn(1,n) ;
@@ -132,8 +131,7 @@ elseif idata == 9 ;
   d = 50 ;
   n = 50 ;
   xgrid = (.5:1:d)' ;
-    randn('seed',93759872) ;
-    rand('seed',30458744) ;
+    rng(93759872) ;
   mdata = 5 * (1 - cos(4 * pi * xgrid / d)) ;
   mdata = vec2matSM(mdata,n) ;
     halfd = floor(d/2) ;
@@ -150,8 +148,7 @@ elseif idata == 10 ;
   d = 50 ;
   n = 50 ;
   xgrid = (.5:1:d)' ;
-    randn('seed',93759872) ;
-    rand('seed',30458744) ;
+    rng(93759872) ;
   mdata = 5 * (1 - cos(4 * pi * xgrid / d)) ;
   mdata = vec2matSM(mdata,n) ;
     halfd = floor(d/2) ;
@@ -171,7 +168,7 @@ elseif idata == 11 ;
   d = 10 ;
   n = 50 ;
   xgrid = (.5:1:d)' ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = 0.5 * randn(1,n) ;
     eps2 = 0.1 * randn(d,n) ;
   mdata = (vec2matSM(xgrid,n) - 6 - vec2matSM(eps1,d)).^2 ;
@@ -183,7 +180,7 @@ elseif idata == 12 ;
   n = 50 ;
   sig = 1 ;
   xgrid = linspace(0.5,9.5,d)' ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = 1 * randn(1,n) ;
     eps2 = 0.001 * randn(d,n) ;
   mdata = ((vec2matSM(xgrid,n) - 5 - vec2matSM(eps1,d)) / sig) .^ 2 ;
@@ -197,7 +194,7 @@ elseif idata == 13 ;
   n = 50 ;
   sig = 1 ;
   xgrid = linspace(0.5,9.5,d)' ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = 0.2 * randn(1,n) ;
     eps2 = 0.001 * randn(d,n) ;
   mdata = ((vec2matSM(xgrid,n) - 5) ./ (sig + vec2matSM(eps1,d))) .^ 2 ;
@@ -211,7 +208,7 @@ elseif idata == 14 ;
   n = 50 ;
   sig = 0.2 ;
   xgrid = linspace(0.5,9.5,d)' ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = 1 * randn(1,n) ;
     eps2 = 0.001 * randn(d,n) ;
   mdata = ((vec2matSM(xgrid,n) - 5 - vec2matSM(eps1,d)) / sig) .^ 2 ;
@@ -225,7 +222,7 @@ elseif idata == 15 ;
   n = 50 ;
   sig = 5 ;
   xgrid = linspace(0.5,9.5,d)' ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = 1 * randn(1,n) ;
     eps2 = 0.001 * randn(d,n) ;
   mdata = ((vec2matSM(xgrid,n) - 5 - vec2matSM(eps1,d)) / sig) .^ 2 ;
@@ -240,7 +237,7 @@ elseif idata == 16 ;
   sig = 0.1 ;
   sigb = 5 ;
   xgrid = linspace(0.5,9.5,d)' ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = sigb * diag([1 3/2 2/3]) * randn(3,n) ;
     eps2 = sig * randn(d,n) ;
   mdata = zeros(d,n) ;
@@ -254,7 +251,7 @@ elseif idata == 17 ;
   sig = 0.1 ;
   sigb = 5 ;
   xgrid = linspace(0.5,9.5,d)' ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = randn(2,n) ;
     eps1 = [eps1; eps1(1,:)] ;
     eps1 = sigb * diag([1 3/2 2/3]) * eps1 ;
@@ -270,7 +267,7 @@ elseif idata == 18 ;
   sig = 0.1 ;
   sigb = 5 ;
   xgrid = linspace(0.5,9.5,d)' ;
-    randn('seed',88769874) ;
+    rng(88769874) ;
     eps1 = randn(1,n) ;
     eps1 = [eps1; eps1; eps1] ;
     eps1 = sigb * diag([1 3/2 2/3]) * eps1 ;
@@ -378,13 +375,13 @@ else ;     %  then use input paramstruct
                          'viout',[1 2 3], ...
                          'vipcplot',[0 1 2 3 20], ...
                          'icolor',1, ...
-                         'idiffigwind',1, ...
+                       'idiffigwind',1, ...
                          'iscreenwrite',1) ;
 
 
   elseif itest == 10 ;    %  test 3 plots, and postscript print
 
-    disp('test 3 plots, and postscript print') ;
+    disp('test 3 plots, and output graphics') ;
     paramstruct = struct('itype',1, ...
                          'viout',[1 2 3], ...
                          'icolor',1, ...
@@ -392,7 +389,7 @@ else ;     %  then use input paramstruct
                          'savestr','curvdatSMtest', ...
                          'iscreenwrite',0) ;
     disp('  ') ;
-    disp('            NOTE: Check files curvdatSMtest__.ps') ;
+    disp('            NOTE: Check files curvdatSMtest__.fig') ;
     disp('  ') ;
 
 
@@ -825,14 +822,14 @@ else ;     %  then use input paramstruct
 
 
 
-  elseif itest == 35 ;    %  test  spectrum colors, with .ps in output
+  elseif itest == 35 ;    %  test  spectrum colors, with graphical output
 
-    disp('test .ps in output file') ;
+    disp('test .fig in output file') ;
 
     paramstruct = struct('itype',1, ...
                          'viout',1, ...
                          'icolor',2, ...
-                         'savestr','curvdatSMtest.ps', ...
+                         'savestr','curvdatSMtest.fig', ...
                          'iscreenwrite',1) ;
 
 

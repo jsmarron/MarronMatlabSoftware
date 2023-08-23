@@ -130,7 +130,7 @@ else    %  sample size OK, so proceed
       vimax = round((1:(N-1))' * nobs / N) ;
       vimin = [1; (vimax + 1)] ;
           %  vector of starting indices for each block
-      vimax = [vimax; nobs] ;
+      vimax = [vimax; nobs] ; %#ok<AGROW>
           %  vector of ending indices for each block
       rss = 0 ;
       t22q = 0 ;
@@ -162,9 +162,9 @@ else    %  sample size OK, so proceed
       s2q = rss / (nobs - 5 * N) ;
       t22q = t22q / nobs ;
 
-      vrss = [vrss; rss] ;
-      vs2q = [vs2q; s2q] ;
-      vt22q = [vt22q; t22q] ;
+      vrss = [vrss; rss] ; %#ok<AGROW>
+      vs2q = [vs2q; s2q] ; %#ok<AGROW>
+      vt22q = [vt22q; t22q] ; %#ok<AGROW>
     end 
     vcp = (vrss /(vrss(Nmax) / (nobs - 5 * Nmax))) - ...
                                   (nobs - 10 * (1:Nmax)') ;
@@ -197,7 +197,7 @@ else    %  sample size OK, so proceed
       vimax = round((1:(N-1))' * nobs / N) ;
       vimin = [1; (vimax + 1)] ;
             %  vector of starting indices for each block
-      vimax = [vimax; nobs] ;
+      vimax = [vimax; nobs] ; %#ok<AGROW>
             %  vector of sending indices for each block
       rss = 0 ;
       t24q = 0 ;
@@ -231,9 +231,9 @@ else    %  sample size OK, so proceed
       s2q = rss / (nobs - 5 * N) ;
       t24q = t24q / nobs ;
 
-      vrss = [vrss; rss] ;
-      vs2q = [vs2q; s2q] ;
-      vt24q = [vt24q; t24q] ;
+      vrss = [vrss; rss] ; %#ok<AGROW>
+      vs2q = [vs2q; s2q] ; %#ok<AGROW>
+      vt24q = [vt24q; t24q] ; %#ok<AGROW>
     end 
     vcp = (vrss /(vrss(Nmax) / (nobs - 5 * Nmax))) - ...
                                   (nobs - 10 * (1:Nmax)') ;

@@ -378,7 +378,7 @@ for ih = 1:nh
   %  Set common values
   arg = linspace(0,k * delta / h,k + 1)' ;
   kvec = exp(-(arg.^2) / 2) ;
-  kvec = [flipud(kvec(2:k+1)); kvec] ;
+  kvec = [flipud(kvec(2:k+1)); kvec] ; %#ok<AGROW>
         %  construct symmetric kernel
 
 
@@ -393,7 +393,7 @@ for ih = 1:nh
 
 
   kvecd = -arg .* exp(-(arg.^2) / 2) / sqrt(2 * pi) ;
-  kvecd = [-flipud(kvecd(2:k+1)); kvecd] ;
+  kvecd = [-flipud(kvecd(2:k+1)); kvecd] ; %#ok<AGROW>
         %  construct symmetric kernel
 
 
@@ -444,10 +444,10 @@ for ih = 1:nh
   end
 
 
-  mdsurf = [mdsurf vd] ;
-  mesurf = [mesurf ve] ;
-  mvsurf = [mvsurf vv] ;
-  vgq = [vgq gquant] ;
+  mdsurf = [mdsurf vd] ; %#ok<AGROW>
+  mesurf = [mesurf ve] ; %#ok<AGROW>
+  mvsurf = [mvsurf vv] ; %#ok<AGROW>
+  vgq = [vgq gquant] ; %#ok<AGROW>
 
 end    %  of ih loop through bandwidths
 

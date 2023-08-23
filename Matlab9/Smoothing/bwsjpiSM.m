@@ -217,7 +217,7 @@ for ih = 1:nh
 
   sjpisf = h - (rk / (rfppa * mk22 * n))^(1/5) ;
 
-  vsjpisf = [vsjpisf; sjpisf] ;
+  vsjpisf = [vsjpisf; sjpisf] ; %#ok<AGROW>
 end 
 
 

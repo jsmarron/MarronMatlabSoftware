@@ -143,7 +143,7 @@ function [kde,xgrid,mker] = CHkdeSM(data,vh,paramstruct)
 
 %  give error message if no bandwidth specified
 %
-if nargin < 2 ;
+if nargin < 2
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Error from CHkdeSM.m:        !!!') ;
   disp('!!!   must input bandwidth(s), vh  !!!') ;
@@ -151,9 +151,9 @@ if nargin < 2 ;
   disp('!!!   Terminating Execution        !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   return ;
-elseif nargin == 2 ;
+elseif nargin == 2
   paramstruct = struct([]) ;
-end ;
+end
 
 
 %  First set all parameters to defaults
@@ -180,82 +180,82 @@ iplot = 0 ;
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct has been added
+if nargin > 1   %  then paramstruct has been added
 
-  if isfield(paramstruct,'itype') ;    %  then change to input value
-    itype = getfield(paramstruct,'itype') ; 
-  end ;
+  if isfield(paramstruct,'itype')    %  then change to input value
+    itype = paramstruct.itype ; 
+  end
 
-  if isfield(paramstruct,'vxgrid') ;    %  then change to input value
-    vxgrid = getfield(paramstruct,'vxgrid') ; 
-  end ;
+  if isfield(paramstruct,'vxgrid')    %  then change to input value
+    vxgrid = paramstruct.vxgrid ; 
+  end
 
-  if isfield(paramstruct,'eptflag') ;    %  then change to input value
-    eptflag = getfield(paramstruct,'eptflag') ; 
-  end ;
+  if isfield(paramstruct,'eptflag')    %  then change to input value
+    eptflag = paramstruct.eptflag ; 
+  end
 
-  if isfield(paramstruct,'ndataoverlay') ;    %  then change to input value
-    ndataoverlay = getfield(paramstruct,'ndataoverlay') ; 
-  end ;
+  if isfield(paramstruct,'ndataoverlay')    %  then change to input value
+    ndataoverlay = paramstruct.ndataoverlay ; 
+  end
 
-  if isfield(paramstruct,'dolcolor') ;    %  then change to input value
-    dolcolor = getfield(paramstruct,'dolcolor') ; 
-  end ;
+  if isfield(paramstruct,'dolcolor')    %  then change to input value
+    dolcolor = paramstruct.dolcolor ; 
+  end
 
-  if isfield(paramstruct,'ibigdot') ;    %  then change to input value
-    ibigdot = getfield(paramstruct,'ibigdot') ; 
-  end ;
+  if isfield(paramstruct,'ibigdot')    %  then change to input value
+    ibigdot = paramstruct.ibigdot ; 
+  end
 
-  if isfield(paramstruct,'cdolcolor') ;    %  then change to input value
-    cdolcolor = getfield(paramstruct,'cdolcolor') ; 
-  end ;
+  if isfield(paramstruct,'cdolcolor')    %  then change to input value
+    cdolcolor = paramstruct.cdolcolor ; 
+  end
 
-  if isfield(paramstruct,'dolhtseed') ;    %  then change to input value
-    dolhtseed = getfield(paramstruct,'dolhtseed') ; 
-  end ;
+  if isfield(paramstruct,'dolhtseed')    %  then change to input value
+    dolhtseed = paramstruct.dolhtseed ; 
+  end
 
-  if isfield(paramstruct,'linewidth') ;    %  then change to input value
-    linewidth = getfield(paramstruct,'linewidth') ; 
-  end ;
+  if isfield(paramstruct,'linewidth')    %  then change to input value
+    linewidth = paramstruct.linewidth ; 
+  end
 
-  if isfield(paramstruct,'linecolor') ;    %  then change to input value
-    linecolor = getfield(paramstruct,'linecolor') ; 
-  end ;
+  if isfield(paramstruct,'linecolor')    %  then change to input value
+    linecolor = paramstruct.linecolor ; 
+  end
 
-  if isfield(paramstruct,'titlestr') ;    %  then change to input value
-    titlestr = getfield(paramstruct,'titlestr') ; 
-  end ;
+  if isfield(paramstruct,'titlestr')    %  then change to input value
+    titlestr = paramstruct.titlestr ; 
+  end
 
-  if isfield(paramstruct,'titlefontsize') ;    %  then change to input value
-    titlefontsize = getfield(paramstruct,'titlefontsize') ; 
-  end ;
+  if isfield(paramstruct,'titlefontsize')    %  then change to input value
+    titlefontsize = paramstruct.titlefontsize ; 
+  end
 
-  if isfield(paramstruct,'xlabelstr') ;    %  then change to input value
-    xlabelstr = getfield(paramstruct,'xlabelstr') ; 
-  end ;
+  if isfield(paramstruct,'xlabelstr')    %  then change to input value
+    xlabelstr = paramstruct.xlabelstr ; 
+  end
 
-  if isfield(paramstruct,'ylabelstr') ;    %  then change to input value
-    ylabelstr = getfield(paramstruct,'ylabelstr') ; 
-  end ;
+  if isfield(paramstruct,'ylabelstr')    %  then change to input value
+    ylabelstr = paramstruct.ylabelstr ; 
+  end
 
-  if isfield(paramstruct,'labelfontsize') ;    %  then change to input value
-    labelfontsize = getfield(paramstruct,'labelfontsize') ; 
-  end ;
+  if isfield(paramstruct,'labelfontsize')    %  then change to input value
+    labelfontsize = paramstruct.labelfontsize ; 
+  end
 
-  if isfield(paramstruct,'plotbottom') ;    %  then change to input value
-    plotbottom = getfield(paramstruct,'plotbottom') ; 
-  end ;
+  if isfield(paramstruct,'plotbottom')    %  then change to input value
+    plotbottom = paramstruct.plotbottom ; 
+  end
 
-  if isfield(paramstruct,'plottop') ;    %  then change to input value
-    plottop = getfield(paramstruct,'plottop') ; 
-  end ;
+  if isfield(paramstruct,'plottop')    %  then change to input value
+    plottop = paramstruct.plottop ; 
+  end
 
-  if isfield(paramstruct,'iplot') ;    %  then change to input value
-    iplot = getfield(paramstruct,'iplot') ; 
-  end ;
+  if isfield(paramstruct,'iplot')    %  then change to input value
+    iplot = paramstruct.iplot ; 
+  end
 
 
-end ;  %  of resetting of input parameters
+end  %  of resetting of input parameters
 
 
 
@@ -265,35 +265,35 @@ end ;  %  of resetting of input parameters
 ihazard = 0 ;
 ilengthb = 0 ;
 
-if  itype == 2  |   itype == 4  ;
+if  itype == 2  ||  itype == 4 
   ihazard = 1 ;
-end ;
+end
 
-if  itype == 3  |   itype == 4  ;
+if  itype == 3  ||  itype == 4 
   ilengthb = 1 ;
-end ;
+end
 
 
 
 %  detect whether censored or uncensored data
 %
-if size(data,2) == 1 ;    %  Then is uncensored
+if size(data,2) == 1    %  Then is uncensored
   xdat = data(:,1) ;
   vdel = ones(length(xdat),1) ;
   icen = 0 ;
-else ;                    %  Then assume censored
+else                    %  Then assume censored
   xdat = data(:,1) ;
   vdel = data(:,2) ;
   icen = 1 ;
-end ;
+end
 n = length(xdat) ;
 
 
 
 %  Give error message if length biased data are <= 0
 %
-if ilengthb == 1 ;
-  if min(xdat) <= 0 ;
+if ilengthb == 1
+  if min(xdat) <= 0
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from CHkdeSM.m:      !!!') ;
     disp('!!!   length biased estimation   !!!') ;
@@ -301,8 +301,8 @@ if ilengthb == 1 ;
     disp('!!!   Terminating Execution      !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     return ;
-  end ;
-end ;
+  end
+end
 
 
 
@@ -312,28 +312,28 @@ end ;
 nbin = 401 ;         %  Default
 lend = min(xdat) ;   %  Default
 rend = max(xdat) ;   %  Default
-if (length(vxgrid) == 2) | (length(vxgrid) == 3) ;
+if (length(vxgrid) == 2) || (length(vxgrid) == 3)
                                  %  then use input endpoints
   lend = vxgrid(1) ;
   rend = vxgrid(2) ;
-end ;
-if length(vxgrid) == 3 ;         %  then use number of grid points
+end
+if length(vxgrid) == 3         %  then use number of grid points
   nbin = vxgrid(3) ;
-end ;
+end
 
 
-if lend > rend ;    %  Then bad range has been input
+if lend > rend    %  Then bad range has been input
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Error from CHkdeSM:    !!!') ;
   disp('!!!   Invalid range chosen   !!!') ;
   disp('!!!   Terminating Execution  !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   bincts = [] ;
-else ;
+else
 
-  if itype == 1  &  icen == 0  ;   %  ordinary density estimation
+  if itype == 1  &&  icen == 0     %  ordinary density estimation
     bincts = lbinrSM(xdat,[lend,rend,nbin],eptflag) ;
-  else ;
+  else
 
     [sxdat, vsortind] = sort(xdat) ;
     svdel = vdel(vsortind) ;
@@ -341,38 +341,38 @@ else ;
 
     %  Get G bar cumulative (censored case only)
     %
-    if icen == 1 ;    %  then are doing censored estimation
+    if icen == 1    %  then are doing censored estimation
       vg = KMcdfSM(sxdat,1 - svdel,1) ;
       vgbar = 1 - vg  ;  
-    else ;     %  are doing uncensored estimation
+    else     %  are doing uncensored estimation
       vgbar = ones(n,1) ;
-    end ;
+    end
 
 
     %  Get F bar (hazard case only)
     %
-    if ihazard == 1 ;     % then are doing hazard est.
-      if ilengthb == 0 ;
+    if ihazard == 1     % then are doing hazard est.
+      if ilengthb == 0 
         vf = KMcdfSM(sxdat,svdel,1) ;
-      else ;
+      else
         vf = LBcdfSM(sxdat,svdel,1) ;
-      end ;
+      end
       vfbar = 1 - vf  ;  
-    else ;
+    else
       vfbar = ones(n,1) ;
-    end ;
+    end
 
     %  Get length biased adjustment
     %
-    if ilengthb == 1 ;
+    if ilengthb == 1
       vlb = sxdat ;
       vgbartrunc = vgbar + 1 / (2 * n) ;
 
       mu = (sum(svdel ./ (sxdat .* vgbartrunc)) / n)^(-1) ;
-    else ;
+    else
       vlb = ones(n,1) ;
       mu = 1 ;
-    end ;
+    end
 
 
     vlbar = vfbar .* vgbar .* vlb ;
@@ -381,34 +381,34 @@ else ;
 
     bincts = CHlbinrSM(msdata,[lend,rend,nbin],eptflag) ;
 
-    if ihazard == 0 ;    %  then should renormalize these counts,
-                         %  so that they sum to n
+    if ihazard == 0    %  then should renormalize these counts,
+                       %  so that they sum to n
       sbc = sum(bincts) ;
-      if sbc > 0 ;
+      if sbc > 0
         bincts = n * bincts / sbc ;
-      end ;
-    end ;
+      end
+    end
 
-  end ;
+  end
 
-end ;
+end
 
 
-if eptflag == 1 ;
+if eptflag == 1
   n = sum(xdat >= lend  &  xdat <= rend) ;
           %  put this here in case of truncations during binning
-end ;
+end
 
 
-if n == 0 ;    %  Possible when all data points are censored
+if n == 0    %  Possible when all data points are censored
 
   kde = zeros(nbin,length(vh)) ;
 
-else ;
+else
 
   %  Loop through bandwidths
   kde = [] ;
-  for ih = 1:length(vh) ;
+  for ih = 1:length(vh)
     h = vh(ih) ;
 
     %  Create vector of kernel values, at equally spaced grid
@@ -416,22 +416,22 @@ else ;
     k = nbin - 1 ;    %  index of last nonzero entry of kernel vector
     arg = linspace(0,k * delta / h,k + 1)' ;
     kvec = exp(-(arg.^2) / 2) / sqrt(2 * pi) ;
-    kvec = [flipud(kvec(2:k+1)); kvec] ;
+    kvec = [flipud(kvec(2:k+1)); kvec] ; %#ok<AGROW>
 
     %  Do actual kernel density estimation
     kdeh = conv(bincts,kvec) ;
     kdeh = kdeh(k+1:k+nbin) / (n * h) ;
 
 
-    if ilengthb == 1 ;
+    if ilengthb == 1
       kdeh = kdeh * mu ;
-    end ;
+    end
 
 
-    kde = [kde kdeh] ;
-  end ;
+    kde = [kde kdeh] ; %#ok<AGROW>
+  end
 
-end ;
+end
 
 
 xgrid = linspace(lend,rend,nbin)' ;
@@ -440,78 +440,78 @@ xgrid = linspace(lend,rend,nbin)' ;
 
 %  Create matrix of kernels, if this is needed
 %
-if nargout == 3 ;
+if nargout == 3
   cent = mean([lend; rend]) ;
           %  centerpoint of evaluation grid
-  if length(vh) > 1 ;
+  if length(vh) > 1
     mih = vec2matSM(1 ./ vh',nbin) ;
     mker = vec2matSM((xgrid - cent),length(vh)) .* mih;
           %  argument of gaussian kernel
-  else ;
+  else
     mih = 1 / vh ;
     mker = (xgrid - cent) .* mih;
           %  argument of gaussian kernel
-  end ;
+  end
   mker = exp(-mker.^2 / 2) .* mih / sqrt(2 * pi) ;
           %  Gaussian kernels with mass 1
   mker = 0.05 * mker ;
           %  Make masses = 0.05
-end ;
+end
 
 
 
 %  Make plots if no numerical output requested, or if plot requested
 %
-if  nargout == 0  | ...
-      iplot == 1  ;  %  Then make a plot
+if  nargout == 0  || ...
+      iplot == 1   %  Then make a plot
 
 
-  if  length(vh) > 3  &  ~isfield(paramstruct,'linewidth')  ;
+  if  length(vh) > 3  &&  ~isfield(paramstruct,'linewidth') 
                               %  then need to change default value of linewidth
     linewidth = 0.5 ;
-  end ;
+  end
 
 
-  if isempty(linecolor) ;
+  if isempty(linecolor)
     plot(xgrid,kde,'LineWidth',linewidth) ;
-  else ;
+  else
     plot(xgrid,kde,'LineWidth',linewidth,'Color',linecolor) ;
-  end ;
+  end
 
-  if  isempty(plottop)  &  isempty(plotbottom)  ;    %  then adjust top and bottom
+  if  isempty(plottop)  &&  isempty(plotbottom)    %  then adjust top and bottom
     plotbottom = 0 ;
     plottop = max(max(kde)) ;
     plotrange = plottop - plotbottom ;
     plotbottom = plotbottom - 0.05 * plotrange ;
     plottop = plottop + 0.05 * plotrange ;
-  elseif isempty(plottop) ;                          %  then only adjust top
+  elseif isempty(plottop)                          %  then only adjust top
     plottop = max(max(kde)) ;
     plotrange = plottop - plotbottom ;
     plottop = plottop + 0.05 * plotrange ;
-  elseif isempty(plotbottom) ;                       %  then only adjust bottom
+  elseif isempty(plotbottom)                       %  then only adjust bottom
     plotbottom = 0 ;
     plotrange = plottop - plotbottom ;
     plotbottom = plotbottom - 0.05 * plotrange ;
-  end ;
+  end
 
   vax = [lend,rend,plotbottom,plottop] ;
   axis(vax) ;
 
 
-  if  ndataoverlay > 0  ;
+  if  ndataoverlay > 0
                             %  then overlay jitterplot of data
   
-    if ~isempty(dolhtseed) ;
-      rand('seed',dolhtseed) ;
-    end ;
+    if ~isempty(dolhtseed)
+      rng(dolhtseed) ;
+    end
 
-    if ndataoverlay == 1 ;
+    if ndataoverlay == 1
       ndo = min(n,1000) ;
-    elseif ndataoverlay == 2 ;
+    elseif ndataoverlay == 2
       ndo = n ;
-    else ;
+    else
       ndo = min(n,ndataoverlay) ;
-    end ;
+    end
 
 
     flagleft = (xdat < lend) ;
@@ -520,48 +520,48 @@ if  nargout == 0  | ...
         %  ones where data above right end
     nleft = sum(flagleft) ;
     nright = sum(flagright) ;
-    if nleft + nright > 0 ;    %  then need to deal with points outside range
+    if nleft + nright > 0    %  then need to deal with points outside range
 
-      if eptflag == 1 ;    %  then truncate data outside range
+      if eptflag == 1    %  then truncate data outside range
         xdattrunc = xdat(~(flagleft | flagright)) ;
         vdeltrunc = vdel(~(flagleft | flagright)) ;
             %  keep data that is not (outside left or outside right)
         ntrunc = length(xdattrunc) ;
 
-      else ;    %  then move outside points to nearest end
+      else    %  then move outside points to nearest end
         xdattrunc = xdat ;
         vdeltrunc = vdel ;
-        if nleft > 0 ;    %  then replace those points with lend
+        if nleft > 0    %  then replace those points with lend
           xdattrunc(flagleft) = lend * ones(nleft,1) ;
-        end ;
-        if nright > 0 ;    %  then replace those points with rend
+        end
+        if nright > 0    %  then replace those points with rend
           xdattrunc(flagright) = rend * ones(nright,1) ;
-        end ;
+        end
         ntrunc = n ;
 
-      end ;
+      end
 
-    else ;
+    else
 
       xdattrunc = xdat ;
       vdeltrunc = vdel ;
       ntrunc = n ;
 
-    end ;
+    end
 
 
-    if ndo < ntrunc ;    %  then need to subsample
-      [temp,randperm] = sort(rand(ntrunc,1)) ;
+    if ndo < ntrunc    %  then need to subsample
+      [~,randperm] = sort(rand(ntrunc,1)) ;
             %  randperm is a random permutation of 1,2,...,ntrunc
       vkeep = randperm(1:ndo) ;
             %  indices of elements to keep for display
       xdatol = xdattrunc(vkeep,:) ;
       vdelol = vdeltrunc(vkeep,:) ;
-    else ;    %  overlay full data set
+    else    %  overlay full data set
       xdatol = xdattrunc ;
       vdelol = vdeltrunc ;
       ndo = ntrunc ;
-    end ;
+    end
 
 
     %  overlay selected data
@@ -577,28 +577,28 @@ if  nargout == 0  | ...
       ndel1 = sum(vdelol) ;
           %  number of deltas = 1 (uncensored)
       nplot = 0 ;
-      if ndel1 > 0 ;    %  then there are some uncensored, so plot
+      if ndel1 > 0    %  then there are some uncensored, so plot
 
-        if ibigdot == 1 ;   %  plot deliberately large dots
+        if ibigdot == 1   %  plot deliberately large dots
           plot(xdatol(logical(vdelol)),yrand(logical(vdelol)),[dolcolor 'o'], ...
                                 'MarkerSize',1,'LineWidth',2) ;
-        else ;    %  use matlab default dots
+        else    %  use matlab default dots
           plot(xdatol(logical(vdelol)),yrand(logical(vdelol)),[dolcolor '.']) ;
-        end ;
+        end
 
         nplot = nplot + 1 ;
-      end ;
-      if ndel1 < ndo ;    %  then there are some censored, so plot
+      end
+      if ndel1 < ndo    %  then there are some censored, so plot
 
-        if ibigdot == 1 ;   %  plot deliberately large dots
+        if ibigdot == 1   %  plot deliberately large dots
           plot(xdatol(~logical(vdelol)),yrand(~logical(vdelol)),[cdolcolor 'o'], ...
                                 'MarkerSize',1,'LineWidth',2) ;
-        else ;    %  use matlab default dots
+        else    %  use matlab default dots
           plot(xdatol(~logical(vdelol)),yrand(~logical(vdelol)),[cdolcolor '.']) ;
-        end ;
+        end
 
         nplot = nplot + 1 ;
-      end ;
+      end
 
     hold off ;
 
@@ -611,37 +611,37 @@ if  nargout == 0  | ...
     set(gca,'Children',vachil) ;
 
 
-  end ;
+  end
 
 
-  if ~isempty(titlestr) ;
-    if isempty(titlefontsize) ;
+  if ~isempty(titlestr)
+    if isempty(titlefontsize)
       title(titlestr) ;
-    else ;
+    else
       title(titlestr,'FontSize',titlefontsize) ;
-    end ;
-  end ;
+    end
+  end
 
 
-  if ~isempty(xlabelstr) ;
-    if isempty(labelfontsize) ;
+  if ~isempty(xlabelstr)
+    if isempty(labelfontsize)
       xlabel(xlabelstr) ;
-    else ;
+    else
       xlabel(xlabelstr,'FontSize',labelfontsize) ;
-    end ;
-  end ;
+    end
+  end
 
 
-  if ~isempty(ylabelstr) ;
-    if isempty(labelfontsize) ;
+  if ~isempty(ylabelstr)
+    if isempty(labelfontsize)
       ylabel(ylabelstr) ;
-    else ;
+    else
       ylabel(ylabelstr,'FontSize',labelfontsize) ;
-    end ;
-  end ;
+    end
+  end
 
 
-end ;
+end
 
 
 

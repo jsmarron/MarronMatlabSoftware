@@ -291,7 +291,7 @@ end     %  of resetting of input parameters
 
 %  set preliminary stuff
 %
-d = size(data,1) ;
+d = size(data,1) ; %#ok<NASGU>
          %  dimension of each data curve
 n = size(data,2) ;
          %  number of data curves
@@ -314,7 +314,7 @@ if  (size(icolor,1) > 1)  ||  (size(icolor,2) > 1)      %  if have color matrix
   end 
 end 
 
-if  ~isempty(vaxlim)  &  ~(vaxlim == 1)  
+if  ~isempty(vaxlim)  &  ~(vaxlim == 1)  %#ok<AND2>
   if ~((size(vaxlim,1) == 1)  &&  (size(vaxlim,2) == 4)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from Plot2dSM.m:      !!!') ;
@@ -371,7 +371,7 @@ if ~isempty(idataconn)
 
     if  ~ischar(idataconntype)     | ...
         ~((size(idataconntype,1) == 1)  | ...
-          (size(idataconntype,1) == size(idataconn,1))) 
+          (size(idataconntype,1) == size(idataconn,1))) %#ok<OR2>
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from Plot2dSM.m:        !!!') ;
       disp('!!!   invalid idataconntype           !!!') ;
@@ -475,7 +475,7 @@ if  size(icolor,1) == 1   &&  size(icolor,2) == 1     %  then have scalar input
         %  color of projection dots, matlab default
     colmap = colmap1 ;
     while size(colmap,1) < n 
-      colmap = [colmap; colmap1] ;
+      colmap = [colmap; colmap1] ; %#ok<AGROW>
     end 
     colmap = colmap(1:n,:) ;
 
@@ -521,7 +521,7 @@ end
 
 
 if  size(idataconncolor,1) == 1  &  (idataconncolor == 2  | ...
-                    idataconncolor == 3)  
+                    idataconncolor == 3)  %#ok<OR2,AND2>
     %  then take idataconncolor to be first part of icolor
 
   ndataconn = size(idataconn,1) ;
@@ -736,7 +736,7 @@ if ~isempty(idataconn)
     if ischar(idataconncolor) 
       mdataconncolor = [] ;
       for idc = 1:ndc 
-        mdataconncolor = [mdataconncolor; idataconncolor] ;
+        mdataconncolor = [mdataconncolor; idataconncolor] ; %#ok<AGROW>
       end 
     else 
       mdataconncolor = ones(ndc,1) * idataconncolor ;
@@ -748,7 +748,7 @@ if ~isempty(idataconn)
   if size(idataconntype,1) == 1      %  then need to expand
     mdataconntype = [] ;
     for idc = 1:ndc 
-      mdataconntype = [mdataconntype; idataconntype] ;
+      mdataconntype = [mdataconntype; idataconntype] ; %#ok<AGROW>
     end 
   else 
     mdataconntype = idataconntype ;

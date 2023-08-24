@@ -80,7 +80,7 @@ for i = 2:n     %  loop through rest of data
   if sdata(i) == sdata(i - 1)    %  then have tie with last
     tvdatp(length(tvdatp)) = ...
                  (nintie / (nintie + 1)) * tvdatp(length(tvdatp)) + ...
-                 (1 / (nintie + 1)) * vdatp(i) ;
+                 (1 / (nintie + 1)) * vdatp(i) ; %#ok<AGROW>
           %  replace current prob by weighted average of probs already
           %  here, and new prob
     nintie = nintie + 1 ;
@@ -88,9 +88,9 @@ for i = 2:n     %  loop through rest of data
 
   else                           %  then have no tie with last
 
-  tdata = [tdata; sdata(i)] ;
+  tdata = [tdata; sdata(i)] ; %#ok<AGROW>
           %  No tie, so tack on new data point
-  tvdatp = [tvdatp; vdatp(i)] ;
+  tvdatp = [tvdatp; vdatp(i)] ; %#ok<AGROW>
           %  No tie, so tack on new prob
   nintie = 1 ;
           %  number in last tie

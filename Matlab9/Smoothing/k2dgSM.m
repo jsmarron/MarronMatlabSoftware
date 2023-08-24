@@ -64,14 +64,14 @@ end
 %  Do checks of inputs
 %
 if size(igrid,2) == 1
-  istop = 0 ;
+  istop = 0 ; %#ok<NASGU>
 
   if size(jgrid,1) == 1
-    istop = 0 ;
+    istop = 0 ; %#ok<NASGU>
 
     if (iideriv == 0) || (iideriv == 1) || (iideriv == 2) || ...
                (iideriv == 11) || (iideriv == 12) || (iideriv == 22)   
-      istop = 0 ;
+      istop = 0 ; %#ok<NASGU>
 
       if (iinorm == 1) || (iinorm == 2)
         istop = 0 ;

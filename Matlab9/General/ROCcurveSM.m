@@ -139,7 +139,7 @@ if iscell(dataplus)
   ncp = length(dataplus) ;
 else
   pluscellflag = false ;
-  vdataplus = dataplus ;
+  vdataplus = dataplus ; %#ok<NASGU>
 end
 
 if iscell(dataminus)
@@ -147,10 +147,10 @@ if iscell(dataminus)
   ncm = length(dataminus) ;
 else
   minuscellflag = false ;
-  vdataminus = dataminus ;
+  vdataminus = dataminus ; %#ok<NASGU>
 end
 
-if pluscellflag & minuscellflag
+if pluscellflag & minuscellflag %#ok<AND2>
   if ncp == ncm
     nc = ncp ;
   else
@@ -290,7 +290,7 @@ if  size(icolor,1) == 1   &&  size(icolor,2) == 1    %  then have scalar input
         %  color of projection dots, matlab default
     colmap = colmap1 ;
     while size(colmap,1) < nc
-      colmap = [colmap; colmap1] ;
+      colmap = [colmap; colmap1] ; %#ok<AGROW>
     end
     colmap = colmap(1:nc,:) ;
 
@@ -426,7 +426,7 @@ for ic = 1:nc
      vpts = sort([vdataminus; mean([max(vdataminus) min(vdataplus)]); vdataplus]) ;
   end
   ROCcurve = [cprobSM(vdataplus,vpts) cprobSM(vdataminus,vpts)] ;
-  ROCcurve = [[0 0]; ROCcurve; [1 1]] ;
+  ROCcurve = [[0 0]; ROCcurve; [1 1]] ; %#ok<AGROW>
 
 
   %  Calculate AUC 
@@ -476,8 +476,8 @@ for ic = 1:nc
   %  Store in output cell arrays (if needed)
   %
   if nc > 1
-    cellROC{ic} = ROCcurve ;
-    cellAUC{ic} = AUC ;
+    cellROC{ic} = ROCcurve ; %#ok<AGROW>
+    cellAUC{ic} = AUC ; %#ok<AGROW>
   end
 
 

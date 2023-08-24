@@ -1,4 +1,4 @@
-function makeplot = sizerSM(data,paramstruct) 
+function makeplot = sizerSM(data,paramstruct) %#ok<STOUT>
 % SIZERSM, SIgnificance of ZERo crossings of derivatives,
 %   Steve Marron's matlab function
 %     For determining which features in a smooth 
@@ -296,7 +296,6 @@ datovlaymax = 0.6 ;
 datovlaymin = 0.5 ;
 dolcolor = 'g' ;
 ibigdot = 0 ;
-cdolcolor = 'y' ;
 dolhtseed = [] ;
 iscreenwrite = 0 ;
 nbin = 401 ;
@@ -430,10 +429,6 @@ if nargin > 1   %  then paramstruct is an argument
 
   if isfield(paramstruct,'ibigdot')    %  then change to input value
     ibigdot = paramstruct.ibigdot ; 
-  end
-
-  if isfield(paramstruct,'cdolcolor')    %  then change to input value
-    cdolcolor = paramstruct.cdolcolor ; 
   end
 
   if isfield(paramstruct,'dolhtseed')    %  then change to input value
@@ -621,7 +616,6 @@ if isempty(maxx)
   maxx = max(xdat) ;
 end
 
-ndat = length(xdat) ;
 centx = mean([minx;maxx]) ;
 
 
@@ -756,8 +750,6 @@ if icolor ~= 0     %  Then go for nice colors in slope and curvature sizer
           %  Plot highlighted curve in black
   datcolorstr = dolcolor ;
           %  Plot overlaid data in chosen color
-  cendatcolorstr = 'y' ;
-          %  Plot overlaid censored data in yellow
 
 else     %  Then use gray scale maps everywhere
 
@@ -774,8 +766,6 @@ else     %  Then use gray scale maps everywhere
           %  Plot highlighted curve in black
   datcolorstr = 'k' ;
           %  Plot overlaid data in black
-  cendatcolorstr = [.5, .5, .5] ;
-          %  Plot overlaid censored data in gray
 
 end
 
@@ -1030,7 +1020,7 @@ if  viplot(1) == 1  ||  viplot(2) == 1    %  Then will show a family plot
     vfamh = [] ;
     for i = length(vaxchil):-1:1    %  since order is reversed
       if get(vaxchil(i),'LineStyle') == '-'
-        vfamh = [vfamh; vaxchil(i)] ;
+        vfamh = [vfamh; vaxchil(i)] ; %#ok<AGROW>
       end
     end
 
@@ -1412,7 +1402,7 @@ if imovie == 1
     end
 
 
-		moviestruct(iframe) = getframe(fighand) ;
+		moviestruct(iframe) = getframe(fighand) ; %#ok<AGROW>
 
   end    %  of iframe loop, to make movie
 

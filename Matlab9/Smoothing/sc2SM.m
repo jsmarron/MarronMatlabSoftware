@@ -251,7 +251,7 @@ end
 
 %  Set x grid stuff
 %
-n = length(xdat) ;
+n = length(xdat) ; %#ok<NASGU>
 if vxgp == 0   %  then use standard default x grid
   vxgp = [min(xdat),max(xdat),401] ;
 end
@@ -383,7 +383,7 @@ for ih = 1:nh
   %  Set common values
   arg = linspace(0,k * delta / h,k + 1)' ;
   kvec = exp(-(arg.^2) / 2) ;
-  kvec = [flipud(kvec(2:k+1)); kvec] ;
+  kvec = [flipud(kvec(2:k+1)); kvec] ; %#ok<AGROW>
         %  construct symmetric kernel
 
 
@@ -413,7 +413,7 @@ for ih = 1:nh
           %    (same as sum for kde)
 
     kvecd2 = (arg.^2 - 1) .* exp(-(arg.^2) / 2) / sqrt(2 * pi) ;
-    kvecd2 = [flipud(kvecd2(2:k+1)); kvecd2] ;
+    kvecd2 = [flipud(kvecd2(2:k+1)); kvecd2] ; %#ok<AGROW>
         %  construct symmetric kernel
 
     vd2 = conv(babincts,kvecd2) ;
@@ -469,7 +469,7 @@ for ih = 1:nh
     ybar = t0 ;
           %  Weighted sum of Y_i    (numerator of NW est.)
 
-    mhat = ybar ./ ve ;
+    mhat = ybar ./ ve ; %#ok<NASGU>
           %  Nadaraya Watson est.   (0 denons covered by above protection)
 
     a = t1 - t0 .* xbar ;
@@ -621,13 +621,13 @@ for ih = 1:nh
   end
 
 
-  md2surf = [md2surf vd2] ;
-  mesurf = [mesurf ve] ;
-  mvsurf = [mvsurf vv] ;
+  md2surf = [md2surf vd2] ; %#ok<AGROW>
+  mesurf = [mesurf ve] ; %#ok<AGROW>
+  mvsurf = [mvsurf vv] ; %#ok<AGROW>
   if itdist == 0
-    vgq = [vgq gquant] ;
+    vgq = [vgq gquant] ; %#ok<AGROW>
   elseif itdist == 1
-    mtq = [mtq vtquant] ;
+    mtq = [mtq vtquant] ; %#ok<AGROW>
   end
 
 end

@@ -565,7 +565,7 @@ if  size(icolor,1) == 1  &&  size(icolor,2) == 1    %  then have scalar input
         %  color of projection dots, matlab default
     colmap = colmap1 ;
     while size(colmap,1) < n 
-      colmap = [colmap; colmap1] ;
+      colmap = [colmap; colmap1] ; %#ok<AGROW>
     end 
     colmap = colmap(1:n,:) ;
 
@@ -712,13 +712,13 @@ elseif itype == 3    %  Spearman Correlation PCA
   mresid = data - vec2matSM(vcenter,n) ;
   sscr = sum(sum(mresid .^ 2)) ;
 
-  [~,msind] = sort(mresid') ;
+  [~,msind] = sort(mresid') ; %#ok<TRSRT>
           %  Transpose, since want "coordinates as variables"
           %  Sort gives indices for doing sort
   mrank = [] ;
   vind = (1:n)' ;
   for i = 1:d
-    mrank = [mrank, vind(msind(:,i))] ;
+    mrank = [mrank, vind(msind(:,i))] ; %#ok<AGROW>
           %  matrix of ranks
   end
 
@@ -860,13 +860,13 @@ if iscreenwrite == 1
   disp('    curvdatSM finished eigendecomposition') ;
 end
 
-veigval = getfield(outstruct,'veigval') ;
+veigval = outstruct.veigval ;
     %  vector eigenvalues
-tmeigvec = getfield(outstruct,'meigvec') ;
+tmeigvec = outstruct.meigvec ;
     %  matrix of eigenvectors of transformed data
     %  Note: these are sorted so largest eigenvalues are first
     %        and eigen vectors are column vectors
-tvpropSScr = getfield(outstruct,'vpropSSmr') ;
+tvpropSScr = outstruct.vpropSSmr ;
     %  vector of Proportions of Mean Residuals
     %  of transformed data
     %  for plotting lines in power plot
@@ -977,13 +977,13 @@ for iev = 2:maxipcplot
   a3proj = cat(3,a3proj,meigvec(:,iev) * mpc(iev,:)) ;
       %  buildup 3-d array of
       %  d x n matrix of projections onto direction vectors
-  vss = [vss; sum(sum(a3proj(:,:,iev).^2))] ;
+  vss = [vss; sum(sum(a3proj(:,:,iev).^2))] ; %#ok<AGROW>
       %  sum of squares of projected data, in first direction
   a3mresid = cat(3,a3mresid,a3mresid(:,:,(iev-1)) - a3proj(:,:,iev)) ;
       %  buildup 3-d array of
       %  d x n matrix of sequential residuals
-  vssr = [vssr; (vssr(iev-1) - vss(iev))] ;
-  vpropSSpr = [vpropSSpr; vssr(iev) / vssr(iev-1)] ;
+  vssr = [vssr; (vssr(iev-1) - vss(iev))] ; %#ok<AGROW>
+  vpropSSpr = [vpropSSpr; vssr(iev) / vssr(iev-1)] ; %#ok<AGROW>
         %  vector of SS, as a proportion of the previous residuals
 end    %  of iev loop
 
@@ -1187,14 +1187,14 @@ if vipageout(1) == 1
             plot(xgrid,vcenter,[meancolor '-']) ;
               if isempty(vaxlimproj)
                 vax = axisSM([vcenter + max(mpc(ipc,:)') * meigvec(:,ipc); ...
-                              vcenter + min(mpc(ipc,:)') * meigvec(:,ipc)]) ;
+                              vcenter + min(mpc(ipc,:)') * meigvec(:,ipc)]) ; %#ok<UDIM>
               else
                 vax = vaxlimraw ;
               end
               axis([1,d,vax]) ;
               hold on ;
-                plot(xgrid,vcenter + max(mpc(ipc,:)') * meigvec(:,ipc),[meancolor '--']) ;
-                plot(xgrid,vcenter + min(mpc(ipc,:)') * meigvec(:,ipc),[meancolor ':']) ;
+                plot(xgrid,vcenter + max(mpc(ipc,:)') * meigvec(:,ipc),[meancolor '--']) ; %#ok<UDIM>
+                plot(xgrid,vcenter + min(mpc(ipc,:)') * meigvec(:,ipc),[meancolor ':']) ; %#ok<UDIM>
               hold off ;
                 ty = vax(1) + .9 * (vax(2) - vax(1)) ;
               text(tx,ty,[num2str(100 * vpropSScr(ipc),4) '% of CR']) ;
@@ -1413,14 +1413,14 @@ if vipageout(1) == 1
             plot(xgrid,vcenter,[meancolor '-']) ;
               if isempty(vaxlimproj)
                 vax = axisSM([vcenter + max(mpc(ipc,:)') * meigvec(:,ipc); ...
-                              vcenter + min(mpc(ipc,:)') * meigvec(:,ipc)]) ;
+                              vcenter + min(mpc(ipc,:)') * meigvec(:,ipc)]) ; %#ok<UDIM>
               else
                 vax = vaxlimraw ;
               end
               axis([1,d,vax]) ;
               hold on ;
-                plot(xgrid,vcenter + max(mpc(ipc,:)') * meigvec(:,ipc),[meancolor '--']) ;
-                plot(xgrid,vcenter + min(mpc(ipc,:)') * meigvec(:,ipc),[meancolor ':']) ;
+                plot(xgrid,vcenter + max(mpc(ipc,:)') * meigvec(:,ipc),[meancolor '--']) ; %#ok<UDIM>
+                plot(xgrid,vcenter + min(mpc(ipc,:)') * meigvec(:,ipc),[meancolor ':']) ; %#ok<UDIM>
               hold off ;
                 ty = vax(1) + .9 * (vax(2) - vax(1)) ;
               text(tx,ty,[num2str(100 * vpropSScr(ipc),4) '% of CR']) ;
@@ -1441,7 +1441,7 @@ if vipageout(1) == 1
                 vax = vaxlimproj ;
               end
               axis([1,d,vax]) ;
-                ty = vax(1) + .9 * (vax(2) - vax(1)) ;
+                ty = vax(1) + .9 * (vax(2) - vax(1)) ; %#ok<NASGU>
               hold on ;
                 for idat = 2:n
                   plot(xgrid,a3mresid(:,idat,ipc),'-','Color',colmap(idat,:)) ;
@@ -1696,12 +1696,12 @@ if vipageout(3) == 1
     ipc = vipcplotn0(i) ;
         %  index of current PC
     vdir = meigvec(:,ipc) ;
-    mdir = [mdir vdir] ;
+    mdir = [mdir vdir] ; %#ok<AGROW>
         %  matrix of directions to project onto
     istr = num2str(ipc) ;
     labelcellstr = cat(1,labelcellstr,{['PC' istr ' Scores']}) ;
     if ~isempty(vaxlimsc)
-      maxlim = [maxlim; vaxlimsc] ;
+      maxlim = [maxlim; vaxlimsc] ; %#ok<AGROW>
     end
   end
   labelcellstr = {labelcellstr} ;

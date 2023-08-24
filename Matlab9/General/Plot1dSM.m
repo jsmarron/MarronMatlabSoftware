@@ -361,7 +361,7 @@ if  (isubpopkde == 1)  ||  (isubpopkde == 2)
   end 
 end 
 
-if  ~isempty(vaxlim)  &  ~(vaxlim == 1)  
+if  ~isempty(vaxlim)  &  ~(vaxlim == 1)  %#ok<AND2>
   if  (size(vaxlim,1) ~= 1)  ||  ...
       (  ~((size(vaxlim,2) == 2) || ...
            (size(vaxlim,2) == 4) ))  || ...
@@ -488,7 +488,7 @@ if  size(icolor,1) == 1   &&  size(icolor,2) == 1     %  then have scalar input
         %  color of projection dots, matlab default
     colmap = colmap1 ;
     while size(colmap,1) < n 
-      colmap = [colmap; colmap1] ;
+      colmap = [colmap; colmap1] ; %#ok<AGROW>
     end 
     colmap = colmap(1:n,:) ;
 
@@ -654,7 +654,7 @@ end
 
 if  isempty(vaxlim)  |  ...
     vaxlim == 1  |  ...
-    size(vaxlim,2) == 2      %  then use axisSM default for kde
+    size(vaxlim,2) == 2      %#ok<OR2> %  then use axisSM default for kde
   vaxkde = axisSM(kde) ;
   vax = [vax 0 vaxkde(2)] ;
 else 
@@ -683,12 +683,12 @@ if  (isubpopkde == 1)  ||  (isubpopkde == 2)
 
     if sum(vflag) == 0     %  then have a new color
       nsubpop = nsubpop + 1 ;
-      subpopcolor = [subpopcolor; vcolor] ;
-      vidatsp = [vidatsp; nsubpop] ;
+      subpopcolor = [subpopcolor; vcolor] ; %#ok<AGROW>
+      vidatsp = [vidatsp; nsubpop] ; %#ok<AGROW>
     else     %  then have an existing color
       [~, isubpop] = max(vflag) ;
           %  get index of place where have a one in vflag
-      vidatsp = [vidatsp; isubpop] ;
+      vidatsp = [vidatsp; isubpop] ; %#ok<AGROW>
     end 
 
   end 
@@ -711,7 +711,7 @@ if  (isubpopkde == 1)  ||  (isubpopkde == 2)
         %  mass one kde for this subpopulation
     spkde = (ndatsp / n) * spkde ;
         %  rescale, so mass is proportional to size of subpopulation
-    mspkde = [mspkde spkde] ; 
+    mspkde = [mspkde spkde] ; %#ok<AGROW>
   end 
 
 
@@ -807,11 +807,11 @@ elseif indivplotflag == 1      %  then need to do individual plot calls
           if ibigdot == 1    %  plot deliberately large dots
             hC = plot(data(vindol(idato)),hts(vindol(idato)), ...
                         'o','Color',colmap(vindol(idato),:), ...
-                        'MarkerSize',1,'LineWidth',2) ;
+                        'MarkerSize',1,'LineWidth',2) ; %#ok<NASGU>
           else     %  use input marker
             hC = plot(data(vindol(idato)),hts(idato), ...
                          mmarks(vindol(idato)), ...
-                         'Color',colmap(vindol(idato),:)) ;
+                         'Color',colmap(vindol(idato),:)) ; %#ok<NASGU>
           end 
         end 
 

@@ -310,7 +310,7 @@ end     %  of resetting of input parameters
 %
 d = size(data,1) ;
          %  dimension of each data curve
-n = size(data,2) ;
+n = size(data,2) ; %#ok<NASGU>
          %  number of data curves
 
 if ~(d == size(vdir,1)) 

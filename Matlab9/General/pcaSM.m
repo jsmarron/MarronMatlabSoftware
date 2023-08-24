@@ -436,7 +436,7 @@ if viout(10) == 1
                               %  so set to 0, for output
       frac = 0 ;
     end
-    vpropSSpr = [vpropSSpr; frac] ;
+    vpropSSpr = [vpropSSpr; frac] ; %#ok<AGROW>
 
   end
 

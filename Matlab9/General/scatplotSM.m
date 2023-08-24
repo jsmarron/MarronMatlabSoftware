@@ -552,14 +552,14 @@ if  (size(icolor,1) > 1)  ||  (size(icolor,2) > 1)    %  if have color matrix
   end
 end
 
-icolorprint = 1 ;
+icolorprint = 1 ; %#ok<NASGU>
 if  size(icolor,1) == 1  &&  size(icolor,2) == 1
   if ischar(icolor)
     if strcmp(icolor,'k')
-      icolorprint = 0 ;
+      icolorprint = 0 ; %#ok<NASGU>
     end
   elseif icolor == 0 
-    icolorprint = 0 ;
+    icolorprint = 0 ; %#ok<NASGU>
   end
 end
 
@@ -574,10 +574,10 @@ else
   vlabelflag = [] ;
   for ilabel = 1:length(labelcellstr)
     if isempty(labelcellstr(ilabel))
-      vlabelflag = [vlabelflag; 0] ;
+      vlabelflag = [vlabelflag; 0] ; %#ok<AGROW>
           %  use no label in this direction
     else
-      vlabelflag = [vlabelflag; 2] ;
+      vlabelflag = [vlabelflag; 2] ; %#ok<AGROW>
           %  use given label in this direction
     end
   end
@@ -658,10 +658,10 @@ if abs(npcadiradd) > 0    %  then add PCA Direction vectors to mdir
 
     for ilabel = (ncomp + 1):length(labelcellstr)
       if isempty(labelcellstr{ilabel}) 
-        vlabelflag = [vlabelflag; 0] ;
+        vlabelflag = [vlabelflag; 0] ; %#ok<AGROW>
             %  use no label in this direction
       else
-        vlabelflag = [vlabelflag; 2] ;
+        vlabelflag = [vlabelflag; 2] ; %#ok<AGROW>
             %  use given label in this direction
       end
     end

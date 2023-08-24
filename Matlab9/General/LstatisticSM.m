@@ -142,7 +142,7 @@ else
     end
 
 
-    Lstat = [Lstat L] ; 
+    Lstat = [Lstat L] ; %#ok<AGROW>
         %  Update output vector
 
 

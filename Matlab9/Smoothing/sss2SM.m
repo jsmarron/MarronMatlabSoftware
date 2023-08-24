@@ -1,4 +1,4 @@
-function makeplot = sss2SM(data,paramstruct) 
+function makeplot = sss2SM(data,paramstruct) %#ok<STOUT>
 % SSS2SM, Significance in Scale Space, for finding features in 2d
 %     based on slopes, curvatures or both
 %     (improves sss1, by more user friendly features, 
@@ -952,7 +952,7 @@ for ih = 1:nh
 
     else    %  Don't draw any smalless circles
 
-      nsmalless = 0 ;
+      nsmalless = 0 ; %#ok<NASGU>
           %  number of pixels with small ess
       allsmalless = false ;
           %  1 when every pixel has small ess
@@ -1152,9 +1152,9 @@ for ih = 1:nh
     %  Store current image as a frame
     %
     if isempty(titlestr) && ishowh == 0    %  then save axes only
- 			moviestruct(ih) = getframe(gca) ;
+ 			moviestruct(ih) = getframe(gca) ; %#ok<AGROW>
     else    %  then save whole figure
- 			moviestruct(ih) = getframe(gcf) ;
+ 			moviestruct(ih) = getframe(gcf) ; %#ok<AGROW>
     end 
 
   end

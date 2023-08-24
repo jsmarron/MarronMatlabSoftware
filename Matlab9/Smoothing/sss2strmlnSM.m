@@ -245,7 +245,7 @@ if nsigg > 0    %  then have some pixels for streamlines
 
       if contflag >= 0     %  then want to add this line segment
 
-        mloc = [mloc; curloc] ;
+        mloc = [mloc; curloc] ; %#ok<AGROW>
           %  put new location on the bottom
 
       else     %  then have already stepped past an maximum,
@@ -376,7 +376,7 @@ if nsigg > 0    %  then have some pixels for streamlines
 
       if contflag >= 0     %  then want to add this line segment
 
-        mloc = [curloc; mloc] ;
+        mloc = [curloc; mloc] ; %#ok<AGROW>
           %  put new location on the top
 
       else     %  then have already stepped past a minimum,

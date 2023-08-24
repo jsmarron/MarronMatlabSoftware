@@ -240,128 +240,126 @@ relaccthreshold = 10^(-6) ;
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct has been added
+if nargin > 1   %  then paramstruct has been added
 
-  if isfield(paramstruct,'idist') ;    %  then change to input value
-    idist = getfield(paramstruct,'idist') ; 
-  end ;
+  if isfield(paramstruct,'idist')    %  then change to input value
+    idist = paramstruct.idist ; 
+  end
 
-  if isfield(paramstruct,'vqalign') ;    %  then change to input value
-    vqalign = getfield(paramstruct,'vqalign') ; 
-  end ;
+  if isfield(paramstruct,'vqalign')    %  then change to input value
+    vqalign = paramstruct.vqalign ; 
+  end
 
-  if isfield(paramstruct,'nsim') ;    %  then change to input value
-    nsim = getfield(paramstruct,'nsim') ; 
-  end ;
+  if isfield(paramstruct,'nsim')    %  then change to input value
+    nsim = paramstruct.nsim ; 
+  end
 
-  if isfield(paramstruct,'simseed') ;    %  then change to input value
-    simseed = getfield(paramstruct,'simseed') ; 
-  end ;
+  if isfield(paramstruct,'simseed')    %  then change to input value
+    simseed = paramstruct.simseed ; 
+  end
 
-  if isfield(paramstruct,'nsimplotval') ;    %  then change to input value
-    nsimplotval = getfield(paramstruct,'nsimplotval') ; 
-  end ;
+  if isfield(paramstruct,'nsimplotval')    %  then change to input value
+    nsimplotval = paramstruct.nsimplotval ; 
+  end
 
-  if isfield(paramstruct,'icolor') ;    %  then change to input value
-    icolor = getfield(paramstruct,'icolor') ; 
-  end ;
+  if isfield(paramstruct,'icolor')    %  then change to input value
+    icolor = paramstruct.icolor ; 
+  end
 
-  if isfield(paramstruct,'savestr') ;    %  then change to input value
-    savestr = getfield(paramstruct,'savestr') ; 
-    if ~ischar(savestr) ;    %  then invalid input, so give warning
+  if isfield(paramstruct,'savestr')    %  then change to input value
+    savestr = paramstruct.savestr ; 
+    if ~ischar(savestr)    %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from qqLM.m:       !!!') ;
       disp('!!!   Invalid savestr,           !!!') ;
       disp('!!!   using default of no save   !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       savestr = [] ;
-    end ;
-  end ;
+    end
+  end
 
   if isfield(paramstruct,'savetype')     %  then use input value
     savetype = paramstruct.savetype ; 
   end 
 
-  if isfield(paramstruct,'titlestr') ;    %  then change to input value
-    titlestr = getfield(paramstruct,'titlestr') ; 
-  end ;
+  if isfield(paramstruct,'titlestr')    %  then change to input value
+    titlestr = paramstruct.titlestr ; 
+  end
 
-  if isfield(paramstruct,'titlefontsize') ;    %  then change to input value
-    titlefontsize = getfield(paramstruct,'titlefontsize') ; 
-  end ;
+  if isfield(paramstruct,'titlefontsize')    %  then change to input value
+    titlefontsize = paramstruct.titlefontsize ; 
+  end
 
-  if isfield(paramstruct,'xlabelstr') ;    %  then change to input value
-    xlabelstr = getfield(paramstruct,'xlabelstr') ; 
-  end ;
+  if isfield(paramstruct,'xlabelstr')    %  then change to input value
+    xlabelstr = paramstruct.xlabelstr ; 
+  end
 
-  if isfield(paramstruct,'ylabelstr') ;    %  then change to input value
-    ylabelstr = getfield(paramstruct,'ylabelstr') ; 
-  end ;
+  if isfield(paramstruct,'ylabelstr')    %  then change to input value
+    ylabelstr = paramstruct.ylabelstr ; 
+  end
 
-  if isfield(paramstruct,'labelfontsize') ;    %  then change to input value
-    labelfontsize = getfield(paramstruct,'labelfontsize') ; 
-  end ;
+  if isfield(paramstruct,'labelfontsize')    %  then change to input value
+    labelfontsize = paramstruct.labelfontsize ; 
+  end
 
-  if isfield(paramstruct,'ishowpar') ;    %  then change to input value
-    ishowpar = getfield(paramstruct,'ishowpar') ; 
-  end ;
+  if isfield(paramstruct,'ishowpar')    %  then change to input value
+    ishowpar = paramstruct.ishowpar ; 
+  end
 
-  if isfield(paramstruct,'parfontsize') ;    %  then change to input value
-    parfontsize = getfield(paramstruct,'parfontsize') ; 
-  end ;
+  if isfield(paramstruct,'parfontsize')    %  then change to input value
+    parfontsize = paramstruct.parfontsize ; 
+  end
 
-  if isfield(paramstruct,'left') ;    %  then change to input value
-    left = getfield(paramstruct,'left') ; 
-  end ;
+  if isfield(paramstruct,'left')    %  then change to input value
+    left = paramstruct.left ; 
+  end
 
-  if isfield(paramstruct,'right') ;    %  then change to input value
-    right = getfield(paramstruct,'right') ; 
-  end ;
+  if isfield(paramstruct,'right')    %  then change to input value
+    right = paramstruct.right ; 
+  end
 
-  if isfield(paramstruct,'bottom') ;    %  then change to input value
-    bottom = getfield(paramstruct,'bottom') ; 
-  end ;
+  if isfield(paramstruct,'bottom')    %  then change to input value
+    bottom = paramstruct.bottom ; 
+  end
 
-  if isfield(paramstruct,'top') ;    %  then change to input value
-    top = getfield(paramstruct,'top') ; 
-  end ;
+  if isfield(paramstruct,'top')    %  then change to input value
+    top = paramstruct.top ; 
+  end
 
-  if isfield(paramstruct,'ioverlay') ;    %  then change to input value
-    ioverlay = getfield(paramstruct,'ioverlay') ; 
-  end ;
+  if isfield(paramstruct,'ioverlay')    %  then change to input value
+    ioverlay = paramstruct.ioverlay ; 
+  end
 
-  if isfield(paramstruct,'ishowcross') ;    %  then change to input value
-    ishowcross = getfield(paramstruct,'ishowcross') ; 
-  end ;
+  if isfield(paramstruct,'ishowcross')    %  then change to input value
+    ishowcross = paramstruct.ishowcross ; 
+  end
 
-  if isfield(paramstruct,'vshowq') ;    %  then change to input value
-    vshowq = getfield(paramstruct,'vshowq') ; 
-  end ;
+  if isfield(paramstruct,'vshowq')    %  then change to input value
+    vshowq = paramstruct.vshowq ; 
+  end
 
-  if isfield(paramstruct,'iscreenwrite') ;    %  then change to input value
-    iscreenwrite = getfield(paramstruct,'iscreenwrite') ; 
-  end ;
+  if isfield(paramstruct,'iscreenwrite')    %  then change to input value
+    iscreenwrite = paramstruct.iscreenwrite ; 
+  end
 
-  if isfield(paramstruct,'maxstep') ;    %  then change to input value
-    maxstep = getfield(paramstruct,'maxstep') ; 
-  end ;
+  if isfield(paramstruct,'maxstep')    %  then change to input value
+    maxstep = paramstruct.maxstep ; 
+  end
 
-  if isfield(paramstruct,'relaccthreshold') ;    %  then change to input value
-    relaccthreshold = getfield(paramstruct,'relaccthreshold') ; 
-  end ;
+  if isfield(paramstruct,'relaccthreshold')    %  then change to input value
+    relaccthreshold = paramstruct.relaccthreshold ; 
+  end
 
 
-else ;   %  create a dummy structure
+else   %  create a dummy structure
   paramstruct = struct('nothing',[]) ;
 
 
-end ;  %  of resetting of input parameters
+end  %  of resetting of input parameters
 
 
 
-
-
-if  size(data,2) > 1  |  size(data,1) < 2 ;
+if  size(data,2) > 1  ||  size(data,1) < 2
 
   disp(' ') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -373,25 +371,25 @@ if  size(data,2) > 1  |  size(data,1) < 2 ;
 
   return ;
 
-end ;
+end
 
 
 
 
 %  Set internal parameters
 %
-if icolor == 1 ;
+if icolor == 1
   colorcell = {'r' 'g' 'b'} ;
           %  1st - data
           %  2nd - line
           %  3rd - simulated versions
   ltypestr = '-' ;
   simltypestr = '-' ;
-else ;
+else
   colorcell = {'k' 'k' [0.2 0.2 0.2]} ;
   ltypestr = '--' ;
   simltypestr = ':' ;
-end ;
+end
 paramout = [] ;
 
 
@@ -409,7 +407,7 @@ qdata = sort(data) ;
 pgrid = (1:n)' / (n + 1) ;
 ididqalign = 0 ;
 
-if idist == 0 ;
+if idist == 0
   diststr = 'Uniform(0,1)' ;
 
   qtheory = pgrid ;
@@ -420,19 +418,19 @@ if idist == 0 ;
   par2str = '' ;
   par2val = [] ;
 
-  if ishowpar == 1 ;
+  if ishowpar == 1
     disp('!!!   Warning from qqLM.m:  have reset ishowpar to 0') ;
     disp('!!!       since parameters not allowed for Unif(0,1)') ;
     ishowpar = 0 ;
-  end ;
+  end
 
-elseif  idist == 1  |  idist == 11  ;  
-  if idist == 1 ;
+elseif  idist == 1  ||  idist == 11 
+  if idist == 1
     diststr = 'Gaussian' ;
-  elseif idist == 11 ;
+  elseif idist == 11
     diststr = 'LogNormal' ;
 
-    if qdata(1) <= 0 ;
+    if qdata(1) <= 0
       disp(' ') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from qqLM.m:           !!!') ;  
@@ -442,13 +440,13 @@ elseif  idist == 1  |  idist == 11  ;
       disp(' ') ;
 
       return ;
-    end ;
+    end
 
     qdata = log(qdata) ;
-  end ;
+  end
 
-  if isfield(paramstruct, 'mu') &  isfield(paramstruct, 'sigma');
-    if isfield(paramstruct, 'vqalign');
+  if isfield(paramstruct, 'mu') && isfield(paramstruct, 'sigma')
+    if isfield(paramstruct, 'vqalign')
         disp(' ');
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         disp('!!!   Warning from qqLM.m:                  !!!');
@@ -456,12 +454,12 @@ elseif  idist == 1  |  idist == 11  ;
         disp('!!!   so vqalign will be ignored            !!!');
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         disp(' ');
-    end;
+    end
 
-    mu = getfield(paramstruct,'mu');
-    sigma = getfield(paramstruct,'sigma');
-  else;
-    if isfield(paramstruct, 'vqalign');
+    mu = paramstruct.mu ;
+    sigma = paramstruct.sigma ;
+  else
+    if isfield(paramstruct, 'vqalign')
       p1 = vqalign(1);
       p2 = vqalign(2);
       vq = cquantSM(qdata, vqalign,0);
@@ -472,11 +470,11 @@ elseif  idist == 1  |  idist == 11  ;
       sigma = (q1hat - q2hat)/(norminv(p1) - norminv(p2));
       mu = q1hat - sigma * norminv(p1);
       ididqalign = 1;
-    else;
+    else
       mu = mean(qdata);
       sigma = std(qdata);
-    end;
-  end;
+    end
+  end
 
 
   qtheory = mu + sigma * norminv(pgrid) ;
@@ -490,14 +488,14 @@ elseif  idist == 1  |  idist == 11  ;
   par2val = sigma ;
 
 
-elseif  idist == 2  |  idist == 12  ;  
-  if idist == 2 ;
+elseif  idist == 2  ||  idist == 12 
+  if idist == 2
     diststr = 'Pareto' ;
-  elseif idist == 12 ;
+  elseif idist == 12
     diststr = 'Pareto-log' ;
-  end ;
+  end
 
-  if qdata(1) <= 0 ;
+  if qdata(1) <= 0
     disp(' ') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from qqLM.m:           !!!') ;  
@@ -507,13 +505,13 @@ elseif  idist == 2  |  idist == 12  ;
     disp(' ') ;
 
     return ;
-  end ;
+  end
 
-  if  isfield(paramstruct,'alpha')  & ...
-          isfield(paramstruct,'sigma')  ;    %  then change to input value
-    alpha = getfield(paramstruct,'alpha') ; 
-    sigma = getfield(paramstruct,'sigma') ; 
-  else ;    %  estimate from data
+  if  isfield(paramstruct,'alpha')  && ...
+          isfield(paramstruct,'sigma')    %  then change to input value
+    alpha = paramstruct.alpha ; 
+    sigma = paramstruct.sigma ; 
+  else    %  estimate from data
 
     p1 = vqalign(1) ;
     p2 = vqalign(2) ;

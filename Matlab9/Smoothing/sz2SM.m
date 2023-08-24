@@ -251,7 +251,7 @@ end
 
 %  Set x grid stuff
 %
-n = length(xdat) ;
+n = length(xdat) ; %#ok<NASGU>
 if vxgp == 0   %  then use standard default x grid
   vxgp = [min(xdat),max(xdat),401] ;
 end
@@ -383,7 +383,7 @@ for ih = 1:nh
   %  Set common values
   arg = linspace(0,k * delta / h,k + 1)' ;
   kvec = exp(-(arg.^2) / 2) ;
-  kvec = [flipud(kvec(2:k+1)); kvec] ;
+  kvec = [flipud(kvec(2:k+1)); kvec] ; %#ok<AGROW>
         %  construct symmetric kernel
 
 
@@ -413,7 +413,7 @@ for ih = 1:nh
           %    (same as sum for kde)
 
     kvecd = -arg .* exp(-(arg.^2) / 2) / sqrt(2 * pi) ;
-    kvecd = [-flipud(kvecd(2:k+1)); kvecd] ;
+    kvecd = [-flipud(kvecd(2:k+1)); kvecd] ; %#ok<AGROW>
         %  construct symmetric kernel
 
     vd = conv(babincts,kvecd) ;
@@ -589,13 +589,13 @@ for ih = 1:nh
   end
 
 
-  mdsurf = [mdsurf vd] ;
-  mesurf = [mesurf ve] ;
-  mvsurf = [mvsurf vv] ;
+  mdsurf = [mdsurf vd] ; %#ok<AGROW>
+  mesurf = [mesurf ve] ; %#ok<AGROW>
+  mvsurf = [mvsurf vv] ; %#ok<AGROW>
   if itdist == 0
-    vgq = [vgq gquant] ;
+    vgq = [vgq gquant] ; %#ok<AGROW>
   elseif itdist == 1
-    mtq = [mtq vtquant] ;
+    mtq = [mtq vtquant] ; %#ok<AGROW>
   end
 
 end

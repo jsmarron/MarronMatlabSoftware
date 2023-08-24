@@ -71,8 +71,8 @@ if numlim > 1
     bottom = bottom - alpha * range ;
     top = top + alpha * range ;
   else 
-    left = left - alpha ;
-    right = right + alpha ;
+    left = left - alpha ; %#ok<NASGU>
+    right = right + alpha ; %#ok<NASGU>
   end   
 
   vax = [vax, bottom, top] ;

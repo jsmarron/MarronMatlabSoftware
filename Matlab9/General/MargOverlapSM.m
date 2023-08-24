@@ -504,7 +504,7 @@ for i = 1:d
       if isreal(vr)
         if length(vr) >= 1    %  polynomial is linear or quadratic
           if length(vr) == 1    %  polynomial is linear (coeff2 = 0)
-            vr = [vr; vr] ;    %  turn into 2 for easy use of following
+            vr = [vr; vr] ;    %#ok<AGROW> %  turn into 2 for easy use of following
           end
           if normpdf(vr(1),meanp,sqrt(varp)) > normpdf(vr(2),meanp,sqrt(varp))
             olmeas = (countp / n) * normcdf(vr(1),meanp,sqrt(varp)) + ...
@@ -524,7 +524,7 @@ for i = 1:d
     [~,AUC] = ROCcurveSM(mdata(i,vflag)',mdata(i,~vflag)',0) ;
     olmeas = AUC ;
   end
-  volmeas = [volmeas; olmeas] ;
+  volmeas = [volmeas; olmeas] ; %#ok<AGROW>
 end
 
 [svolmeas,vindsort] = sort(volmeas) ;

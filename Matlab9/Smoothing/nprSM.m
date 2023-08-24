@@ -185,75 +185,75 @@ iplot = 0 ;
 if nargin > 1    %  then paramstruct has been added
 
   if isfield(paramstruct,'vh')     %  then change to input value
-    vh = getfield(paramstruct,'vh') ; 
+    vh = paramstruct.vh ; 
   end 
 
   if isfield(paramstruct,'vxgrid')     %  then change to input value
-    vxgrid = getfield(paramstruct,'vxgrid') ; 
+    vxgrid = paramstruct.vxgrid ; 
   end 
 
   if isfield(paramstruct,'imptyp')     %  then change to input value
-    imptyp = getfield(paramstruct,'imptyp') ; 
+    imptyp = paramstruct.imptyp ; 
   end 
 
   if isfield(paramstruct,'polydeg')     %  then change to input value
-    polydeg = getfield(paramstruct,'polydeg') ; 
+    polydeg = paramstruct.polydeg ; 
   end 
 
   if isfield(paramstruct,'eptflag')     %  then change to input value
-    eptflag = getfield(paramstruct,'eptflag') ; 
+    eptflag = paramstruct.eptflag ; 
   end 
 
   if isfield(paramstruct,'ndataoverlay')     %  then change to input value
-    ndataoverlay = getfield(paramstruct,'ndataoverlay') ; 
+    ndataoverlay = paramstruct.ndataoverlay ; 
   end 
 
   if isfield(paramstruct,'dolcolor')     %  then change to input value
-    dolcolor = getfield(paramstruct,'dolcolor') ; 
+    dolcolor = paramstruct.dolcolor ; 
   end 
 
   if isfield(paramstruct,'ibigdot')     %  then change to input value
-    ibigdot = getfield(paramstruct,'ibigdot') ; 
+    ibigdot = paramstruct.ibigdot ; 
   end 
 
   if isfield(paramstruct,'linewidth')     %  then change to input value
-    linewidth = getfield(paramstruct,'linewidth') ; 
+    linewidth = paramstruct.linewidth ; 
   end 
 
   if isfield(paramstruct,'linecolor')     %  then change to input value
-    linecolor = getfield(paramstruct,'linecolor') ; 
+    linecolor = paramstruct.linecolor ; 
   end 
 
   if isfield(paramstruct,'titlestr')     %  then change to input value
-    titlestr = getfield(paramstruct,'titlestr') ; 
+    titlestr = paramstruct.titlestr ; 
   end 
 
   if isfield(paramstruct,'titlefontsize')     %  then change to input value
-    titlefontsize = getfield(paramstruct,'titlefontsize') ; 
+    titlefontsize = paramstruct.titlefontsize ; 
   end 
 
   if isfield(paramstruct,'xlabelstr')     %  then change to input value
-    xlabelstr = getfield(paramstruct,'xlabelstr') ; 
+    xlabelstr = paramstruct.xlabelstr ; 
   end 
 
   if isfield(paramstruct,'ylabelstr')     %  then change to input value
-    ylabelstr = getfield(paramstruct,'ylabelstr') ; 
+    ylabelstr = paramstruct.ylabelstr ; 
   end 
 
   if isfield(paramstruct,'labelfontsize')     %  then change to input value
-    labelfontsize = getfield(paramstruct,'labelfontsize') ; 
+    labelfontsize = paramstruct.labelfontsize ; 
   end 
 
   if isfield(paramstruct,'plotbottom')     %  then change to input value
-    plotbottom = getfield(paramstruct,'plotbottom') ; 
+    plotbottom = paramstruct.plotbottom ; 
   end 
 
   if isfield(paramstruct,'plottop')     %  then change to input value
-    plottop = getfield(paramstruct,'plottop') ; 
+    plottop = paramstruct.plottop ; 
   end 
 
   if isfield(paramstruct,'iplot')     %  then change to input value
-    iplot = getfield(paramstruct,'iplot') ; 
+    iplot = paramstruct.iplot ; 
   end 
 
 
@@ -269,7 +269,7 @@ if  imptyp < 3  &&  polydeg > 1
   imptyp = 3 ;
 end 
 
-if  vh <= 0  &  imptyp ~= 0  
+if  vh <= 0  &  imptyp ~= 0  %#ok<AND2>
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from nprSM.m:          !!!') ;
   disp('!!!   vh <= 0 requires imptyp = 0    !!!') ;
@@ -346,8 +346,8 @@ if imptyp > 0     %  Then do direct implementation
           sy1 = sum(mwt .* arg .* vec2matSM(data(:,2),nbin))' ;
         end 
 
-        arg = 0 ;
-        mwt = 0 ;
+        arg = 0 ; %#ok<NASGU>
+        mwt = 0 ; %#ok<NASGU>
           %  get rid of these huge matrices as soon as possible
 
         if polydeg == 0     %  then do local constant (NW)
@@ -378,7 +378,7 @@ if imptyp > 0     %  Then do direct implementation
 
         end 
 
-        npr = [npr nprh] ;
+        npr = [npr nprh] ; %#ok<AGROW>
 
       else    %  Do slower looped implementations
         nprh = [] ;
@@ -432,7 +432,7 @@ if imptyp > 0     %  Then do direct implementation
                   %  1st column of "polynomial fit design matrix"
             if polydeg >= 1 
               for ideg = 1:polydeg 
-                mx = [mx, (arg .* mx(:,size(mx,2)))] ;
+                mx = [mx, (arg .* mx(:,size(mx,2)))] ; %#ok<AGROW>
                   %  next column of "polynomial fit design matrix"
               end 
             end 
@@ -461,9 +461,9 @@ if imptyp > 0     %  Then do direct implementation
             end 
           end 
 
-          nprh = [nprh; nprhx] ;
+          nprh = [nprh; nprhx] ; %#ok<AGROW>
         end 
-        npr = [npr nprh] ;
+        npr = [npr nprh] ; %#ok<AGROW>
       end 
     end 
 
@@ -568,21 +568,21 @@ else      %  Then do binned implementation
     end 
 
     %  Do actual kernel smooth
-    kvec0 = [flipud(kvec0(2:k+1)); kvec0] ;
+    kvec0 = [flipud(kvec0(2:k+1)); kvec0] ; %#ok<AGROW>
           %  construct symmetric kernel
     s0 = conv(bincts(:,1),kvec0) ;
     s0 = s0(k+1:k+nbin) ;
     sy0 = conv(bincts(:,2),kvec0) ;
     sy0 = sy0(k+1:k+nbin) ;
     if polydeg ~= 0     %  Then need extra stuff for local linear
-      kvec1 = [-flipud(kvec1(2:k+1)); kvec1] ;
+      kvec1 = [-flipud(kvec1(2:k+1)); kvec1] ; %#ok<AGROW>
           %  skew-symmetric here!
       s1 = conv(bincts(:,1),kvec1) ;
       s1 = s1(k+1:k+nbin) ;
       sy1 = conv(bincts(:,2),kvec1) ;
       sy1 = sy1(k+1:k+nbin) ;
 
-      kvec2 = [flipud(kvec2(2:k+1)); kvec2] ;
+      kvec2 = [flipud(kvec2(2:k+1)); kvec2] ; %#ok<AGROW>
           %  construct symmetric kernel
       s2 = conv(bincts(:,1),kvec2) ;
       s2 = s2(k+1:k+nbin) ;
@@ -671,14 +671,14 @@ else      %  Then do binned implementation
           
             flag = txbdat > xgrid(ilpbbg) ;
             if sum(flag) > 0    %  Then there are some points to int. over
-              vx = [xgrid(ilpbbg); txbdat(flag)] ;
+              vx = [xgrid(ilpbbg); txbdat(flag)] ; %#ok<NASGU>
                   %  x's for interpolation 
-              vy = [nprh(ilpbbg); tybdat(flag)] ;
+              vy = [nprh(ilpbbg); tybdat(flag)] ; %#ok<NASGU>
                   %  y's for interpolation 
             else 
-              vx = xgrid(ilpbbg) ;
+              vx = xgrid(ilpbbg) ; %#ok<NASGU>
                   %  x's for interpolation 
-              vy = nprh(ilpbbg) ;
+              vy = nprh(ilpbbg) ; %#ok<NASGU>
                   %  y's for interpolation 
             end 
           nprh((ilpbbg+1):nbin) = interp1s(txbdat,tybdat, ...
@@ -728,7 +728,7 @@ else      %  Then do binned implementation
 
     end 
 
-    npr = [npr nprh] ;
+    npr = [npr nprh] ; %#ok<AGROW>
 
   end 
 
@@ -847,8 +847,8 @@ if  nargout == 0  || ...
     %  overlay selected data
     %
     vax = axis ;
-    fbottom = vax(3) ;
-    ftop = vax(4) ;
+    fbottom = vax(3) ; %#ok<NASGU>
+    ftop = vax(4) ; %#ok<NASGU>
     hold on ;
 
       if ibigdot == 1    %  plot deliberately large dots

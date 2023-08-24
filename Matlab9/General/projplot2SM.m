@@ -337,7 +337,7 @@ end     %  of resetting of input parameters
 %
 d = size(data,1) ;
          %  dimension of each data curve
-n = size(data,2) ;
+n = size(data,2) ; %#ok<NASGU>
          %  number of data curves
 
 if ~(d == size(mdir,1)) 
@@ -377,7 +377,7 @@ mdirn = [] ;
 for i = 1:2 
   vdirlen2 = sum(mdir(:,i).^2) ;
   if abs(vdirlen2 - 1) < 10^(-10)     %  already has length 1
-    mdirn = [mdirn mdir(:,i)] ;
+    mdirn = [mdirn mdir(:,i)] ; %#ok<AGROW>
   else     %  need to adjust length to be 1
     if iscreenwrite == 1     %  then give a warning about adjustment
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -394,7 +394,7 @@ for i = 1:2
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       return ;
     end 
-    mdirn = [mdirn mdir(:,i) / sqrt(vdirlen2)] ;
+    mdirn = [mdirn mdir(:,i) / sqrt(vdirlen2)] ; %#ok<AGROW>
   end 
 end 
 

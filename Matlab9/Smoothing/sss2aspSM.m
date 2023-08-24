@@ -31,13 +31,13 @@ elseif nres == 2    %  then are working with 2x2 blocks
   no2 = floor(n / 2) ;
 
   i0cent = reshape((1:(2*no2))',2,no2)' ;
-  i0cent = mean(i0cent') ;
+  i0cent = mean(i0cent') ; %#ok<UDIM>
           %  midpoints of 2 x 2 blocks
   i0cent = vec2matSM(i0cent,mo2) ;
   i0cent = reshape(i0cent,no2*mo2,1) ;
 
   j0cent = reshape((1:(2*mo2))',2,mo2)' ;
-  j0cent = mean(j0cent') ;
+  j0cent = mean(j0cent') ; %#ok<UDIM>
           %  midpoints of 2 x 2 blocks
   j0cent = vec2matSM(j0cent',no2) ;
   j0cent = reshape(j0cent,no2*mo2,1) ;

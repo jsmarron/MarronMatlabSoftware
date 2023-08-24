@@ -43,7 +43,7 @@ else
   iqrange = [] ;
   for icol = 1:size(sdata,2) 
     iqrange = [iqrange; cquantSM(sdata(:,icol),.75,0) - ...
-                          cquantSM(sdata(:,icol),.25,0)] ;
+                          cquantSM(sdata(:,icol),.25,0)] ; %#ok<AGROW>
   end 
 end 
 

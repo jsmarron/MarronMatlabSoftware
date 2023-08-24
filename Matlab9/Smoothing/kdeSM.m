@@ -356,7 +356,7 @@ if  ~(idatovlay == 0)   &&  imptyp >= 0      %  then will add data to plot
     ndo = min(n,ndatovlay) ;
   end 
 
-  if ~isstr(dolmarkerstr) 
+  if ~ischar(dolmarkerstr) 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from kdeSM.m:                    !!!') ;
       disp('!!!   dolmarkerstr must be of type string      !!!') ;
@@ -383,7 +383,7 @@ if  ~(idatovlay == 0)   &&  imptyp >= 0      %  then will add data to plot
   end 
 
   %  Now check inputs for Data Over Lay Colors
-  if ~isstr(dolcolor) 
+  if ~ischar(dolcolor) 
 
     if size(dolcolor,1) > 1     %  then should have a color matrix entered
       if ~(size(dolcolor,2) == 3) 
@@ -416,7 +416,7 @@ if  ~(idatovlay == 0)   &&  imptyp >= 0      %  then will add data to plot
             %  color of projection dots, matlab default
         colmap = colmap1 ;
         while size(colmap,1) < n 
-          colmap = [colmap; colmap1] ;
+          colmap = [colmap; colmap1] ; %#ok<AGROW>
         end 
         dolcolor = colmap(1:n,:) ;
 
@@ -548,16 +548,16 @@ if imptyp > 0     %  Then do direct implementation
           %  sum part of kde, and make result a column vector
         kdeh = kdeh / (n * h * sqrt(2 * pi)) ;
           %  normalize, and mult by Gaussain density constant
-        kde = [kde kdeh] ;
+        kde = [kde kdeh] ; %#ok<AGROW>
       else    %  Do slower looped implementation
         kdeh = [] ;
         for ixg = 1:nbin     %  Loop through grid points
           kdehx = (badata - xgrid(ixg)) / h ;
           kdehx = sum(exp(-(kdehx .^2) / 2)) ;
-          kdeh = [kdeh; kdehx] ;
+          kdeh = [kdeh; kdehx] ; %#ok<AGROW>
         end 
         kdeh = kdeh / (n * h * sqrt(2 * pi)) ;
-        kde = [kde kdeh] ;
+        kde = [kde kdeh] ; %#ok<AGROW>
       end 
     end 
 
@@ -579,7 +579,7 @@ else      %  Then do binned implementation
       disp('!!!   Error: kdeSM needs to know the endpoints   !!!') ;
       disp('!!!            to use this implementation        !!!') ;
       disp('!!!   Terminating Execution                      !!!') ;
-      bincts = [] ;
+      bincts = [] ; %#ok<NASGU>
       return ;
     else 
       bincts = data ;
@@ -626,7 +626,7 @@ else      %  Then do binned implementation
     if lend > rend     %  Then bad range has been input
       disp('!!!   Error in kdeSM: invalid range chosen  !!!') ;
       disp('!!!   Terminating Execution                      !!!') ;
-      bincts = [] ;
+      bincts = [] ; %#ok<NASGU>
       return ;
     else 
       bincts = lbinrSM(data,[lend,rend,nbin],eptflag) ;
@@ -635,7 +635,7 @@ else      %  Then do binned implementation
     %  Can do data-based bandwidth selection here, if specified
     if vh == -1         %  Then use Simple Normal Reference
       vh = bwsnrSM(data) ;
-    elseif vh == -2 ;    %  Then use Silverman's Rule Of Thumb 2 
+    elseif vh == -2    %  Then use Silverman's Rule Of Thumb 2 
                           %  (~10% Smaller than min of sd and IQR)
       vh = bwrotSM(data) ;
     elseif vh == -3     %  Then use Terrell's Oversmoother
@@ -677,7 +677,7 @@ else      %  Then do binned implementation
     k = nbin - 1 ;    %  index of last nonzero entry of kernel vector
     arg = linspace(0,k * delta / h,k + 1)' ;
     kvec = exp(-(arg.^2) / 2) / sqrt(2 * pi) ;
-    kvec = [flipud(kvec(2:k+1)); kvec] ;
+    kvec = [flipud(kvec(2:k+1)); kvec] ; %#ok<AGROW>
 
     %  Do actual kernel density estimation
     kdeh = conv(babincts,kvec) ;
@@ -693,7 +693,7 @@ else      %  Then do binned implementation
       kdeh = kdeh / (sum(kdeh) * delta) ;
     end 
 
-    kde = [kde kdeh] ;
+    kde = [kde kdeh] ; %#ok<AGROW>
   end 
 
   xgrid = linspace(lend,rend,nbin)' ;
@@ -786,7 +786,7 @@ if  nargout == 0  || ...
 
 
     dataol = data(vindol) ;
-    if ~isstr(dolcolor) 
+    if ~ischar(dolcolor) 
       dolcolorol = dolcolor(vindol,:) ;
     end 
     if size(dolmarkerstr,1) > 1 
@@ -833,7 +833,7 @@ if  nargout == 0  || ...
     else 
 
       datatrunc = dataol ;
-      if ~isstr(dolcolor) 
+      if ~ischar(dolcolor) 
         dolcolortrunc = dolcolorol ;
       end 
       if size(dolmarkerstr,1) > 1 
@@ -855,10 +855,10 @@ if  nargout == 0  || ...
 
     %  overlay selected data
     %
-    vax = axis ;
+    vax = axis ; %#ok<NASGU>
     hold on ;
 
-      if  isstr(dolcolor)  &&  (size(dolmarkerstr,1) == 1)      
+      if  ischar(dolcolor)  &&  (size(dolmarkerstr,1) == 1)      
                                      %  then can plot points all together
         if ibigdot == 1    %  plot deliberately large dots
           plot(datatrunc,hts,[dolcolor 'o'],'MarkerSize',1,'LineWidth',2) ;

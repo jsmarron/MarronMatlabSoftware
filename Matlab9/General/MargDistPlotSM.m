@@ -473,7 +473,7 @@ for i = 1:d
     uval = unique(mdata(i,:)) ;
     ufreq = [] ;
     for ifreq = 1:length(uval)
-      ufreq = [ufreq; sum(mdata(i,:) == uval(ifreq))] ;
+      ufreq = [ufreq; sum(mdata(i,:) == uval(ifreq))] ; %#ok<AGROW>
     end
     sumstat = max(ufreq) ;
   elseif istat == 13    %  Number of 0s
@@ -493,7 +493,7 @@ for i = 1:d
     nfreq = length(uval) ;
     ufreq = [] ;
     for ifreq = 1:nfreq
-      ufreq = [ufreq; sum(mdata(i,:) == uval(ifreq))] ;
+      ufreq = [ufreq; sum(mdata(i,:) == uval(ifreq))] ; %#ok<AGROW>
     end
     vp = ufreq / nfreq ;
     sumstat = -sum(vp .* log(vp)) ;
@@ -507,7 +507,7 @@ for i = 1:d
   elseif istat == 20    %  4th L-statistics ratio
     sumstat = LstatisticSM(mdata(i,:)',4) ;
   end
-  vsumstat = [vsumstat; sumstat] ;
+  vsumstat = [vsumstat; sumstat] ; %#ok<AGROW>
 end
 
 [svsumstat,vindsort] = sort(vsumstat) ;

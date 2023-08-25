@@ -219,6 +219,7 @@ function makeplot = sss2SM(data,paramstruct) %#ok<STOUT>
 %    sss2fh1SM.m
 %    sss2fh1dSM.m
 %    sss2fh2SM.m
+
 %    sss2fh2dSM.m
 %    sss2gradSM.m
 %    k2dgSM.m

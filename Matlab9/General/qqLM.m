@@ -527,7 +527,7 @@ elseif  idist == 2  ||  idist == 12
     oldsigma = 0 ;
           %  common and starting values
 
-    for istep = 1:maxstep ;    %  loop through sigma values
+    for istep = 1:maxstep    %  loop through sigma values
 
       q1z = q1hat + oldsigma ;
       q2z = q2hat + oldsigma ;
@@ -537,50 +537,50 @@ elseif  idist == 2  ||  idist == 12
 
       relacc = abs(sigma - oldsigma) / sigma ;
 
-      if  iscreenwrite == 1  &  floor(istep/50) == istep/50 ;
+      if  iscreenwrite == 1  &&  floor(istep/50) == istep/50
         disp(['     For iteration step ' num2str(istep) ...
                     ', relacc = ' num2str(relacc) ...
                     ', alpha = ' num2str(alpha) ...
                     ', sigma = ' num2str(sigma)]) ;
-       end;
+      end
 
       
-      if relacc < relaccthreshold ;    %  then have converged, so quit
+      if relacc < relaccthreshold    %  then have converged, so quit
         errflag = 0 ;
-        if  iscreenwrite == 1  ;
+        if  iscreenwrite == 1
           disp(['     For iteration step ' num2str(istep) ...
                       ', relacc = ' num2str(relacc) ...
                       ', alpha = ' num2str(alpha) ...
                       ', sigma = ' num2str(sigma)]) ;
-        end;
+        end
         break ;
-      else ;    %  not close enough yet, continue
+      else    %  not close enough yet, continue
         errflag = 1 ;
         oldsigma = sigma ;
-      end ;
+      end
 
-    end ;    %  of istep loop through iterated alpha values
+    end    %  of istep loop through iterated alpha values
 
-    if errflag ~= 0 ;
+    if errflag ~= 0
       disp('!!!   Warning from qqLM.m:  Pareto fit may be unstable   !!!') ;
-    end ;
+    end
 
     ididqalign = 1 ;
-  end ;
+  end
 
 
   qtheory = ((1 - pgrid).^(-1/alpha) - 1) * sigma ;
 
 
 
-  if idist == 12 ;    %  then need to fix scales
+  if idist == 12    %  then need to fix scales
     qdata = log(qdata) ;
     qtheory = log(qtheory) ;
-    if ididqalign == 1 ;    %  then have done quantile matching
+    if ididqalign == 1    %  then have done quantile matching
       q1hat = log(q1hat) ;
       q2hat = log(q2hat) ;
-    end ;
-  end ;
+    end
+  end
 
 
   paramout = [alpha; sigma] ;
@@ -591,14 +591,14 @@ elseif  idist == 2  ||  idist == 12
   par2val = sigma ;
 
 
-elseif  idist == 3  |  idist == 13  ;
-  if idist == 3 ;
+elseif  idist == 3  ||  idist == 13
+  if idist == 3
     diststr = 'Weibull' ;
-  elseif idist == 13 ;
+  elseif idist == 13
     diststr = 'Weibull-log' ;
-  end ;
+  end
 
-  if qdata(1) <= 0 ;
+  if qdata(1) <= 0
     disp(' ') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from qqLM.m:           !!!') ;  
@@ -608,13 +608,13 @@ elseif  idist == 3  |  idist == 13  ;
     disp(' ') ;
 
     return ;
-  end ;
+  end
 
-  if  isfield(paramstruct,'alpha')  & ...
-          isfield(paramstruct,'sigma')  ;    %  then change to input value
-    alpha = getfield(paramstruct,'alpha') ; 
-    sigma = getfield(paramstruct,'sigma') ; 
-  else ;    %  estimate from data
+  if  isfield(paramstruct,'alpha')  && ...
+          isfield(paramstruct,'sigma')    %  then change to input value
+    alpha = paramstruct.alpha ; 
+    sigma = paramstruct.sigma ; 
+  else    %  estimate from data
     p1 = vqalign(1) ;
     p2 = vqalign(2) ;
     vq = cquantSM(qdata,vqalign,0) ;
@@ -630,21 +630,21 @@ elseif  idist == 3  |  idist == 13  ;
         %      p2 = F(q2hat)
 
     ididqalign = 1 ;
-  end ;
+  end
 
 
   qtheory = sigma * (-log(1 - pgrid)).^(1/alpha) ;
 
 
 
-  if idist == 13 ;    %  then need to fix scales
+  if idist == 13    %  then need to fix scales
     qdata = log(qdata) ;
     qtheory = log(qtheory) ;
-    if ididqalign == 1 ;    %  then have done quantile matching
+    if ididqalign == 1    %  then have done quantile matching
       q1hat = log(q1hat) ;
       q2hat = log(q2hat) ;
-    end ;
-  end ;
+    end
+  end
 
 
   paramout = [alpha; sigma] ;
@@ -655,18 +655,18 @@ elseif  idist == 3  |  idist == 13  ;
   par2val = sigma ;
 
   
-elseif  idist == 4  |  idist == 14  ;
-  if idist == 4 ;
+elseif  idist == 4  ||  idist == 14
+  if idist == 4
     diststr = 'Gumbel' ;
-  elseif idist == 14 ;
+  elseif idist == 14
     diststr = 'Gumbel-log' ;
-  end ;
+  end
 
-  if  isfield(paramstruct,'mu')  & ...
-          isfield(paramstruct,'sigma')  ;    %  then change to input value
-    mu = getfield(paramstruct,'mu') ; 
-    sigma = getfield(paramstruct,'sigma') ; 
-  else ;    %  estimate from data
+  if  isfield(paramstruct,'mu')  && ...
+          isfield(paramstruct,'sigma')    %  then change to input value
+    mu = paramstruct.mu ; 
+    sigma = paramstruct.sigma ; 
+  else    %  estimate from data
 
     p1 = vqalign(1) ;
     p2 = vqalign(2) ;
@@ -684,20 +684,20 @@ elseif  idist == 4  |  idist == 14  ;
         %      p2 = F(q2hat)
 
     ididqalign = 1 ;
-  end ;
+  end
 
 
   qtheory = -sigma * log(-log(pgrid)) + mu ;
 
 
-  if idist == 14 ;    %  then need to fix scales
+  if idist == 14    %  then need to fix scales
     qdata = log(qdata) ;
     qtheory = log(qtheory) ;
-    if ididqalign == 1 ;    %  then have done quantile matching
+    if ididqalign == 1    %  then have done quantile matching
       q1hat = log(q1hat) ;
       q2hat = log(q2hat) ;
-    end ;
-  end ;
+    end
+  end
 
 
   paramout = [mu; sigma] ;
@@ -708,14 +708,14 @@ elseif  idist == 4  |  idist == 14  ;
   par2val = sigma ;
 
 
-elseif  idist == 5  |  idist == 15  ;  
-  if idist == 5 ;
+elseif  idist == 5  ||  idist == 15  
+  if idist == 5
     diststr = 'AbsGauPow' ;
-  elseif idist == 15 ;
+  elseif idist == 15
     diststr = 'AbGaPo-log' ;
-  end ;
+  end
 
-  if qdata(1) <= 0 ;
+  if qdata(1) <= 0
     disp(' ') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from qqLM.m:           !!!') ;  
@@ -725,17 +725,17 @@ elseif  idist == 5  |  idist == 15  ;
     disp(' ') ;
 
     return ;
-  end ;
+  end
 
-  if  isfield(paramstruct,'alpha')  & ...
-          isfield(paramstruct,'sigma')  ;    %  then change to input value
-    alpha = getfield(paramstruct,'alpha') ; 
-    sigma = getfield(paramstruct,'sigma') ; 
-  else ;    %  estimate from data
+  if  isfield(paramstruct,'alpha')  && ...
+          isfield(paramstruct,'sigma')    %  then change to input value
+    alpha = paramstruct.alpha ; 
+    sigma = paramstruct.sigma ; 
+  else    %  estimate from data
     p1 = vqalign(1) ;
     p2 = vqalign(2) ;
 
-    if p2 <= p1 ;
+    if p2 <= p1
       disp(' ') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from qqLM.m:                 !!!') ;  
@@ -745,7 +745,7 @@ elseif  idist == 5  |  idist == 15  ;
       disp(' ') ;
 
       return ;
-    end ;
+    end
 
     vq = cquantSM(qdata,vqalign,0) ;
          %  0 to indicate presorted data
@@ -758,13 +758,13 @@ elseif  idist == 5  |  idist == 15  ;
     maxstepsize = sigmaold ;
     loval = 0 ;
     hival = +Inf ;
-    flag = logical(0) ;
+    flag = false ;
 
-    for istep = 1:maxstep ;    %  loop through sigma values
+    for istep = 1:maxstep    %  loop through sigma values
 
       sq1 = q1hat / (sigmaold * sqrt(2)) ;
       sq2 = q2hat / (sigmaold * sqrt(2)) ;
-      if erf(sq1) < 1 - 10^(-12) ;
+      if erf(sq1) < 1 - 10^(-12)
         f = (log(erf(sq2)) / log(erf(sq1))) - ...
                             (log(p2) / log(p1)) ;
         fprime = ((exp(-sq1^2) * sqrt(2/pi) * q1hat * log(erf(sq2))) / ...
@@ -774,84 +774,84 @@ elseif  idist == 5  |  idist == 15  ;
         sigmanewton = sigmaold - f / fprime ;
             %  Compute Newton step
 
-        if f > 0 ;
+        if f > 0
           hival = sigmaold ;
-          flag = logical(1) ;
-        else ; 
+          flag = true ;
+        else
           loval = sigmaold ;
-        end ;
+        end
 
-        if flag ;    % then are above 0 with f
+        if flag    % then are above 0 with f
  
-          if  sigmanewton < loval  |  sigmanewton > hival ;
+          if  sigmanewton < loval  ||  sigmanewton > hival
                     %  then are outside range so take bisection step
             sigma = (hival + loval) / 2 ;
-          else ;    %  then have good Newton step, so keep
+          else    %  then have good Newton step, so keep
             sigma = sigmanewton ;
-          end ;
+          end
  
-        else ;    %  then are below 0 in f value
+        else    %  then are below 0 in f value
 
-          if sigmanewton - sigmaold < maxstepsize ;
+          if sigmanewton - sigmaold < maxstepsize
             sigma = sigmanewton ;
-          else ;
+          else
             sigma = sigmaold + maxstepsize ;
             maxstepsize = maxstepsize * 2 ;
-          end ;
-        end ;
+          end
+        end
 
-      else ;
+      else
         sigma = 2 * sigmaold ;
         maxstepsize = maxstepsize * 2 ;
-      end;
+      end
       
 
 
       relacc = abs(sigma - sigmaold) / sigma ;
 
-      if  iscreenwrite == 1  &  floor(istep/50) == istep/50 ;
+      if  iscreenwrite == 1  &&  floor(istep/50) == istep/50
         disp(['     For iteration step ' num2str(istep) ...
                     ', relacc = ' num2str(relacc) ...
                     ', sigma = ' num2str(sigma)]) ;
-       end;
+      end
 
       
-      if relacc < relaccthreshold ;    %  then have converged, so quit
+      if relacc < relaccthreshold    %  then have converged, so quit
         errflag = 0 ;
-        if  iscreenwrite == 1  ;
+        if  iscreenwrite == 1
           disp(['     For iteration step ' num2str(istep) ...
                       ', relacc = ' num2str(relacc) ...
                       ', sigma = ' num2str(sigma)]) ;
-        end;
+        end
         break ;
-      else ;    %  not close enough yet, continue
+      else    %  not close enough yet, continue
         errflag = 1 ;
         sigmaold = sigma ;
-      end ;
+      end
 
-    end ;    %  of istep loop through iterated alpha values
+    end    %  of istep loop through iterated alpha values
 
-    if errflag ~= 0 ;
+    if errflag ~= 0
       disp('!!!   Warning from qqLM.m:  Mas Abs Gaussian fit may be unstable   !!!') ;
-    end ;
+    end
 
     ididqalign = 1 ;
 
     alpha = (( log(p1) / log(erf(q1hat / (sqrt(2) * sigma))) ) + ...
             ( log(p2) / log(erf(q2hat / (sqrt(2) * sigma))) )) / 2 ;
-  end;
+  end
 
   qtheory = norminv((1 + pgrid.^(1/alpha)) / 2) * sigma ;
 
 
-  if idist == 15 ;    %  then need to fix scales
+  if idist == 15    %  then need to fix scales
     qdata = log(qdata) ;
     qtheory = log(qtheory) ;
-    if ididqalign == 1 ;    %  then have done quantile matching
+    if ididqalign == 1    %  then have done quantile matching
       q1hat = log(q1hat) ;
       q2hat = log(q2hat) ;
-    end ;
-  end ;
+    end
+  end
 
 
   paramout = [alpha; sigma] ;
@@ -862,14 +862,14 @@ elseif  idist == 5  |  idist == 15  ;
   par2val = sigma ;
 
   
-elseif  idist == 6  |  idist == 16  ;
-  if idist == 6 ;
+elseif  idist == 6  ||  idist == 16
+  if idist == 6
     diststr = 'Gamma' ;
-  elseif idist == 16 ;
+  elseif idist == 16
     diststr = 'Gamma-log' ;
-  end ;
+  end
 
-  if qdata(1) <= 0 ;
+  if qdata(1) <= 0
     disp(' ') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from qqLM.m:           !!!') ;  
@@ -879,9 +879,9 @@ elseif  idist == 6  |  idist == 16  ;
     disp(' ') ;
 
     return ;
-  end ;
+  end
 
-  if isfield(paramstruct, 'vqalign');
+  if isfield(paramstruct, 'vqalign')
       disp(' ');
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       disp('!!!   Warning from qqLM.m:                         !!!');
@@ -889,32 +889,32 @@ elseif  idist == 6  |  idist == 16  ;
       disp('!!!   will use MLE fit instead                     !!!');
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       disp(' ');
-  end;
+  end
 
-  if  isfield(paramstruct,'alpha')  &  isfield(paramstruct,'beta')  ;
+  if  isfield(paramstruct,'alpha')  &&  isfield(paramstruct,'beta')
                    %  then change to input value
-    alpha = getfield(paramstruct,'alpha') ; 
-    beta = getfield(paramstruct,'beta') ; 
+    alpha = paramstruct.alpha ; 
+    beta = paramstruct.beta ; 
 
-  else; %  estimate from data
+  else     %  estimate from data
 %         alpha = (mean(data))^2/var(data);
 %         beta = var(data)/mean(data);     
     parahat = gamfit(data);
     alpha = parahat(1);
     beta = parahat(2);
-  end ;
+  end
 
   qtheory = gaminv(pgrid, alpha, beta) ;
   paramout = [alpha; beta] ;
 
-  if idist == 16 ;    %  then need to fix scales
+  if idist == 16    %  then need to fix scales
     qdata = log(qdata) ;
     qtheory = log(qtheory) ;
-    if ididqalign == 1 ;    %  then have done quantile matching
-      q1hat = log(q1hat) ;
-      q2hat = log(q2hat) ;
-    end ;
-  end ;
+    if ididqalign == 1    %  then have done quantile matching
+      q1hat = log(q1hat) ; %#ok<NODEF>
+      q2hat = log(q2hat) ; %#ok<NODEF>
+    end
+  end
 
   par1str = '\alpha' ;
   par1val = alpha ;
@@ -922,10 +922,10 @@ elseif  idist == 6  |  idist == 16  ;
   par2val = beta ;  
 
 
-elseif idist == 7;
+elseif idist == 7
   diststr = 'Beta';
 
-  if qdata(1) <= 0 ;
+  if qdata(1) <= 0
     disp(' ') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from qqLM.m:           !!!') ;  
@@ -934,9 +934,9 @@ elseif idist == 7;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp(' ') ;
     return ;
-  end ;
+  end
 
-  if qdata(end) > 1 ;
+  if qdata(end) > 1
     disp(' ') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from qqLM.m:         !!!') ;  
@@ -945,9 +945,9 @@ elseif idist == 7;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp(' ') ;
     return ;
-  end ;
+  end
 
-  if isfield(paramstruct, 'vqalign');
+  if isfield(paramstruct, 'vqalign')
       disp(' ');
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       disp('!!!   Warning from qqLM.m:                 !!!');
@@ -955,20 +955,20 @@ elseif idist == 7;
       disp('!!!   will use MLE fit instead             !!!');
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       disp(' ');
-  end;
+  end
 
-  if  isfield(paramstruct, 'alpha')  &  isfield(paramstruct,'beta')  ;
+  if  isfield(paramstruct, 'alpha')  &&  isfield(paramstruct,'beta')
                    %  then change to input value
-    alpha =  getfield(paramstruct, 'alpha');
-    beta = getfield(paramstruct, 'beta');
+    alpha =  paramstruct.alpha ;
+    beta = paramstruct.beta ;
 
-  else; %  estimate from data
+  else    %  estimate from data
 %         alpha = mean(data)*(mean(data)*(1-mean(data))-var(data))/var(data);
 %         beta = (1-mean(data))*(mean(data)*(1-mean(data))-var(data))/var(data); 
     parahat = betafit(data);
     alpha = parahat(1);
     beta = parahat(2);
-  end ;
+  end
 
   qtheory = betainv(pgrid, alpha, beta);
   paramout = [alpha; beta];
@@ -979,48 +979,48 @@ elseif idist == 7;
   par2val = beta;
 	
   
-end ;    %  of idist if block
+end    %  of idist if block
 
 
 
 
-if iscreenwrite == 1 ;
+if iscreenwrite == 1
   disp(['   Comparing with ' diststr ' distribution']) ;
-end;
+end
 
 
-if strcmp(xlabelstr,', Q') ;    %  default value
+if strcmp(xlabelstr,', Q')    %  default value
   xlabelstr = [diststr, xlabelstr] ;
-end ;
+end
 
 
-if strcmp(ylabelstr,'Data Q') ;    %  default value
-  if idist > 10 ;    %  working on log scale
+if strcmp(ylabelstr,'Data Q')    %  default value
+  if idist > 10    %  working on log scale
     ylabelstr = ['log ' ylabelstr] ;
-  end ;
-end ;
+  end
+end
 
 
-if idist > 10 ;
+if idist > 10
 
-  if bottom == min(data) ;
+  if bottom == min(data)
     bottom = log(bottom) ;
-  end ;
+  end
 
-  if top == max(data) ;
+  if top == max(data)
     top = log(top) ;
-  end ;
+  end
 
-end ;
+end
 
 
-if ~isfield(paramstruct,'left') ;    %  then change to theoretical left
+if ~isfield(paramstruct,'left')    %  then change to theoretical left
   left = min(qtheory) ; 
-end ;
+end
 
-if ~isfield(paramstruct,'right') ;    %  then change to theoretical right
+if ~isfield(paramstruct,'right')    %  then change to theoretical right
   right = max(qtheory) ; 
-end ;
+end
 
 
 
@@ -1036,23 +1036,23 @@ plot(qtheory,qdata, ...
   axis([left,right,bottom,top]) ;
 
   th = title(titlestr) ;
-  if ~isempty(titlefontsize) ;
+  if ~isempty(titlefontsize)
     set(th,'FontSize',titlefontsize) ;
-  end ;
+  end
 
   xlh = xlabel(xlabelstr) ;    
   ylh = ylabel(ylabelstr) ;    
-  if ~isempty(labelfontsize) ;
+  if ~isempty(labelfontsize)
     set(xlh,'FontSize',labelfontsize) ;
     set(ylh,'FontSize',labelfontsize) ;
-  end ;
+  end
 
 
 
 
 %  Add lines (if needed)
 %
-if ioverlay == 1 ;    %  then overlay 45 degree line
+if ioverlay == 1    %  then overlay 45 degree line
   minmin = min(left,bottom) ;
   maxmax = max(right,top) ;
   hold on ;
@@ -1061,7 +1061,7 @@ if ioverlay == 1 ;    %  then overlay 45 degree line
          'LineWidth',2) ;
   hold off ;
 
-elseif ioverlay == 2 ;    %  then overlay least squares fit line
+elseif ioverlay == 2    %  then overlay least squares fit line
   minmin = min(left,bottom) ;
   maxmax = max(right,top) ;
   lincoeffs = polyfit(qtheory,qdata,1) ;
@@ -1073,7 +1073,7 @@ elseif ioverlay == 2 ;    %  then overlay least squares fit line
          'LineWidth',2) ;
   hold off ; 
 
-end ;
+end
 
 
 
@@ -1081,121 +1081,121 @@ end ;
 
 %  Add simulated realizations (if needed)
 %
-if nsim > 0 ;
+if nsim > 0
 
-  if iscreenwrite == 1 ;
+  if iscreenwrite == 1
     disp('      generating simulated data') ;
-  end ;
+  end
 
 
-  if idist == 0 ;    %  Unif(0,1)
+  if idist == 0    %  Unif(0,1)
 
-    if ~isempty(simseed) ;
+    if ~isempty(simseed)
       rng(simseed) ;
-    end ;
+    end
           %  set seed
     msimdat = rand(n,nsim) ;
 
 
-  elseif  idist == 1  |  idist == 11  ;    %  Gaussian
+  elseif  idist == 1  ||  idist == 11    %  Gaussian
 
-    if ~isempty(simseed) ;
+    if ~isempty(simseed)
       rng(simseed) ;
-    end ;
+    end
           %  set seed
     msimdat = mu + sigma * randn(n,nsim) ;
 
 
-  elseif  idist == 2  |  idist == 12  ;    %  Pareto
+  elseif  idist == 2  ||  idist == 12    %  Pareto
 
-    if ~isempty(simseed) ;
+    if ~isempty(simseed)
       rng(simseed) ;
-    end ;
+    end
           %  set seed
     msimdat = sigma * ((1 - rand(n,nsim)).^(-1/alpha) - 1) ;
 
-    if idist == 12 ;    %  then need to fix scales
+    if idist == 12    %  then need to fix scales
       msimdat = log(msimdat) ;
-    end ;
+    end
 
 
-  elseif  idist == 3  |  idist == 13  ;    %  Weibull
+  elseif  idist == 3  ||  idist == 13    %  Weibull
 
-    if ~isempty(simseed) ;
+    if ~isempty(simseed)
       rng(simseed) ;
-    end ;
+    end
           %  set seed
     msimdat = sigma * (-log(1 - rand(n,nsim))).^(1 / alpha) ;
 
-    if idist == 13 ;    %  then need to fix scales
+    if idist == 13    %  then need to fix scales
       msimdat = log(msimdat) ;
-    end ;
+    end
 
-  elseif  idist == 4  |  idist == 14  ;    %  Gumbel
+  elseif  idist == 4  ||  idist == 14    %  Gumbel
 
-    if ~isempty(simseed) ;
+    if ~isempty(simseed)
       rng(simseed) ;
-    end ;
+    end
           %  set seed
     msimdat = -sigma * log(-log(rand(n,nsim))) + mu ;
 
-    if idist == 14 ;    %  then need to fix scales
+    if idist == 14    %  then need to fix scales
       msimdat = log(msimdat) ;
-    end ;
+    end
 
 
-  elseif  idist == 5  |  idist == 15  ;    %  Maximun Abs Gaussian
+  elseif  idist == 5  ||  idist == 15    %  Maximun Abs Gaussian
 
-    if ~isempty(simseed) ;
+    if ~isempty(simseed)
       rng(simseed) ;
-    end ;
+    end
           %  set seed
 
     msimdat = norminv((1 + rand(n,nsim).^(1/alpha)) / 2) * sigma ;
 
-    if idist == 15 ;    %  then need to fix scales
+    if idist == 15    %  then need to fix scales
       msimdat = log(msimdat) ;
-    end ;
+    end
 
     
-  elseif  idist == 6  | idist == 16  ;
+  elseif  idist == 6  || idist == 16
 
-    if ~isempty(simseed);
+    if ~isempty(simseed)
       rng(simseed) ;
-    end;
+    end
         %  set seed
 
     msimdat = gaminv(rand(n,nsim), alpha, beta);
 
 
-    if idist == 16 ;    %  then need to fix scales
+    if idist == 16    %  then need to fix scales
       msimdat = log(msimdat) ;
-    end ;
+    end
 
  
-  elseif  idist == 7  ;
+  elseif  idist == 7
 
-    if ~isempty(simseed);
+    if ~isempty(simseed)
       rng(simseed) ;
-    end;
+    end
         %  set seed
 
     msimdat = betainv(rand(n,nsim), alpha, beta);
 
 
-  end ;    %  of idist block
+  end    %  of idist block
 
 
 
-  if iscreenwrite == 1 ;
+  if iscreenwrite == 1
     disp('      sorting simulated data') ;
-  end ;
+  end
   msimdat = sort(msimdat) ;
           %  sort each column
 
 
-  if nsimplotval < n ;    %  then get reduced version for 
-                          %  efficient plotting
+  if nsimplotval < n    %  then get reduced version for 
+                        %  efficient plotting
 
     nspvo3 = floor(nsimplotval / 3) ;
           %  one third of total, to put at each end
@@ -1215,12 +1215,12 @@ if nsim > 0 ;
     qtheoryp = qtheory(vind,:) ;
     msimdatp = msimdat(vind,:) ;
 
-  else ;  
+  else  
 
     qtheoryp = qtheory ;
     msimdatp = msimdat ;
 
-  end ;
+  end
 
 
   hold on  ;
@@ -1231,66 +1231,66 @@ if nsim > 0 ;
     plot(qtheory,qdata, ...
          [colorcell{1} '-'], ...
          'LineWidth',3) ;
-    if ioverlay == 1 ;    %  then overlay 45 degree line
+    if ioverlay == 1    %  then overlay 45 degree line
       plot([minmin,maxmax],[minmin,maxmax], ...
            [colorcell{2} ltypestr], ...
            'LineWidth',2) ;
-    elseif ioverlay == 2 ;    %  then overlay least squares fit line
+    elseif ioverlay == 2    %  then overlay least squares fit line
       plot([minmin;maxmax],lineval, ...
            [colorcell{2} ltypestr], ...
            'LineWidth',2) ;
-    end ;
+    end
 
 
   hold off ;
 
 
-elseif nsim < 0 ;    %  then compute and plot these individually
-                     %  to avoid memory problems
+elseif nsim < 0    %  then compute and plot these individually
+                   %  to avoid memory problems
 
 
-  if ~isempty(simseed) ;
+  if ~isempty(simseed)
     rng(simseed) ;
-  end ;
+  end
       %  set seed
 
   pnsim = abs(nsim) ;    %  positive version of number to simulate
   
-  for isim = 1:pnsim ;    %  loop through simulation steps
+  for isim = 1:pnsim    %  loop through simulation steps
 
-    if iscreenwrite == 1 ;
+    if iscreenwrite == 1
       disp(['      working on simulated data set ' num2str(isim) ...
                                             ' of ' num2str(pnsim)]) ;
-    end ;
+    end
 
-    if  idist == 1  |  idist == 11  ;    %  Gaussian
+    if  idist == 1  ||  idist == 11    %  Gaussian
       vsimdat = mu + sigma * randn(n,1) ;
-    elseif  idist == 2  |  idist == 12  ;    %  Pareto
+    elseif  idist == 2  ||  idist == 12    %  Pareto
       vsimdat = sigma * ((1 - rand(n,1)).^(-1/alpha) - 1) ;
-      if idist == 12 ;    %  then need to fix scales
+      if idist == 12    %  then need to fix scales
         vsimdat = log(vsimdat) ;
-      end ;
-    elseif  idist == 3  |  idist == 13  ;    %  Weibull
+      end
+    elseif  idist == 3  ||  idist == 13    %  Weibull
       vsimdat = sigma * (-log(1 - rand(n,1))).^(1 / alpha) ;
-      if idist == 13 ;    %  then need to fix scales
+      if idist == 13    %  then need to fix scales
         vsimdat = log(vsimdat) ;
-      end ;
-    elseif  idist == 4  |  idist == 14  ;    %  Gumbel
+      end
+    elseif  idist == 4  ||  idist == 14    %  Gumbel
       vsimdat = -sigma * log(-log(rand(n,1))) + mu ;
-      if idist == 14 ;    %  then need to fix scales
+      if idist == 14    %  then need to fix scales
         vsimdat = log(vsimdat) ;
-      end ;
-    elseif  idist == 5  |  idist == 15  ;    %  max power Gaussian
+      end
+    elseif  idist == 5  ||  idist == 15    %  max power Gaussian
       vsimdat = norminv((1 + rand(n,1).^(1/alpha)) / 2) * sigma ;
-      if idist == 15 ;    %  then need to fix scales
+      if idist == 15    %  then need to fix scales
         vsimdat = log(vsimdat) ;
-      end ;
-    end ;    %  of idist block
+      end
+    end    %  of idist block
     vsimdat = sort(vsimdat) ;
           %  sort this column
 
 
-    if nsimplotval < n ;    %  then get reduced version for 
+    if nsimplotval < n    %  then get reduced version for 
                             %  efficient plotting
 
       nspvo3 = floor(nsimplotval / 3) ;
@@ -1311,12 +1311,12 @@ elseif nsim < 0 ;    %  then compute and plot these individually
       qtheoryp = qtheory(vind,:) ;
       vsimdatp = vsimdat(vind,:) ;
 
-    else ;  
+    else
 
       qtheoryp = qtheory ;
       vsimdatp = vsimdat ;
 
-    end ;
+    end
 
 
     hold on  ;
@@ -1324,7 +1324,7 @@ elseif nsim < 0 ;    %  then compute and plot these individually
     hold off ;
 
 
-  end ;    %  of loop through simulated data sets
+  end    %  of loop through simulated data sets
 
 
 
@@ -1334,41 +1334,41 @@ elseif nsim < 0 ;    %  then compute and plot these individually
     plot(qtheory,qdata, ...
          [colorcell{1} '-'], ...
          'LineWidth',3) ;
-    if ioverlay == 1 ;    %  then overlay 45 degree line
+    if ioverlay == 1    %  then overlay 45 degree line
       plot([minmin,maxmax],[minmin,maxmax], ...
            [colorcell{2} ltypestr], ...
            'LineWidth',2) ;
-    elseif ioverlay == 2 ;    %  then overlay least squares fit line
+    elseif ioverlay == 2    %  then overlay least squares fit line
       plot([minmin;maxmax],lineval, ...
            [colorcell{2} ltypestr], ...
            'LineWidth',2) ;
-    end ;
+    end
   hold off ;
 
 
 
-end ;    %  of simulated data if block
+end    %  of simulated data if block
 
 
 
 
 %  Add text for parameters (if needed)
 %
-if ishowpar == 1 ;
+if ishowpar == 1
     tx = left + 0.6 * (right - left) ;
     ty = bottom + 0.25 * (top - bottom) ;
   th = text(tx,ty,[par1str ' = ' num2str(par1val)]) ;
-  if ~isempty(parfontsize) ;
+  if ~isempty(parfontsize)
     set(th,'FontSize',parfontsize) ;
-  end ;
+  end
 
     ty = bottom + 0.1 * (top - bottom) ;
   th = text(tx,ty,[par2str ' = ' num2str(par2val)]) ;
-  if ~isempty(parfontsize) ;
+  if ~isempty(parfontsize)
     set(th,'FontSize',parfontsize) ;
-  end ;
+  end
 
-end ;
+end
 
 
 
@@ -1376,21 +1376,21 @@ end ;
 
 %  show fit quantiles (if needed)
 %
-if ishowcross == 1 ;
+if ishowcross == 1
 
-  if ididqalign == 1 ;    %  then show crossing quantiles
+  if ididqalign == 1    %  then show crossing quantiles
     hold on ;
-      sch = plot([q1hat; q2hat], [q1hat; q2hat], 'ko') ;
+      sch = plot([q1hat; q2hat], [q1hat; q2hat], 'ko') ; %#ok<NASGU>
     hold off ;
-  else ;    %  then didn't actually do quantile fit, give warning
+  else    %  then didn't actually do quantile fit, give warning
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from qqLM:                          !!!') ;
     disp('!!!   Didn''t compute parameters from quantiles,   !!!') ;
     disp('!!!   So won''t show crossing points               !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  end ;
+  end
 
-end ;    %  of ishowcross if-block
+end    %  of ishowcross if-block
 
 
 
@@ -1398,15 +1398,15 @@ end ;    %  of ishowcross if-block
 
 %  show additional quantiles (if needed)
 %
-if ~isempty(vshowq) ;
+if ~isempty(vshowq)
 
-  for isq = 1:length(vshowq) ;
+  for isq = 1:length(vshowq)
   
     sq = vshowq(isq) ;
     
-    if  0 < sq   &  sq < 1  ;    %  then have valid probability
+    if  0 < sq   &&  sq < 1    %  then have valid probability
 
-      [temp,qi] = min(abs((((1:n)' - 0.5) / n) - sq)) ;
+      [~,qi] = min(abs((((1:n)' - 0.5) / n) - sq)) ;
           %  gets index of this quantile
           %  i.e. where prob is closest to sq prob
 
@@ -1416,14 +1416,14 @@ if ~isempty(vshowq) ;
       qhx = qthat + 0.02 * (right - left) ;
 
       hold on ;
-        plot([qthat], [qehat], 'k+') ;
+        plot(qthat, qehat, 'k+') ;
         th = text(qhx,qehat,[num2str(sq) ' quantile']) ;
-        if ~isempty(parfontsize) ;
+        if ~isempty(parfontsize)
           set(th,'FontSize',parfontsize) ;
-        end ;
+        end
       hold off ;
 
-    else ;    %  then don't have valid probability, give error message
+    else    %  then don't have valid probability, give error message
 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from qqLM:                       !!!') ;
@@ -1431,13 +1431,13 @@ if ~isempty(vshowq) ;
       disp('!!!   So won''t show this quantile              !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
 
-    end ;    %  of sq if-block  
+    end    %  of sq if-block  
 
 
-  end ;    %    of isq loop through quantiles to show
+  end    %    of isq loop through quantiles to show
 
 
-end ;    %  of showq if-block
+end    %  of showq if-block
 
 
 
@@ -1445,20 +1445,20 @@ end ;    %  of showq if-block
 
 %  Save results (if needed)
 %
-if ~isempty(savestr) ;     %  then save results
+if ~isempty(savestr)     %  then save results
 
-  if iscreenwrite == 1 ;
+  if iscreenwrite == 1
     disp('    qqLM.m saving results') ;
-  end ;
+  end
 
   printSM(savestr,savetype) ;
 
-  if iscreenwrite == 1 ;
+  if iscreenwrite == 1
     disp('    qqLM.m finished save') ;
     disp('  ') ;
-  end ;
+  end
 
-end ;
+end
 
 
 
@@ -1466,10 +1466,10 @@ end ;
 
 %  create output (if needed)
 %
-if nargout > 0 ;
+if nargout > 0
 
   qqout = [qtheory,qdata] ;
 
-end ;
+end
 
 

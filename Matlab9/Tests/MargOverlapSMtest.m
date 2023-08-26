@@ -5,7 +5,7 @@ disp('Running MATLAB script file MargOverlapSMtest.m') ;
 
 
 
-itest = 101 ;     %  1,2,...,70
+itest = 72 ;     %  1,2,...,72
                  %  101 
 
 
@@ -78,7 +78,9 @@ if  itest == 1  | ...
     itest == 67  | ...
     itest == 68  | ...
     itest == 69  | ...
-    itest == 70  ;    %  Work with simplest data set
+    itest == 70  | ...
+    itest == 71  | ...
+    itest == 72  ;    %  Work with simplest data set
 
   figure(1) ;
   clf ;
@@ -616,6 +618,18 @@ if  itest == 1  | ...
     paramstruct = struct('titlecellstr',{{'' 'Test varnamecellstr' 'd = 16'}}, ...
                          'varnamecellstr',{varnamecellstr{1}(1:16)}) ;
     MargOverlapSM(mdata(1:16,:),vflag,paramstruct) ;
+
+  elseif itest == 71 ;
+
+    paramstruct = struct('titlecellstr',{{'' 'Test savestr' 'empty'}}, ...
+                         'savestr',[]) ;
+    MargOverlapSM(mdata,vflag,paramstruct) ;
+
+  elseif itest == 72 ;
+
+    paramstruct = struct('titlecellstr',{{'' 'Test savestr' 'non-character'}}, ...
+                         'savestr',3) ;
+    MargOverlapSM(mdata,vflag,paramstruct) ;
 
 
 end ;    %  of inner itest if-block

@@ -4,7 +4,7 @@ disp('Running MATLAB script file projplot2SMtest.m') ;
 %    PROJection PLOT on 2 directions
 
 
-itest = 86 ;     %  0,...,86
+itest = 87 ;     %  0,...,87
 
 
 figure(1) ;
@@ -1672,6 +1672,22 @@ elseif itest == 86 ;
                        'iplotdirvec',1, ...
                        'titlestr','Force Naive View, Close Directions', ...
                        'iscreenwrite',1) ;
+  projplot2SM(mdata,mdir,paramstruct) ;
+
+
+elseif itest == 87 ; 
+
+  mdata = ones(3,1) * (1:100) ;
+  mdir = [1 0 ; ...
+          0 1 ; ...
+          0 0 ] ;
+
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',1, ...
+                       'savestr',[], ...
+                       'titlestr','Check empty savestr', ...
+                       'iscreenwrite',1) ;
+
   projplot2SM(mdata,mdir,paramstruct) ;
 
 

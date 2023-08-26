@@ -5,7 +5,7 @@ disp('Running MATLAB script file sss2SMtest.m') ;
 
 
 
-itest = 1 ;      %  1 - standard examples from sizer/2d
+itest = 13 ;      %  1 - standard examples from sizer/2d
                  %  2 - test streamlines (different sample sizes)
                  %  3 - test streamlines (different targets and noises)
                  %  4 - test contours (different sample sizes)
@@ -554,7 +554,7 @@ elseif itest == 10 ;     %  test 0 signal
   n = 32 ;
 
   seed = 60234852 ;
-  randn('seed',seed) ;
+  rng(seed) ;
 
   nsim = 10 ;
   for isim = 1:nsim ;
@@ -600,6 +600,7 @@ elseif itest == 10 ;     %  test 0 signal
       paramstruct = struct('iscreenwrite',1, ...
                            'stype',3, ...
                            'igrid',1, ...
+                           'titlestr',['Sim = ' num2str(isim) ', ' varstr], ...
                            'savestr',savestr, ...
                            'imovie',1 ...
                                               ) ;
@@ -619,7 +620,7 @@ elseif itest == 11 ;     %  test single line
   seed = 12943809 ;
   seed = 38474095 ;
   seed = 98723947 ;
-  randn('seed',seed) ;
+  rng(seed) ;
 
   n = 32 ;
   ht = 100 ;
@@ -665,6 +666,7 @@ elseif itest == 11 ;     %  test single line
   paramstruct = struct('iscreenwrite',1, ...
                        'stype',3, ...
                        'igrid',1, ...
+                       'titlestr',varstr, ...
                        'savestr',savestr, ...
                        'imovie',1 ...
                                           ) ;
@@ -734,7 +736,7 @@ elseif itest == 13 ;     %  test 0 signal, different alphas
   seed = 12943809 ;
   seed = 38474095 ;
   seed = 98723947 ;
-  randn('seed',seed) ;
+  rng(seed) ;
 
   n = 32 ;
   mdat = randn(n,n) ;  
@@ -827,6 +829,7 @@ elseif itest == 13 ;     %  test 0 signal, different alphas
       paramstruct = struct('iscreenwrite',1, ...
                            'stype',3, ...
                            'igrid',1, ...
+                           'titlestr',['alpha = ' num2str(alpha) ', ' varstr], ...
                            'savestr',savestr, ...
                            'imovie',1 ...
                                           ) ;
@@ -912,8 +915,7 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
         denstr = 'Bivariate Normal Mixture' ;
 
         seed = 29387509 ;
-        rand('seed',seed) ;
-        randn('seed',seed) ;
+        rng(seed) ;
 
         n = 200 ;
         sig = 8 ;
@@ -2649,7 +2651,7 @@ elseif  itest > 200  &  itest < 300 ;    %  then test specialized stuff
   if itest == 201 ;
 
     seed = 43572098 ;
-    randn('seed',seed) ;
+    rng(seed) ;
 
     mdat = randn(128,128) ;
 
@@ -2662,7 +2664,7 @@ elseif  itest > 200  &  itest < 300 ;    %  then test specialized stuff
   elseif itest == 202 ;
 
     seed = 43572098 ;
-    randn('seed',seed) ;
+    rng(seed) ;
 
     mdat = randn(128,128) ;
 
@@ -2676,7 +2678,7 @@ elseif  itest > 200  &  itest < 300 ;    %  then test specialized stuff
   elseif itest == 203 ;
 
     seed = 43572098 ;
-    randn('seed',seed) ;
+    rng(seed) ;
 
     mdat = randn(128,128) ;
 
@@ -2690,7 +2692,7 @@ elseif  itest > 200  &  itest < 300 ;    %  then test specialized stuff
   elseif itest == 204 ;
 
     seed = 43572098 ;
-    randn('seed',seed) ;
+    rng(seed) ;
 
     mdat = randn(128,128) ;
 

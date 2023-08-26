@@ -311,7 +311,8 @@ if nargin > 2    %  then paramstruct is an argument
   
   if isfield(paramstruct,'savestr')     %  then use input value
     savestr = paramstruct.savestr ; 
-    if ~(ischar(savestr) || isempty(savestr))     %  then invalid input, so give warning
+    if  ~ischar(savestr)  &&  ~isempty(savestr)   
+                          %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from projplot2SM.m:  !!!') ;
       disp('!!!   Invalid savestr,             !!!') ;

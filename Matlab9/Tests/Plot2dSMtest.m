@@ -4,7 +4,7 @@ disp('Running MATLAB script file Plot2dSMtest.m') ;
 %    PROJection PLOT on 2 directions
 
 
-itest = 77 ;     %  0,...,77
+itest = 78 ;     %  0,...,78
 
 
 figure(1) ;
@@ -1251,6 +1251,16 @@ elseif itest == 77 ;
 
 
 elseif itest == 78 ; 
+
+  mdata = ones(2,1) * (1:100) ;
+
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',1, ...
+                       'savestr',[], ...
+                       'titlestr','Check empty savestr', ...
+                       'iscreenwrite',1) ;
+
+  Plot2dSM(mdata,paramstruct) ;
 
 
 

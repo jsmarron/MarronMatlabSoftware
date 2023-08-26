@@ -4,7 +4,7 @@ disp('Running MATLAB script file qqLMtest.m') ;
 %    General Purpose QQplot
 
 
-itest = 204     %  1   Toy Example (demonstrating Q-Q idea)
+itest = 170     %  1   Toy Example (demonstrating Q-Q idea)
 
                 %  11  6 plots for N(0,1) data
                 %  12  6 plots for N(10,(.1)^2) data
@@ -31,7 +31,7 @@ itest = 204     %  1   Toy Example (demonstrating Q-Q idea)
                 %  71  4 plots for Beta(2,1) data
                 %  72  4 plots for Beta(20,10) data
 
-                %  101,...,169   parameter tests
+                %  101,...,170   parameter tests
 
                 %  > 200  (201-204)  fiddle with large sample sizes
 
@@ -1219,6 +1219,15 @@ elseif  100 < itest  &  itest < 200 ;    %  then do parameter tests
                          'ishowpar',1 ...
                                           ) ;
     qqLM(normcdf(data),paramstruct) ;
+
+
+
+  elseif itest == 170 ;
+
+    paramstruct = struct('iscreenwrite',1, ...
+                         'savestr','[]' ...
+                                          ) ;
+    qqLM(data,paramstruct) ;
 
 
 

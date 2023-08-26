@@ -333,7 +333,8 @@ if nargin > 1   %  then paramstruct has been added
   
   if isfield(paramstruct,'savestr')    %  then use input value
     savestr = paramstruct.savestr ; 
-    if ~ischar(savestr)    %  then invalid input, so give warning
+    if  ~ischar(savestr)  &&  ~isempty(savestr)   
+                          %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from sss2SM.m:     !!!') ;
       disp('!!!   Invalid savestr,           !!!') ;

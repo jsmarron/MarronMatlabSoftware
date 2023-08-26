@@ -6,7 +6,7 @@ disp('Running MATLAB script file sizerSMtest.m') ;
 clear all
 close all
 
-itest = 84 ;    %  1  real data tests (density estimation)
+itest = 85 ;    %  1  real data tests (density estimation)
                 %  2  normal mixture tests (density estimation)
                 %  11 real data tests (regression)
                 %  12 NR book examples (regression)
@@ -16,7 +16,7 @@ itest = 84 ;    %  1  real data tests (density estimation)
                 %  16 Length biased data tests (theoretical)
                 %  17 Length biased data tests (empirical)
                 %  20 simple test with no signal
-                %  21,22,...,84  parameter tests
+                %  21,22,...,85  parameter tests
 
 
 format compact ;
@@ -2143,6 +2143,14 @@ elseif itest >= 21 ;    %  then do parameter tests
                          'ylabelstr','density' ...
                                           ) ;
     sizerSM(data,paramstruct)        
+
+  elseif itest == 85 ;
+    disp('check empty savestr') ;
+    paramstruct = struct('iscreenwrite',1,...
+                         'imovie',0, ...
+                         'savestr',[] ...
+                                          ) ;
+    sizerSM(data,paramstruct)
 
   end ;
 

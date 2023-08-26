@@ -4,7 +4,7 @@ disp('Running MATLAB script file curvdatSMtest.m') ;
 %    CURVes as DATa analysis
 
 
-itest = 29 ;     %  0,...,35
+itest = 36 ;     %  0,...,36
 
 
 idata = 5 ;    %  numbers, 1,...,18 and data generation from EGCurvDat1.m
@@ -830,6 +830,18 @@ else ;     %  then use input paramstruct
                          'viout',1, ...
                          'icolor',2, ...
                          'savestr','curvdatSMtest.fig', ...
+                         'iscreenwrite',1) ;
+
+
+
+  elseif itest == 36 ;    %  test empty savestr input
+
+    disp('test empty savestr input') ;
+
+    paramstruct = struct('itype',1, ...
+                         'viout',1, ...
+                         'icolor',2, ...
+                         'savestr',[], ...
                          'iscreenwrite',1) ;
 
 

@@ -4,7 +4,7 @@ disp('Running MATLAB script file Plot1dSMtest.m') ;
 %    PLOT of 1 dimensonal data
 
 
-itest = 83 ;     %  0,...,83
+itest = 84 ;     %  0,...,84
 
 
 figure(1) ;
@@ -1305,6 +1305,19 @@ elseif itest == 83 ;
                        'ifigure',1, ...
                        'vaxlim',[1.9 2.1], ...
                        'titlestr','Check All Variables = 2, input axes', ...
+                       'iscreenwrite',1) ;
+
+  Plot1dSM(vdata,paramstruct) ;
+
+
+elseif itest == 84 ; 
+
+  vdata = 1:100 ;
+
+  paramstruct = struct('icolor',2, ...
+                       'ifigure',1, ...
+                       'savestr',[], ...
+                       'titlestr','Check empty savestr', ...
                        'iscreenwrite',1) ;
 
   Plot1dSM(vdata,paramstruct) ;

@@ -5,7 +5,7 @@ disp('Running MATLAB script file MargDistPlotSMtest.m') ;
 
 
 
-itest = 102 ;     %  1,2,...,58       tests beased on d = 50, n = 100
+itest = 60 ;     %  1,2,...,60       tests beased on d = 50, n = 100
                  %  71,72     tests based on d = 16, n = 100
                  %  101 shifting normal means: mean, sd, skewness, kurtosis
                  %  102 shifting sd: mean, sd, skewness, kurtosis
@@ -88,7 +88,9 @@ if  itest == 1  | ...
     itest == 55  | ...
     itest == 56  | ...
     itest == 57  | ...
-    itest == 58  ;    %  Work with simplest data set
+    itest == 58  | ...
+    itest == 59  | ...
+    itest == 60  ;    %  Work with simplest data set
 
   figure(1) ;
   clf ;
@@ -496,6 +498,20 @@ if  itest == 1  | ...
 
       paramstruct = struct('istat',2, ...
                            'titlecellstr',{{'' 'Test istat = 2' 'SD' 'With 0-var variable'}}) ;
+      MargDistPlotSM([mdata; ones(1,n)],paramstruct) ;
+
+    elseif itest == 59 ;
+
+      paramstruct = struct('istat',2, ...
+                           'titlecellstr',{{'' 'Test istat = 2' 'SD' 'With empty savestr'}}, ...
+                           'savestr',[]) ;
+      MargDistPlotSM([mdata; ones(1,n)],paramstruct) ;
+
+    elseif itest == 60 ;
+
+      paramstruct = struct('istat',2, ...
+                           'titlecellstr',{{'' 'Test istat = 2' 'SD' 'With non-char savestr'}}, ...
+                           'savestr',5) ;
       MargDistPlotSM([mdata; ones(1,n)],paramstruct) ;
 
     end ;    %  of inner-inner itest if-block

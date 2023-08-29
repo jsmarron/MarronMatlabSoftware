@@ -268,7 +268,8 @@ if nargin > 1   %  then paramstruct has been added
 
   if isfield(paramstruct,'savestr')    %  then change to input value
     savestr = paramstruct.savestr ; 
-    if ~ischar(savestr)    %  then invalid input, so give warning
+    if  ~ischar(savestr)  &&  ~isempty(savestr)   
+                          %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from qqLM.m:       !!!') ;
       disp('!!!   Invalid savestr,           !!!') ;
@@ -1440,6 +1441,8 @@ if ~isempty(vshowq)
 end    %  of showq if-block
 
 
+savestr
+isempty(savestr)
 
 
 

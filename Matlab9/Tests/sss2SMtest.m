@@ -5,7 +5,7 @@ disp('Running MATLAB script file sss2SMtest.m') ;
 
 
 
-itest = 13 ;      %  1 - standard examples from sizer/2d
+itest = 150 ;      %  1 - standard examples from sizer/2d
                  %  2 - test streamlines (different sample sizes)
                  %  3 - test streamlines (different targets and noises)
                  %  4 - test contours (different sample sizes)
@@ -18,7 +18,7 @@ itest = 13 ;      %  1 - standard examples from sizer/2d
                  %  > 50 but < 100, density estimation tests
                  %             (currently 51-52)
                  %  > 100 but < 200, various parameter tests
-                 %             (currently 101-145)
+                 %             (currently 101-150)
                  %  > 200, some special tests
                  %             (currently 201-204)
                  %  > 300, test (and experiment with) movies saves
@@ -45,8 +45,6 @@ if itest == 1 ;     %  some standard tests
                   %  1  -  low noise
                   %  2  -  medium noise
                   %  3  -  high noise
-
-
 
 
   %  set looping parameters
@@ -110,7 +108,6 @@ load([basefilestr '\Research\sss\data\sss1d' num2str(ie) ...
                            'savestr',savestr, ...
                            'imovie',1 ...
                                               ) ;
-
 
       sss2SM(mdat,paramstruct) ;
 
@@ -206,7 +203,7 @@ load([basefilestr '\Research\sss\data\sss1dbig' num2str(ieg) ...
                              't' num2str(itest) ...
                              'id' num2str(id)] ;
 %}
-    savestr = [] ;
+    savestr = 'temp' ;
 
     paramstruct = struct('iscreenwrite',1, ...
                          'stype',4, ...
@@ -288,7 +285,7 @@ load([basefilestr '\Research\sss\data\sss1d' num2str(ie) ...
                                'ie' num2str(ie) ...
                                'in' num2str(in)] ;
 %}
-      savestr = [] ;
+      savestr = 'temp' ;
 
       paramstruct = struct('iscreenwrite',1, ...
                            'stype',4, ...
@@ -391,7 +388,7 @@ load([basefilestr '\Research\sss\data\sss1dbig' num2str(ieg) ...
                              't' num2str(itest) ...
                              'id' num2str(id)] ;
 %}
-      savestr = [] ;
+      savestr = 'temp' ;
 
 %    paramstruct = struct('iscreenwrite',1, ...
 %                         'nh',1, ...
@@ -503,7 +500,7 @@ load([basefilestr '\Research\sss\data\sss1d' num2str(ie) ...
                                  'in' num2str(in) ...
                                  'ic' num2str(ic)] ;
 %}
-      savestr = [] ;
+      savestr = 'temp' ;
 
 %        paramstruct = struct('iscreenwrite',1, ...
 %                           'nh',1, ...
@@ -595,7 +592,7 @@ elseif itest == 10 ;     %  test 0 signal
                                'iv' num2str(ivarp) ...
                                'isim' num2str(isim)] ;
 %}
-      savestr = [] ;
+      savestr = 'temp' ;
 
       paramstruct = struct('iscreenwrite',1, ...
                            'stype',3, ...
@@ -660,7 +657,7 @@ elseif itest == 11 ;     %  test single line
                            't' num2str(itest) ...
                            'iv' num2str(ivarp)] ;
 %}
-      savestr = [] ;
+      savestr = 'temp' ;
 
 
   paramstruct = struct('iscreenwrite',1, ...
@@ -711,7 +708,7 @@ load([basefilestr '\Research\sss\data\sss1d' num2str(ieg) ...
                            'ie' num2str(ieg) ...
                            'in' num2str(inoise)] ;
 %}
-      savestr = [] ;
+      savestr = 'temp' ;
 
 
   paramstruct = struct('iscreenwrite',1, ...
@@ -780,16 +777,16 @@ elseif itest == 13 ;     %  test 0 signal, different alphas
 
 
 
-    if ivarp == 1 ;
+    if iv == 1 ;
       ivarlocal = 0 ;
       ivarunknown = 0 ;
       varinput = 1 ;
       varstr = 'Known variance' ;
-    elseif ivarp == 2 ;
+    elseif iv == 2 ;
       ivarlocal = 0 ;
       ivarunknown = 1 ;
       varstr = 'Pooled estimated variance' ;
-    elseif ivarp == 3 ;
+    elseif iv == 3 ;
       ivarlocal = 1 ;
       ivarunknown = 1 ;
       varstr = 'Local estimated variance' ;
@@ -824,7 +821,7 @@ elseif itest == 13 ;     %  test 0 signal, different alphas
                            'iv' num2str(ivarp) ...
                            'ia' num2str(ia)] ;
 %}
-      savestr = [] ;
+      savestr = 'temp' ;
 
       paramstruct = struct('iscreenwrite',1, ...
                            'stype',3, ...
@@ -1483,9 +1480,8 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
                  %   2  -  Lipid Data (from Scott)
                  %   3  -  Earthquake Data (from Wand and Jones)
                  %   4  -  Melbourne Temperatures (from Hyndman)
-                 %   5  -  Perfusion MR
-                 %   6  -  Aircraft Span (from Bowman)
-                 %   7  -  Cancer Data (form Bowman)
+                 %   5  -  Aircraft Span (from Bowman)
+                 %   6  -  Cancer Data (form Bowman)
 
     imethod = 0 ;     %  0  -  loop through all
                       %  1  -  Simple Scatter Plot
@@ -1493,8 +1489,8 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
                       %  3  -  dots and arrows, 2x2 grid, chosen boundaries
                       %  4  -  streamlines, chosen boundaries
                       %  5  -  movie of smooths only
-                      %  6  -  movie of 2x2 dots and arrows, chosen boundaries
-                      %  7  -  movie of streamlines, chosen boundaries
+                      %  6  -  movie of contours only
+                      %  7  -  movie of streamlines and contours
 
 
 
@@ -1502,7 +1498,7 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
     %
     if ieg == 0 ;
       ies = 1 ;
-      iee = 7 ;
+      iee = 6 ;
     else ;
       ies = ieg ;
       iee = ieg ;
@@ -1510,7 +1506,7 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
 
     if imethod == 0 ;
       imeths = 1 ;
-      imethe = 6 ;
+      imethe = 7 ;
     else ;
       imeths = imethod ;
       imethe = imethod ;
@@ -1531,7 +1527,8 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
 
 
 %        fid = fopen('/matlab/steve/data/scott/geyser.in','rt') ;
-        fid = fopen([basefilestr '/matlab/steve/data/scott/geyser.in'],'rt') ;
+%
+        fid = fopen([basefilestr '\Research\GeneralData\Scott\geyser.in'],'rt') ;
             %  'rt' is for "read only" and "text"
           [invec,cnt] = fscanf(fid,'%f') ;
             %  can add a "size" parameter when don't want to read all.
@@ -1555,7 +1552,8 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
 
 
 %        fid = fopen('/matlab/steve/data/scott/lipid.in','rt') ;
-        fid = fopen([baswefilestr '/matlab/steve/data/scott/lipid.in'],'rt') ;
+%        fid = fopen([baswefilestr '/matlab/steve/data/scott/lipid.in'],'rt') ;
+        fid = fopen([basefilestr '\Research\GeneralData\Scott\lipid.in'],'rt') ;
             %  'rt' is for "read only" and "text"
           [invec,cnt] = fscanf(fid,'%f') ; 
             %  can add a "size" parameter when don't want to read all.
@@ -1582,7 +1580,8 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
         ylab = 'Latitude' ;
 
 %        fid = fopen('/matlab/steve/data/MtStHelens.txt','rt') ;
-        fid = fopen([basefilestr '/matlab/steve/data/MtStHelens.txt'],'rt') ;
+%        fid = fopen([basefilestr '/matlab/steve/data/MtStHelens.txt'],'rt') ;
+        fid = fopen([basefilestr '\Research\GeneralData\MtStHelens.txt'],'rt') ;
             %  'rt' is for "read only" and "text"
           [invec,cnt] = fscanf(fid,'%f') ; 
             %  can add a "size" parameter when don't want to read all.
@@ -1610,7 +1609,8 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
 
 
 %        fid = fopen('/matlab/steve/data/melbmax.dat','rt') ;
-        fid = fopen([basefilestr '/matlab/steve/data/melbmax.dat'],'rt') ;
+%        fid = fopen([basefilestr '/matlab/steve/data/melbmax.dat'],'rt') ;
+        fid = fopen([basefilestr '\Research\GeneralData\melbmax.dat'],'rt') ;
             %  'rt' is for "read only" and "text"
           [invec,cnt] = fscanf(fid,'%f') ;
             %  can add a "size" parameter when don't want to read all.
@@ -1628,35 +1628,13 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
 
       elseif ie == 5 ;
 
-        datstr = 'Perfusion MR' ;
-        xlab = 'tau' ;
-        ylab = 'delta' ;
-
-%        fid = fopen('/matlab/steve/data/perfMRI.txt','rt') ;
-        fid = fopen([basefilestr '/matlab/steve/data/perfMRI.txt'],'rt') ;
-            %  'rt' is for "read only" and "text"
-          [invec,cnt] = fscanf(fid,'%f') ; 
-            %  can add a "size" parameter when don't want to read all.
-            %  cnt tells how many reads were done (2 * 3 fields = 6)
-        fclose(fid) ;
-
-        data = reshape(invec',2,cnt/2)' ;
-            %  since matlab does reshape down columns first 
-
-
-        vgridp = [6,30,64,200,1800,64] ;
-            %  vector of grid parameters
-
-
-
-      elseif ie == 6 ;
-
         datstr = 'Aircraft Span' ;
         xlab = 'P. Comp. 1' ;
         ylab = 'P. Comp. 2' ;
 
 %        fid = fopen('/matlab/steve/data/Bowman/airpc.in','rt') ;
-        fid = fopen([basefielstr '/matlab/steve/data/Bowman/airpc.in'],'rt') ;
+%        fid = fopen([basefielstr '/matlab/steve/data/Bowman/airpc.in'],'rt') ;
+        fid = fopen([basefilestr '\Research\GeneralData\Bowman\airpc.in'],'rt') ;
             %  'rt' is for "read only" and "text"
           [invec,cnt] = fscanf(fid,'%f') ; 
         fclose(fid) ;
@@ -1676,14 +1654,15 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
 
 
 
-      elseif ie == 7 ;
+      elseif ie == 6 ;
 
         datstr = 'Cancer Data' ;
         xlab = 'Easting' ;
         ylab = 'Northing' ;
 
 %        fid = fopen('/matlab/steve/data/Bowman/lcancer.in','rt') ;
-        fid = fopen([basefilestr '/matlab/steve/data/Bowman/lcancer.in'],'rt') ;
+%        fid = fopen([basefilestr '/matlab/steve/data/Bowman/lcancer.in'],'rt') ;
+        fid = fopen([basefilestr '\Research\GeneralData\Bowman\lcancer.in'],'rt') ;
             %  'rt' is for "read only" and "text"
           [invec,cnt] = fscanf(fid,'%f') ; 
         fclose(fid) ;
@@ -1742,267 +1721,94 @@ elseif  itest > 50  &  itest < 100 ;    %  then test density estimation
             text(tx,ty,['n = ' num2str(ndat)]) ;
 
 
+%{
             orient landscape ;
           eval(['print -dps \matlab\steve\ps\sss1td' ...
                                           num2str(itest) ...
                                           num2str(ie) ...
                                           num2str(imeth) ...
                                                     '.ps ;']) ;
-
+%}
 
 
 
 
         elseif imeth == 2 ;    %  dots and arrows, 2x2 grid, default boundaries
-%
 
           figure(1) ;
           clf ;
 
-
-%          sss1(data,[3,2]) ;
-  %                |:  1 - arrows only
-  %                |:  2 - dots only
-  %                |:  3 - dots and arrows
-  %                |:  4 - streamlines
-  %                  |:  1 - single pixels
-  %                  |:  2 - 2 x 2 boxes
-            %  0 - variance handling parameter (no effect)
-            %  0.05 - alpha
-            %  0 - default bandwidth grid
-
-
-
-
-%        subplot(2,2,1) ;
-%          titlestr = get(get(gca,'Title'),'String') ;
-%          set(get(gca,'Title'),'String',[datstr ', ' titlestr]) ;
-%
-%        subplot(2,2,2) ;
-%          titlestr = get(get(gca,'Title'),'String') ;
-%          set(get(gca,'Title'),'String',['n = ' num2str(ndat) ', ' titlestr]) ;
-%
-%        subplot(2,2,3) ;
-%          titlestr = get(get(gca,'Title'),'String') ;
-%          set(get(gca,'Title'),'String',[date ', ' titlestr]) ;
-%
-%
-%            orient landscape ;
-%        eval(['print -dpsc \matlab\steve\ps\sss1td' ...
-%                                          num2str(itest) ...
-%                                          num2str(ie) ...
-%                                          num2str(imeth) ...
-%                                                    '.ps ;']) ;
-
-
-
-
+          paramstruct = struct('stype',3, ...
+                               'igrid',2, ...
+                               'iscreenwrite',1, ...
+                               'titlestr',datstr) ;
+          sss2SM(data,paramstruct) ;
 
 
         elseif imeth == 3 ;    %  dots and arrows, 2x2 grid, chosen boundaries
 
-
           figure(1) ;
           clf ;
 
-
-%          sss1(data,[3,2],0,0.05,0,vgridp) ;
-  %                |:  1 - arrows only
-  %                |:  2 - dots only
-  %                |:  3 - dots and arrows
-  %                |:  4 - streamlines
-  %                  |:  1 - single pixels
-  %                  |:  2 - 2 x 2 boxes
-            %  0 - variance handling parameter (no effect)
-            %  0.05 - alpha
-            %  0 - default bandwidth grid
-
-
-
-%        subplot(2,2,1) ;
-%          titlestr = get(get(gca,'Title'),'String') ;
-%          set(get(gca,'Title'),'String',[datstr ', ' titlestr]) ;
-%
-%        subplot(2,2,2) ;
-%          titlestr = get(get(gca,'Title'),'String') ;
-%          set(get(gca,'Title'),'String',['n = ' num2str(ndat) ', ' titlestr]) ;
-%
-%        subplot(2,2,3) ;
-%          titlestr = get(get(gca,'Title'),'String') ;
-%          set(get(gca,'Title'),'String',[date ', ' titlestr]) ;
-%
-%
-%            orient landscape ;
-%        eval(['print -dpsc \matlab\steve\ps\sss1td' ...
-%                                          num2str(itest) ...
-%                                          num2str(ie) ...
-%                                          num2str(imeth) ...
-%                                                    '.ps ;']) ;
-
-
-
+          paramstruct = struct('stype',3, ...
+                               'igrid',2, ...
+                               'bdryp',0, ...
+                               'iscreenwrite',1, ...
+                               'titlestr',[datstr ', bndry trunc']) ;
+          sss2SM(data,paramstruct) ;
 
 
         elseif imeth == 4 ;    % streamlines, chosen boundaries
 
-
-
-
           figure(1) ;
           clf ;
 
-
-%          sss1(data,4,0,0.05,0,vgridp) ;
-            %  0 - variance handling parameter (no effect)
-            %  0.05 - alpha
-            %  0 - default bandwidth grid
-
-
-
-%        subplot(2,2,1) ;
-%          titlestr = get(get(gca,'Title'),'String') ;
-%          set(get(gca,'Title'),'String',[datstr ', ' titlestr]) ;
-%
-%        subplot(2,2,2) ;
-%          titlestr = get(get(gca,'Title'),'String') ;
-%          set(get(gca,'Title'),'String',['n = ' num2str(ndat) ', ' titlestr]) ;
-%
-%        subplot(2,2,3) ;
-%          titlestr = get(get(gca,'Title'),'String') ;
-%          set(get(gca,'Title'),'String',[date ', ' titlestr]) ;
-%
-%
-%            orient landscape ;
-%        eval(['print -dpsc \matlab\steve\ps\sss1td' ...
-%                                          num2str(itest) ...
-%                                          num2str(ie) ...
-%                                          num2str(imeth) ...
-%                                                    '.ps ;']) ;
-
+          paramstruct = struct('stype',4, ...
+                               'bdryp',0, ...
+                               'iscreenwrite',1, ...
+                               'titlestr',[datstr ', bndry trunc']) ;
+          sss2SM(data,paramstruct) ;
 
 
         elseif imeth == 5 ;    % movie of smooths only
 
+          figure(1) ;
+          clf ;
+
+          paramstruct = struct('stype',0, ...
+                               'bdryp',0, ...
+                               'iscreenwrite',1, ...
+                               'titlestr',[datstr ', smooths only']) ;
+          sss2SM(data,paramstruct) ;
+
+
+        elseif imeth == 6 ;    % movie of contours only
 
           figure(1) ;
           clf ;
 
+          paramstruct = struct('stype',5, ...
+                               'bdryp',0, ...
+                               'iscreenwrite',1, ...
+                               'titlestr',datstr) ;
+          sss2SM(data,paramstruct) ;
 
 
-          type = [0,0,2] ;
-  %               |:  0 - smooth only
-  %               |:  1 - arrows only
-  %               |:  2 - dots only
-  %               |:  3 - dots and arrows
-  %               |:  4 - streamlines
-  %                 |:  1 - single pixels
-  %                 |:  2 - 2 x 2 boxes
-  %                   |:  1 - static plot
-  %                   |:  2 - movie, looping through bandwidths
-  %                   |:  3 - plot with slider (allows choice to print)
- 
-
-
-%          sss1(data,type,[1,0],0.05,[1,16,33],vgridp) ;
-            %  [1,0]  -  variance parameter
-            %  0.05   -  alpha
-            %  [1,16,33]  -  33 frames   1-16 (adds 8 more to usual)
-
-
-          %  rename mpeg file
-          %
-%          rnstr = ['!rename sss1.mpg sss1td' ...
-%                                         num2str(itest) ...
-%                                         num2str(ie) ...
-%                                         num2str(imeth) ...
-%                                                    '.mpg ;'] ;
-%          eval(rnstr) ;
-
-
-
-        elseif imeth == 6 ;    % movie of 2x2 dots and arrows, chosen boundaries
-
+        elseif imeth == 7 ;    % movie of streamlines and contours
 
           figure(1) ;
           clf ;
 
-
-
-          type = [3,2,2] ;
-  %               |:  0 - smooth only
-  %               |:  1 - arrows only
-  %               |:  2 - dots only
-  %               |:  3 - dots and arrows
-  %               |:  4 - streamlines
-  %                 |:  1 - single pixels
-  %                 |:  2 - 2 x 2 boxes
-  %                   |:  1 - static plot
-  %                   |:  2 - movie, looping through bandwidths
-  %                   |:  3 - plot with slider (allows choice to print)
- 
-
-
-%          sss1(data,type,[1,0],0.05,[1,16,33],vgridp) ;
-            %  [1,0]  -  variance parameter
-            %  0.05   -  alpha
-            %  [1,16,33]  -  33 frames   1-16 (adds 8 more to usual)
-
-
-          %  rename mpeg file
-          %
-%          rnstr = ['!rename sss1.mpg sss1td' ...
-%                                         num2str(itest) ...
-%                                         num2str(ie) ...
-%                                         num2str(imeth) ...
-%                                                    '.mpg ;'] ;
-%          eval(rnstr) ;
-%
-
-
-
-
-        elseif imeth == 7 ;    % movie of streamlines, chosen boundaries
-
-
-          figure(1) ;
-          clf ;
-
-
-
-          type = [4,0,2] ;
-  %               |:  0 - smooth only
-  %               |:  1 - arrows only
-  %               |:  2 - dots only
-  %               |:  3 - dots and arrows
-  %               |:  4 - streamlines
-  %                 |:  1 - single pixels
-  %                 |:  2 - 2 x 2 boxes
-  %                   |:  1 - static plot
-  %                   |:  2 - movie, looping through bandwidths
-  %                   |:  3 - plot with slider (allows choice to print)
- 
-
-
-%          sss1(data,type,[1,0],0.05,[1,16,33],vgridp) ;
-            %  [1,0]  -  variance parameter
-            %  0.05   -  alpha
-            %  [1,16,33]  -  33 frames   1-16 (adds 8 more to usual)
-
-
-          %  rename mpeg file
-          %
-%          rnstr = ['!rename sss1.mpg sss1td' ...
-%                                         num2str(itest) ...
-%                                         num2str(ie) ...
-%                                         num2str(imeth) ...
-%                                                    '.mpg ;'] ;
-%          eval(rnstr) ;
-
-
-
-
+          paramstruct = struct('stype',6, ...
+                               'bdryp',0, ...
+                               'iscreenwrite',1, ...
+                               'titlestr',datstr) ;
+          sss2SM(data,paramstruct) ;
 
         end ;    %  of imeth if-block
+
+
+        pauseSM ;
 
 
       end ;   %  of imeth loop
@@ -2023,6 +1829,9 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   if itest == 101 ;    % just do basics
+
+    disp('Test Empty pramstruct') ;
+
     idecim = 1 ;     %  0 - use given 64 x 64 image
                      %  1 - decimate to 32 x 32 to increase speed
 
@@ -2041,6 +1850,9 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 102 ;    %  nonstandard paramstruct
+
+    disp('Test Wierd paramstuct') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
@@ -2050,6 +1862,9 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 103 ;    %  nonstandard paramstruct
+
+    disp('Test iscreenwrite = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
@@ -2060,83 +1875,100 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 104 ;    %  nonstandard paramstruct
+
+    disp('Test imovie = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
-                         'imovie',1 ...
+    paramstruct = struct('imovie',1 ...
                                               ) ;
 
 
   elseif itest == 105 ;    %  nonstandard paramstruct
+
+    disp('Test stype = 0') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
-                         'stype',0, ...
+    paramstruct = struct('stype',0, ...
                          'imovie',0 ...
                                               ) ;
 
 
   elseif itest == 106 ;    %  nonstandard paramstruct
+
+    disp('Test type = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
-                         'stype',1, ...
+    paramstruct = struct('stype',1, ...
                          'imovie',0 ...
                                               ) ;
 
 
   elseif itest == 107 ;    %  nonstandard paramstruct
+
+    disp('Test stype = 2') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
-                         'stype',2, ...
+    paramstruct = struct('stype',2, ...
                          'imovie',0 ...
                                               ) ;
 
 
   elseif itest == 108 ;    %  nonstandard paramstruct
+
+    disp('Test stype = 3') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'imovie',0 ...
                                               ) ;
 
 
   elseif itest == 109 ;    %  nonstandard paramstruct
+
+    disp('Test stype = 4') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',4, ...
                          'imovie',0 ...
                                               ) ;
 
 
   elseif itest == 110 ;    %  nonstandard paramstruct
+
+    disp('Test igrid 2') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',4, ...
                          'igrid',2, ...
                          'imovie',0 ...
@@ -2144,12 +1976,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 111 ;    %  nonstandard paramstruct
+
+    disp('Test igrid = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'igrid',1, ...
                          'imovie',0 ...
@@ -2157,12 +1992,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 112 ;    %  nonstandard paramstruct
+
+    disp('Test stype = 2, igrid = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',2, ...
                          'igrid',1, ...
                          'imovie',0 ...
@@ -2170,12 +2008,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 113 ;    %  nonstandard paramstruct
+
+    disp('Test stype = 1, igrid = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',1, ...
                          'igrid',1, ...
                          'imovie',0 ...
@@ -2183,12 +2024,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 114 ;    %  nonstandard paramstruct
+
+    disp('Test stype = 6, igrid = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',6, ...
                          'igrid',1, ...
                          'imovie',0 ...
@@ -2196,12 +2040,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 115 ;    %  nonstandard paramstruct
+
+    disp('Test stype = 3, ivarunknown = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'ivarunknown',1, ...
                          'imovie',0 ...
@@ -2209,12 +2056,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 116 ;    %  nonstandard paramstruct
+
+    disp('Test ivarunkown = 0') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'ivarunknown',0, ...
                          'imovie',0 ...
@@ -2222,12 +2072,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 117 ;    %  nonstandard paramstruct
+
+    disp('Test varinput = 0.001') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'ivarunknown',0, ...
                          'varinput',0.001, ...
@@ -2236,12 +2089,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 118 ;    %  nonstandard paramstruct
+
+    disp('Test varinput = 10') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'ivarunknown',0, ...
                          'varinput',10, ...
@@ -2250,12 +2106,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 119 ;    %  nonstandard paramstruct
+
+    disp('Test varlocal = 0') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'ivarlocal',0, ...
                          'imovie',0 ...
@@ -2263,12 +2122,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 120 ;    %  nonstandard paramstruct
+
+    disp('Test ivarlocal = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'ivarlocal',1, ...
                          'imovie',0 ...
@@ -2276,12 +2138,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 121 ;    %  nonstandard paramstruct
+
+    disp('Test alpha = 0.05') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'alpha',0.05, ...
                          'imovie',0 ...
@@ -2289,12 +2154,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 122 ;    %  nonstandard paramstruct
+
+    disp('Test alpha = 0.005') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'alpha',0.005, ...
                          'imovie',0 ...
@@ -2302,12 +2170,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 123 ;    %  nonstandard paramstruct
+
+    disp('Test alpha = 0.2') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'alpha',0.2, ...
                          'imovie',0 ...
@@ -2315,12 +2186,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 124 ;    %  nonstandard paramstruct
+
+    disp('Test hmin = 0, hmax = 64') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'hmin',0, ...
                          'hmax',64, ...
@@ -2329,12 +2203,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 125 ;    %  nonstandard paramstruct
+
+    disp('Test hmin = 0.5, hmax = 4') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'hmin',0.5, ...
                          'hmax',4, ...
@@ -2343,12 +2220,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 126 ;    %  nonstandard paramstruct
+
+    disp('Test hmin = hmax = 4, imovie = 0') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'hmin',4, ...
                          'hmax',4, ...
@@ -2357,12 +2237,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 127 ;    %  nonstandard paramstruct
+
+    disp('Test hmn - hmax = 4, imovie = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'hmin',4, ...
                          'hmax',4, ...
@@ -2371,12 +2254,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 128 ;    %  nonstandard paramstruct
+
+    disp('Test nh = -25') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'nh',-25, ...
                          'imovie',1 ...
@@ -2384,12 +2270,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 129 ;    %  nonstandard paramstruct
+    
+    disp('Test nh = 4') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'nh',4, ...
                          'imovie',1 ...
@@ -2397,12 +2286,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 130 ;    %  nonstandard paramstruct
+
+    disp('Test nh = 100') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'nh',100, ...
                          'imovie',1 ...
@@ -2410,12 +2302,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 131 ;    %  nonstandard paramstruct
+
+    disp('Test nh = 1, imovie = 0') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'nh',1, ...
                          'imovie',0 ...
@@ -2423,12 +2318,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 132 ;    %  nonstandard paramstruct
+
+    disp('Test hmin = 4, hmax = 27, nh = 1') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'hmin',4, ...
                          'hmax',27, ...
@@ -2438,12 +2336,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 133 ;    %  nonstandard paramstruct
+
+    disp('Test hmin = 4, hmax = 2') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'hmin',4, ...
                          'hmax',2, ...
@@ -2452,12 +2353,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 134 ;    %  nonstandard paramstruct
+
+    disp('Test vgp = 27') ;
+
     idecim = 1 ;  
     ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'vgp',27, ...
                          'imovie',0 ...
@@ -2465,12 +2369,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 135 ;    %  nonstandard paramstruct
+
+    disp('Test bdryp = 1') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'bdryp',1, ...
                          'imovie',0 ...
@@ -2478,12 +2385,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 136 ;    %  nonstandard paramstruct
+
+    disp('Test bdryp = 0') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'bdryp',0, ...
                          'imovie',0 ...
@@ -2491,12 +2401,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 137 ;    %  nonstandard paramstruct
+
+    disp('Test bdryp = 2') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'bdryp',2, ...
                          'imovie',0 ...
@@ -2504,38 +2417,47 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 138 ;    %  nonstandard paramstruct
+
+    disp('Test savestr, imovie = 0') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
-                         'savestr','\temp\sss2test', ...
+                         'savestr','sss2test', ...
                          'imovie',0 ...
                                               ) ;
 
 
   elseif itest == 139 ;    %  nonstandard paramstruct
+
+    disp('Test savestr, imovie = 1') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
-                         'savestr','\temp\sss2SMtest', ...
+                         'savestr','sss2SMtest', ...
                          'imovie',1 ...
                                               ) ;
 
 
   elseif itest == 140 ;    %  nonstandard paramstruct
+
+    disp('Test nrepeat = 10, moviefps = 8') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',1, ...
                          'nrepeat',10, ...
                          'moviefps',8, ...
@@ -2545,12 +2467,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 141 ;    %  nonstandard paramstruct
+
+    disp('Test itoobgctrl = 2') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'stype',3, ...
                          'itoobigctrl',2, ...
                          'imovie',0 ...
@@ -2558,12 +2483,15 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 142 ;    %  titlestr
+
+    disp('Test Title') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'titlestr','Testing Title',  ...
                          'stype',6, ...
                          'imovie',0 ...
@@ -2571,26 +2499,32 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 143 ;    %  titlestr
+
+    disp('Test Title') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'titlestr','Testing Title',  ...
                          'stype',6, ...
-                         'savestr','\temp\sss2SMtest', ...
+                         'savestr','sss2SMtest', ...
                          'imovie',1 ...
                                               ) ;
 
 
   elseif itest == 144 ;    %  titlestr & add no h
+
+    disp('Test Title and no h') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'titlestr','Testing Title',  ...
                          'ishowh',0, ...
                          'stype',6, ...
@@ -2599,23 +2533,122 @@ elseif  itest > 100  &  itest < 200 ;    %  then test defaults
 
 
   elseif itest == 145 ;    %  titlestr & add h
+
+    disp('Test Title and add h') ;
+
     idecim = 1 ;  
-    ieg = 4 ;  
+    ieg = 2 ;  
     inoise = 2 ;
           %  see itest == 101  for definitions of these
 
-    paramstruct = struct('iscreenwrite',1, ...
+    paramstruct = struct('iscreenwrite',0, ...
                          'titlestr','Testing Title',  ...
                          'ishowh',1, ...
                          'stype',6, ...
                          'imovie',1 ...
                                               ) ;
 
+
+  elseif itest == 146 ;    %  test cntrsp
+
+    disp('Test cntrsp = 1, default') ;
+
+    idecim = 1 ;  
+    ieg = 2 ;  
+    inoise = 2 ;
+          %  see itest == 101  for definitions of these
+
+    paramstruct = struct('iscreenwrite',0, ...
+                         'nh',1, ...
+                         'hmin',8, ...
+                         'contrsp',1, ...
+                         'ishowh',1, ...
+                         'stype',6, ...
+                         'imovie',0 ...
+                                              ) ;
+
+
+  elseif itest == 147 ;    %  test cntrsp
+
+    disp('Test cntrsp = 2') ;
+
+    idecim = 1 ;  
+    ieg = 2 ;  
+    inoise = 2 ;
+          %  see itest == 101  for definitions of these
+
+    paramstruct = struct('iscreenwrite',0, ...
+                         'nh',1, ...
+                         'hmin',8, ...
+                         'contrsp',2, ...
+                         'ishowh',1, ...
+                         'stype',6, ...
+                         'imovie',0 ...
+                                              ) ;
+
+
+  elseif itest == 148 ;    %  test cntrsp
+
+    disp('Test cntrsp = 3') ;
+
+    idecim = 1 ;  
+    ieg = 2 ;  
+    inoise = 2 ;
+          %  see itest == 101  for definitions of these
+
+    paramstruct = struct('iscreenwrite',0, ...
+                         'nh',1, ...
+                         'hmin',8, ...
+                         'contrsp',3, ...
+                         'ishowh',1, ...
+                         'stype',6, ...
+                         'imovie',0 ...
+                                              ) ;
+
+
+  elseif itest == 149 ;    %  test ncontr
+
+    disp('Test ncontr = 20') ;
+
+    idecim = 1 ;  
+    ieg = 2 ;  
+    inoise = 2 ;
+          %  see itest == 101  for definitions of these
+
+    paramstruct = struct('iscreenwrite',0, ...
+                         'nh',1, ...
+                         'hmin',8, ...
+                         'contrsp',3, ...
+                         'ncontr',20, ...
+                         'ishowh',1, ...
+                         'stype',6, ...
+                         'imovie',0 ...
+                                              ) ;
+
+
+  elseif itest == 150 ;    %  test ncontr
+
+    disp('Test ncontr = 5') ;
+
+    idecim = 1 ;  
+    ieg = 2 ;  
+    inoise = 2 ;
+          %  see itest == 101  for definitions of these
+
+    paramstruct = struct('iscreenwrite',0, ...
+                         'nh',1, ...
+                         'hmin',8, ...
+                         'contrsp',1, ...
+                         'ncontr',5, ...
+                         'ishowh',1, ...
+                         'stype',6, ...
+                         'imovie',0 ...
+                                              ) ;
+
+
 %  things to test:
-%    ncontr
 %    contours in density and regression
 %    contours with different grid sizes
-%    contour spacings
 
 
   end ;    %  of itest if block

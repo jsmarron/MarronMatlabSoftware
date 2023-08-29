@@ -1442,8 +1442,6 @@ end    %  of showq if-block
 
 
 
-
-
 %  Save results (if needed)
 %
 if ~isempty(savestr)     %  then save results

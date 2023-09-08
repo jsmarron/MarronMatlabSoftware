@@ -1,0 +1,21 @@
+Update files:
+BatchAdjustCC.m
+decompXL.m
+DiProPerm files
+ProjHypoTestSM.m
+DWD1SM.m
+DWD2XQ.m
+parallelXL.m
+PCAParallelXL.m
+sepelimdwdnonlinXQ.m
+SigClust files
+SVM1SM.m
+SWISS files
+
+
+Update directory:
+FRwarping-PNS
+
+
+
+

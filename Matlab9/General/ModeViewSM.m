@@ -123,19 +123,34 @@ function ModeViewSM(mdata,paramstruct)
 %                      Note:  Appropriate axes are labelled 'Color Values'
 %                                 to aid understanding of corresponding axes
 %
-%    savestr           string controlling saving of output,
-%                          either a full path, or a file prefix to
-%                          save in matlab's current directory
-%                          Will add .ps, and save as either
-%                              black&white postscript (when icolor = 0 or 1)
-%                          or
-%                              color postscript (otherwise)
-%                          unspecified:  results only appear on screen
+%
+%    savestr          string controlling saving of output,
+%                         either a full path, or a file prefix to
+%                         save in matlab's current directory
+%                       Will add file suffix determined by savetype
+%                         unspecified:  results only appear on screen
 %                      Will add appropriate suffixes for multiple pages
+%
+%    savetype         indicator of output file type:
+%                         1 - (default)  Matlab figure file (.fig)
+%                         2 - (.png)  raster graphics
+%                         3 - (.pdf)  vector graphics
+%                         4 - (.eps)  Color vector 
+%                                     (use when icolor is not 0)
+%                         5 - (.eps)  Black and White vector 
+%                                     (use when icolor = 0)
+%                         6 - (.jpg)  raster
+%                         7 - (.svg)  vector
 %
 %
 % Outputs:
-%     Graphics in new figures 
+%     Graphics in new figures as:
+%         Figure 1:  Raw data
+%         Figure 2:  Column Object Mean mode of variation
+%         Figure 3:  Row Trait Mean mode of variation
+%         Figure 4:  Residuals from double centering
+%         Figure 5+:  SVD modes of variation
+% 
 %     When savestr exists,
 %        Postscript file saved in 'savestr'.ps 
 %                 (and 'savestr'ColorDist.ps, when specified)
@@ -148,7 +163,7 @@ function ModeViewSM(mdata,paramstruct)
 %    RainbowColorsQY.m
 %    HeatColorsSM.m
 
-%    Copyright (c) J. S. Marron 2019, 2020
+%    Copyright (c) J. S. Marron 2019, 2020, 2023
 
 
 %  First set all parameters to defaults
@@ -159,7 +174,6 @@ icolorhm = 3 ;
 icolorcols = 2 ;
 markerstrcols = 'o' ;
 icolorrows = 1 ;
-markerstrcols = '+' ;
 alpha = 0.05 ;
 ncolor = 64 ;
 icolordist = 1 ;
@@ -167,57 +181,58 @@ titlestr = '' ;
 xlabelstr = '' ;
 ylabelstr = '' ;
 savestr = [] ;
+savetype = 1 ;
 
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct is an argument
+if nargin > 1    %  then paramstruct is an argument
 
-  if isfield(paramstruct,'iout') ;    %  then change to input value
-    iout = getfield(paramstruct,'iout') ; 
-  end ;
+  if isfield(paramstruct,'iout')    %  then change to input value
+    iout = paramstruct.iout ; 
+  end
 
-  if isfield(paramstruct,'nmode') ;    %  then change to input value
-    nmode = getfield(paramstruct,'nmode') ; 
-  end ;
+  if isfield(paramstruct,'nmode')    %  then change to input value
+    nmode = paramstruct.nmode ; 
+  end
 
-  if isfield(paramstruct,'icolorhm') ;    %  then change to input value
-    icolorhm = getfield(paramstruct,'icolorhm') ; 
-  end ;
+  if isfield(paramstruct,'icolorhm')    %  then change to input value
+    icolorhm = paramstruct.icolorhm ; 
+  end
 
-  if isfield(paramstruct,'icolorcols') ;    %  then change to input value
-    icolorcols = getfield(paramstruct,'icolorcols') ; 
-  end ;
+  if isfield(paramstruct,'icolorcols')    %  then change to input value
+    icolorcols = paramstruct.icolorcols ; 
+  end
 
-  if isfield(paramstruct,'markerstrcols') ;    %  then change to input value
-    markerstrcols = getfield(paramstruct,'markerstrcols') ; 
-  end ;
+  if isfield(paramstruct,'markerstrcols')    %  then change to input value
+    markerstrcols = paramstruct.markerstrcols ; 
+  end
 
-  if isfield(paramstruct,'icolorrows') ;    %  then change to input value
-    icolorrows = getfield(paramstruct,'icolorrows') ; 
-  end ;
+  if isfield(paramstruct,'icolorrows')    %  then change to input value
+    icolorrows = paramstruct.icolorrows ; 
+  end
 
-  if isfield(paramstruct,'markerstrrows') ;    %  then change to input value
-    markerstrrows = getfield(paramstruct,'markerstrrows') ; 
-  end ;
+  if isfield(paramstruct,'markerstrrows')    %  then change to input value
+    markerstrrows = paramstruct.markerstrrows ; %#ok<NASGU>
+  end
 
-  if isfield(paramstruct,'alpha') ;    %  then change to input value
-   alpha  = getfield(paramstruct,'alpha') ; 
-  end ;
+  if isfield(paramstruct,'alpha')    %  then change to input value
+   alpha  = paramstruct.alpha ; 
+  end
 
-  if isfield(paramstruct,'ncolor') ;    %  then change to input value
-    ncolor = getfield(paramstruct,'ncolor') ; 
-  end ;
+  if isfield(paramstruct,'ncolor')    %  then change to input value
+    ncolor = paramstruct.ncolor ; 
+  end
 
-  if isfield(paramstruct,'icolordist') ;    %  then change to input value
-    icolordist = getfield(paramstruct,'icolordist') ; 
-  end ;
+  if isfield(paramstruct,'icolordist')    %  then change to input value
+    icolordist = paramstruct.icolordist ; 
+  end
 
-  if isfield(paramstruct,'titlestr') ;    %  then change to input value
-    titlestr = getfield(paramstruct,'titlestr') ; 
-    if (~ischar(titlestr) & titlestr == 0) ;
+  if isfield(paramstruct,'titlestr')    %  then change to input value
+    titlestr = paramstruct.titlestr ; 
+    if (~ischar(titlestr) && titlestr == 0)
       titleflag = 0 ;
-    elseif ~(ischar(titlestr) | isempty(titlestr)) ;    %  then invalid input, 
+    elseif ~(ischar(titlestr) || isempty(titlestr))     %  then invalid input, 
                                                         %  so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from ModeViewSM.m:   !!!') ;
@@ -226,16 +241,16 @@ if nargin > 1 ;   %  then paramstruct is an argument
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       titlestr = [] ;
       titleflag = 1 ;
-    else ;
+    else
       titleflag = 1 ;
-    end ;
-  else ;
+    end
+  else
     titleflag = 1 ;
-  end ;
+  end
 
-  if isfield(paramstruct,'xlabelstr') ;    %  then change to input value
-    xlabelstr = getfield(paramstruct,'xlabelstr') ; 
-    if ~(ischar(xlabelstr) | isempty(xlabelstr)) ;    %  then invalid input, 
+  if isfield(paramstruct,'xlabelstr')    %  then change to input value
+    xlabelstr = paramstruct.xlabelstr ; 
+    if ~(ischar(xlabelstr) || isempty(xlabelstr))    %  then invalid input, 
                                                       %  so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from ModeViewSM.m:   !!!') ;
@@ -243,25 +258,25 @@ if nargin > 1 ;   %  then paramstruct is an argument
       disp('!!!   using default of no label    !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       xlabelstr = [] ;
-    end ;
-  end ;
+    end
+  end
 
-  if isfield(paramstruct,'ylabelstr') ;    %  then change to input value
-    ylabelstr = getfield(paramstruct,'ylabelstr') ; 
-    if ~(ischar(ylabelstr) | isempty(ylabelstr)) ;    %  then invalid input, 
-                                                      %  so give warning
+  if isfield(paramstruct,'ylabelstr')    %  then change to input value
+    ylabelstr = paramstruct.ylabelstr ; 
+    if ~(ischar(ylabelstr) || isempty(ylabelstr))    %  then invalid input, 
+                                                     %  so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from ModeViewSM.m:   !!!') ;
       disp('!!!   Invalid ylabelstr,           !!!') ;
       disp('!!!   using default of no label    !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       ylabelstr = [] ;
-    end ;
-  end ;
+    end
+  end
 
-  if isfield(paramstruct,'savestr') ;    %  then use input value
-    savestr = getfield(paramstruct,'savestr') ; 
-    if ~(ischar(savestr) | isempty(savestr)) ;    %  then invalid input, 
+  if isfield(paramstruct,'savestr')    %  then use input value
+    savestr = paramstruct.savestr ; 
+    if ~(ischar(savestr) || isempty(savestr))    %  then invalid input, 
                                                   %  so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from ModeViewSM.m:   !!!') ;
@@ -269,12 +284,16 @@ if nargin > 1 ;   %  then paramstruct is an argument
       disp('!!!   using default of no save     !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       savestr = [] ;
-    end ;
-  end ;
+    end
+  end
 
-else ;
+  if isfield(paramstruct,'savetype')     %  then use input value
+    savetype = paramstruct.savetype ; 
+  end 
+
+else
   titleflag = 1 ;
-end ;    %  of resetting of input parameters
+end    %  of resetting of input parameters
 titleflag = logical(titleflag) ;
 
 
@@ -285,66 +304,66 @@ n = size(mdata,2) ;
 hgrid = 1:n ;
 vgrid = (1:d)' ;
 
-if icolorhm == 0 ;
+if icolorhm == 0
   icolorhm1 = 0 ;
       %  icolorhm for first 3 pages
   icolorhm2 = 0 ;
       %  icolorhm for rest
-elseif icolorhm == 1 ;
+elseif icolorhm == 1
   icolorhm1 = 1 ;
   icolorhm2 = 1 ;
-elseif icolorhm == 2 ;
+elseif icolorhm == 2
   icolorhm1 = 2 ;
   icolorhm2 = 2 ;
-elseif icolorhm == 3 ;
+elseif icolorhm == 3
   icolorhm1 = 0 ;
       %  icolorhm for first 3 pages
   icolorhm2 = 2 ;
       %  icolorhm for rest
-elseif icolorhm == 4 ;
+elseif icolorhm == 4
   icolorhm1 = 1 ;
   icolorhm2 = 2 ;
-else ;
+else
   icolorhm1 = icolorhm ;
   icolorhm2 = icolorhm ;
-end ;
+end
 
-if icolorcols == 0 ;
+if icolorcols == 0
   mcolorcols = ones(n,1) * [0 0 0] ;
-elseif icolorcols == 2 ;
+elseif icolorcols == 2
   mcolorcols = RainbowColorsQY(n) ;
-else ;
-  if ~(size(icolorcols,2) == 3) ;    %  have invalid input color map
+else
+  if ~(size(icolorcols,2) == 3)    %  have invalid input color map
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from ModeViewSM.m:            !!!') ;
     disp('!!!   Invalid icolor,                       !!!') ;
     disp('!!!   resetting to default Rainbow Colors   !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     mcolorcols = RainbowColorsQY(n) ;
-  else ;
+  else
     mcolorcols = icolorcols ;
-  end ;
-end ;
+  end
+end
 
-if icolorrows == 0 ;
+if icolorrows == 0
   mcolorrows = ones(d,1) * [0 0 0] ;
-elseif icolorrows == 1 ;
+elseif icolorrows == 1
   mcolorrows = flipud(HeatColorsSM(round(1.1 * d))) ;
   mcolorrows = mcolorrows(1:d,:) ;
       %  keep just first 90%, to avoid white curves 
       %      that don't show up on white background
-else ;
-  if ~(size(icolorrows,2) == 3) ;    %  have invalid input color map
+else
+  if ~(size(icolorrows,2) == 3)    %  have invalid input color map
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from ModeViewSM.m:            !!!') ;
     disp('!!!   Invalid icolor,                       !!!') ;
     disp('!!!   resetting to default Rainbow Colors   !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     mcolorrows = HeatColorsSM(d) ;
-  else ;
+  else
     mcolorrows = icolorrows ;
-  end ;
-end ;
+  end
+end
 
 
 %  Do common calculations
@@ -359,7 +378,7 @@ mscores = [vromscores; (S * V')] ;
     %  Scores for plotting when iout = 4
 
 
-if iout == 1 ;    %  One page (figure) for each mode of variation
+if iout == 1    %  One page (figure) for each mode of variation
 
   %  Make raw data plot page (figure)
   %
@@ -377,14 +396,14 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   subplot(2,2,2) ;    %  Cols as data objects in upper right
     plot(mdata(:,1),vgrid,'-','Color',mcolorcols(1,:)) ;
     hold on ;
-      for ic = 1:n ;
+      for ic = 1:n
         plot(mdata(:,ic),vgrid,'-','Color',mcolorcols(ic,:)) ;
-      end ;
+      end
       vaxmdata = axisSM(mdata) ;
       axis([vaxmdata 1 d]) ;
-      if titleflag ;
+      if titleflag
         title([titlestr ' Column Curves']) ;
-      end ;
+      end
       xlabel('Color Values') ;
       ylabel(ylabelstr) ;
     hold off ;
@@ -392,38 +411,32 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   subplot(2,2,3) ;    %  Rows as data objects in lower left
     plot(hgrid',mdata(1,:)','-','Color',mcolorrows(1,:)) ;
     hold on ;
-      for ir = 1:d ;
+      for ir = 1:d
         plot(hgrid',mdata(ir,:)','-','Color',mcolorrows(ir,:)) ;
-      end ;
+      end
       axis([1 n vaxmdata]) ;
-      if titleflag ;
+      if titleflag
         title([titlestr ' Row Curves']) ;
-      end ;
+      end
       xlabel(xlabelstr) ;
       ylabel('Color Values') ;
     hold off ;
-  if ~(icolordist == 0) ;
+  if ~(icolordist == 0)
     subplot(2,2,4) ;    %  Show heatmap color distribution in lower right
     paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'cdonlyflag',1) ;
     HeatMapSM(mdata,paramstruct) ;
-    if ~titleflag ;
+    if ~titleflag
       set(get(gca,'Title'),'String','')
-    end ;
-  end ;
+    end
+  end
   set(gcf,'renderer','zbuffer') ;
       %  This cures the tendency for the image to turn all black
-  if ~isempty(savestr) ;   %  then create postscript file
-    orient landscape ;
-    if ((icolorhm1 == 0) | (icolorhm1 == 1)) & ...
-        (icolorcols == 0) & (icolorrows == 0) ;    %  Print to B&W .pdfs
-      print('-dps2',[savestr 'Input']) ;
-    else ;                %  Then print in Color
-      print('-dpsc2',[savestr 'Input']) ;
-    end ;
-  end ;
+  if ~isempty(savestr)   %  then create postscript file
+    printSM([savestr 'Input'],savetype) ;
+  end
 
   %  Make column object mean mode page (figure)
   %
@@ -441,14 +454,14 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   subplot(2,2,2) ;    %  Cols as data objects in upper right
     plot(mdatacom(:,1),vgrid,'-','Color',mcolorcols(1,:)) ;
     hold on ;
-      for ic = 1:n ;
+      for ic = 1:n
         plot(mdatacom(:,ic),vgrid,'-','Color',mcolorcols(ic,:)) ;
-      end ;
+      end
       vaxmdatacom = axisSM(mdatacom) ;
       axis([vaxmdatacom 1 d]) ;
-      if titleflag ;
+      if titleflag
         title([titlestr ' Column Curves']) ;
-      end ;
+      end
       xlabel('Color Values') ;
       ylabel(ylabelstr) ;
     hold off ;
@@ -456,39 +469,33 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   subplot(2,2,3) ;    %  Rows as data objects in lower left
     plot(hgrid',mdatacom(1,:)','-','Color',mcolorrows(1,:)) ;
     hold on ;
-      for ir = 1:d ;
+      for ir = 1:d
         plot(hgrid',mdatacom(ir,:)','-','Color',mcolorrows(ir,:)) ;
-      end ;
+      end
       axis([1 n vaxmdatacom]) ;
-      if titleflag ;
+      if titleflag
         title([titlestr ' Row Curves']) ;
-      end ;
+      end
 
       xlabel(xlabelstr) ;
       ylabel('Color Values') ;
     hold off ;
-  if ~(icolordist == 0) ;
+  if ~(icolordist == 0)
     subplot(2,2,4) ;    %  Show heatmap color distribution in lower right
     paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'cdonlyflag',1) ;
     HeatMapSM(mdatacom,paramstruct) ;
-    if ~titleflag ;
+    if ~titleflag
       set(get(gca,'Title'),'String','')
-    end ;
-  end ;
+    end
+  end
   set(gcf,'renderer','zbuffer') ;
       %  This cures the tendency for the image to turn all black
-  if ~isempty(savestr) ;   %  then create postscript file
-    orient landscape ;
-    if ((icolorhm1 == 0) | (icolorhm1 == 1)) & ...
-        (icolorcols == 0) & (icolorrows == 0) ;    %  Print to B&W .pdfs
-      print('-dps2',[savestr 'ColObjMean']) ;
-    else ;                %  Then print in Color
-      print('-dpsc2',[savestr 'ColObjMean']) ;
-    end ;
-  end ;
+  if ~isempty(savestr)   %  then create postscript file
+    printSM([savestr 'ColObjMean'],savetype) ;
+  end
 
   %  Make row object mean mode page (figure)
   %
@@ -506,14 +513,14 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   subplot(2,2,2) ;    %  Cols as data objects in upper right
     plot(mdatarom(:,1),vgrid,'-','Color',mcolorcols(1,:)) ;
     hold on ;
-      for ic = 1:n ;
+      for ic = 1:n
         plot(mdatarom(:,ic),vgrid,'-','Color',mcolorcols(ic,:)) ;
-      end ;
+      end
       vaxmdatarom = axisSM(mdatarom) ;
       axis([vaxmdatarom 1 d]) ;
-      if titleflag ;
+      if titleflag
         title([titlestr ' Column Curves']) ;
-      end ;
+      end
       xlabel('Color Values') ;
       ylabel(ylabelstr) ;
     hold off ;
@@ -521,38 +528,32 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   subplot(2,2,3) ;    %  Rows as data objects in lower left
     plot(hgrid',mdatarom(1,:)','-','Color',mcolorrows(1,:)) ;
     hold on ;
-      for ir = 1:d ;
+      for ir = 1:d
         plot(hgrid',mdatarom(ir,:)','-','Color',mcolorrows(ir,:)) ;
-      end ;
+      end
       axis([1 n vaxmdatarom]) ;
-      if titleflag ;
+      if titleflag
         title([titlestr ' Row Curves']) ;
-      end ;
+      end
       xlabel(xlabelstr) ;
       ylabel('Color Values') ;
     hold off ;
-  if ~(icolordist == 0) ;
+  if ~(icolordist == 0)
     subplot(2,2,4) ;    %  Show heatmap color distribution in lower right
     paramstruct = struct('icolor',icolorhm1, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'cdonlyflag',1) ;
     HeatMapSM(mdatarom,paramstruct) ;
-    if ~titleflag ;
+    if ~titleflag
       set(get(gca,'Title'),'String','')
-    end ;
-  end ;
+    end
+  end
   set(gcf,'renderer','zbuffer') ;
       %  This cures the tendency for the image to turn all black
-  if ~isempty(savestr) ;   %  then create postscript file
-    orient landscape ;
-    if ((icolorhm1 == 0) | (icolorhm1 == 1)) & ...
-        (icolorcols == 0) & (icolorrows == 0) ;    %  Print to B&W .pdfs
-      print('-dps2',[savestr 'RowObjMean']) ;
-    else ;                %  Then print in Color
-      print('-dpsc2',[savestr 'RowObjMean']) ;
-    end ;
-  end ;
+  if ~isempty(savestr)    %  then create postscript file
+    printSM([savestr 'RowObjMean'],savetype) ;
+  end
 
   %  Make overall mean centered residuals page (figure)
   %
@@ -570,14 +571,14 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   subplot(2,2,2) ;    %  Cols as data objects in upper right
     plot(mdataoac(:,1),vgrid,'-','Color',mcolorcols(1,:)) ;
     hold on ;
-      for ic = 1:n ;
+      for ic = 1:n
         plot(mdataoac(:,ic),vgrid,'-','Color',mcolorcols(ic,:)) ;
-      end ;
+      end
       vaxmdataoac = axisSM(mdataoac) ;
       axis([vaxmdataoac 1 d]) ;
-      if titleflag ;
+      if titleflag
         title([titlestr ' Column Curves']) ;
-      end ;
+      end
       xlabel('Color Values') ;
       ylabel(ylabelstr) ;
     hold off ;
@@ -585,42 +586,36 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
   subplot(2,2,3) ;    %  Rows as data objects in lower left
     plot(hgrid',mdataoac(1,:)','-','Color',mcolorrows(1,:)) ;
     hold on ;
-      for ir = 1:d ;
+      for ir = 1:d
         plot(hgrid',mdataoac(ir,:)','-','Color',mcolorrows(ir,:)) ;
-      end ;
+      end
       axis([1 n vaxmdataoac]) ;
-      if titleflag ;
+      if titleflag
         title([titlestr ' Row Curves']) ;
-      end ;
+      end
       xlabel(xlabelstr) ;
       ylabel('Color Values') ;
     hold off ;
-  if ~(icolordist == 0) ;
+  if ~(icolordist == 0)
     subplot(2,2,4) ;    %  Show heatmap color distribution in lower right
     paramstruct = struct('icolor',icolorhm2, ...
                          'alpha',alpha, ...
                          'ncolor',ncolor, ...
                          'cdonlyflag',1) ;
     HeatMapSM(mdataoac,paramstruct) ;
-    if ~titleflag ;
+    if ~titleflag
       set(get(gca,'Title'),'String','')
-    end ;
-  end ;
+    end
+  end
   set(gcf,'renderer','zbuffer') ;
       %  This cures the tendency for the image to turn all black
-  if ~isempty(savestr) ;   %  then create postscript file
-    orient landscape ;
-    if ((icolorhm2 == 0) | (icolorhm2 == 1)) & ...
-        (icolorcols == 0) & (icolorrows == 0) ;    %  Print to B&W .pdfs
-      print('-dps2',[savestr 'OAMeanResid']) ;
-    else ;                %  Then print in Color
-      print('-dpsc2',[savestr 'OAMeanResid']) ;
-    end ;
-  end ;
+  if ~isempty(savestr)    %  then create postscript file
+    printSM([savestr 'OAMeanResid'],savetype) ;
+  end
 
   %  Make SVD modes pages (figures)
   %
-  for imode = 1:nmode ;
+  for imode = 1:nmode
     figure(4 + imode) ;
     clf ;
     mdatamode = U(:,imode) * S(imode,imode) * V(:,imode)' ;
@@ -637,14 +632,14 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
     subplot(2,2,2) ;    %  Cols as data objects in upper right
       plot(mdatamode(:,1),vgrid,'-','Color',mcolorcols(1,:)) ;
       hold on ;
-        for ic = 1:n ;
+        for ic = 1:n
           plot(mdatamode(:,ic),vgrid,'-','Color',mcolorcols(ic,:)) ;
-        end ;
+        end
         vaxmdatamode = axisSM(mdatamode) ;
         axis([vaxmdatamode 1 d]) ;
-        if titleflag ;
+        if titleflag
           title([titlestr ' Column Curves']) ;
-        end ;
+        end
         xlabel('Color Values') ;
         ylabel(ylabelstr) ;
       hold off ;
@@ -652,51 +647,45 @@ if iout == 1 ;    %  One page (figure) for each mode of variation
     subplot(2,2,3) ;    %  Rows as data objects in lower left
       plot(hgrid',mdatamode(1,:)','-','Color',mcolorrows(1,:)) ;
       hold on ;
-        for ir = 1:d ;
+        for ir = 1:d
           plot(hgrid',mdatamode(ir,:)','-','Color',mcolorrows(ir,:)) ;
-        end ;
+        end
         axis([1 n vaxmdatamode]) ;
-        if titleflag ;
+        if titleflag
           title([titlestr ' Row Curves']) ;
-        end ;
+        end
         xlabel(xlabelstr) ;
         ylabel('Color Values') ;
       hold off ;
-    if ~(icolordist == 0) ;
+    if ~(icolordist == 0)
       subplot(2,2,4) ;    %  Show heatmap color distribution in lower right
       paramstruct = struct('icolor',icolorhm2, ...
                            'alpha',alpha, ...
                            'ncolor',ncolor, ...
                            'cdonlyflag',1) ;
       HeatMapSM(mdatamode,paramstruct) ;
-      if ~titleflag ;
+      if ~titleflag
         set(get(gca,'Title'),'String','')
-      end ;
-    end ;
+      end
+    end
     set(gcf,'renderer','zbuffer') ;
         %  This cures the tendency for the image to turn all black
-    if ~isempty(savestr) ;   %  then create postscript file
-      orient landscape ;
-      if ((icolorhm2 == 0) | (icolorhm2 == 1)) & ...
-          (icolorcols == 0) & (icolorrows == 0) ;    %  Print to B&W .pdfs
-        print('-dps2',[savestr 'Mode' num2str(imode)]) ;
-      else ;                %  Then print in Color
-        print('-dpsc2',[savestr 'Mode' num2str(imode)]) ;
-      end ;
-    end ;
+    if ~isempty(savestr)   %  then create postscript file
+      printSM([savestr 'Mode' num2str(imode)],savetype) ;
+    end
 
-  end ;
+  end
 
 
-elseif iout == 2 ;    %  Each row has 3 modes (heat map, columns, rows)
+elseif iout == 2    %  Each row has 3 modes (heat map, columns, rows)
 
 
 
-elseif iout == 3 ;    %  Similar to curvdatSM, but with row mean mode
+elseif iout == 3     %  Similar to curvdatSM, but with row mean mode
 
 
 
-elseif iout == 4 ;    %  Column object scores scatterplot (as in scatplotSM)
+elseif iout == 4    %  Column object scores scatterplot (as in scatplotSM)
 
   labelcellstr = {{'Flat Dir''n Scores'; ...
                    'Mode 1 Scores'; ...
@@ -711,11 +700,11 @@ elseif iout == 4 ;    %  Column object scores scatterplot (as in scatplotSM)
   scatplotSM(mscores,eye(nmode + 1),paramstruct) ;
 
 
-elseif iout == 5 ;    %  Row object scores scatterplot
+elseif iout == 5    %  Row object scores scatterplot
 
 
 
-end ;
+end
 
 
 

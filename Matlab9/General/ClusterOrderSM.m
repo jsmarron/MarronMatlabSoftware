@@ -24,27 +24,27 @@ function vindex = ClusterOrderSM(mdata,ilinkage)
 %    Copyright (c) J. S. Marron 2018-2023
 
 
-d = size(mdata,1) ;
+%d = size(mdata,1) ;
 n = size(mdata,2) ;
 
 %  Check Inputs
 %
-if nargin == 1 ;
+if nargin == 1
   linkagestr = 'average' ;
-else ;
-  if ilinkage == 1 ;
+else
+  if ilinkage == 1
     linkagestr = 'average' ;
-  elseif ilinkage == 2 ;
+  elseif ilinkage == 2
     linkagestr = 'ward' ;
-  else;
+  else
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from ClusterOrderSM.m:          !!!') ; 
     disp('!!!   Invalid ilinkage input                !!!') ;
     disp('!!!   Resetting to default of Average       !!!') ; 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     linkagestr = 'average' ;
-  end ;
-end ;
+  end
+end
 
 %  Compute Linkage
 %

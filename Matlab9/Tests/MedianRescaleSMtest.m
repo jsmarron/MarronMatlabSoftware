@@ -3,7 +3,7 @@ disp('Running MATLAB script file MedianRescaleSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION MedianRescaleSM,
 %    interquartile range
 
-itest = 1 ;     %  1,...,10 - simple parameter tests
+itest = 111 ;     %  1,...,10 - simple parameter tests
                   %  101 - simplest pairwise toy alternative splicing example
                   %  102 - Gaussian noise pairwise toy alternative splicing example
                   %  103 - Systematic noise pairwise toy alternative splicing example

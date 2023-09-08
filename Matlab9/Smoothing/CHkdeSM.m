@@ -568,7 +568,7 @@ if  nargout == 0  || ...
     %
     vax = axis ;
     plotbottom = vax(3) ;
-    ftop = vax(4) ;
+    ftop = vax(4) ; %#ok<NASGU>
     hold on ;
       yrand = plotbottom + (0.7 + 0.2 * rand(ndo,1)) ...
                                             * (plottop - plotbottom) ;

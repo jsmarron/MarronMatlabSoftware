@@ -1,13 +1,9 @@
 Update files:
-BatchAdjustCC.m
-decompXL.m
+BatchAdjustCC.m   is updated, but neeeds test program
 DiProPerm files
 ProjHypoTestSM.m
 DWDlarge files
-parallelXL.m
-PCAParallelXL.m
 SigClust files
-SVM1SM.m
 SWISS files
 
 

@@ -649,9 +649,9 @@ else    %  inputs OK, so do serious work
       figure(fignum) ;
       clf ;
       set(gcf,'Position',vpos) ;
-    end
+    end ;
     set(gcf,'Name','PCA 2-d Projections, After') ;
-%    fignum = fignum + 1 ;
+    fignum = fignum + 1 ;
 
     paramstruct = struct('npcadiradd',npc, ...
                          'irecenter',0, ...
@@ -665,19 +665,21 @@ else    %  inputs OK, so do serious work
                          'mlegendcolor',mlegendcolor, ...
                          'iscreenwrite',iscreenwrite) ;
 
-    if ~isempty(savestr)
-      paramstruct.savestr = [savestr 'PCA2dAfter'] ;
-    end
+    if ~isempty(savestr) ;
+      paramstruct = setfield(paramstruct, ...
+                            'savestr',[savestr 'PCA2dAfter']) ;
+    end ;
 
-    if ~isempty(legcellstr)
-      paramstruct.legendcellstr = legcellstr ;
-    end
+    if ~isempty(legcellstr) ;
+      paramstruct = setfield(paramstruct, ...
+                            'legendcellstr',legcellstr) ;
+    end ;
 
     scatplotSM(adjdata,[],paramstruct) ;
 
 
-  end
+  end ;
 
 
-end
+end ;
 

@@ -1,4 +1,4 @@
-function dirvec = DWDdir1SM(trainp,trainn,DWDpar) ;
+function dirvec = DWD1SM(trainp,trainn,DWDpar)
 % DWD1SM, Distance Weighted Discrimination DIResction vector
 %   Steve Marron's matlab function
 %     Essentially pared down version of hdd1SM.m
@@ -15,20 +15,20 @@ function dirvec = DWDdir1SM(trainp,trainn,DWDpar) ;
 %                  unit vector (i.e. length 1)
 %
 
-%    Copyright (c) J. S. Marron 2002-2004
+%    Copyright (c) J. S. Marron 2002-2023
 
 
 
-if nargin > 2 ;    %  then have input a threshfact, so use it
+if nargin > 2    %  then have input a threshfact, so use it
   threshfact = DWDpar ;
-else ;    %  then use default threshfact
+else    %  then use default threshfact
   threshfact = 100 ;
-end ;
+end
 
 
 
-global CACHE_SIZE   % cache size in kbytes
-global LOOP_LEVEL   % loop unrolling level
+global CACHE_SIZE   %#ok<GVMIS> % cache size in kbytes
+global LOOP_LEVEL   %#ok<GVMIS> % loop unrolling level
 CACHE_SIZE = 256;
 LOOP_LEVEL = 8;
     %% set global variables for functions imported from LIPSOL
@@ -39,31 +39,31 @@ LOOP_LEVEL = 8;
 np = size(trainp,2) ;
 nn = size(trainn,2) ;
 vpwdist2 = [] ;
-for ip = 1:np ;
+for ip = 1:np
   pwdist2 = sum((vec2matSM(trainp(:,ip),nn) - trainn).^2,1) ;
-  vpwdist2 = [vpwdist2 pwdist2] ;
-end ;
+  vpwdist2 = [vpwdist2 pwdist2] ; %#ok<AGROW>
+end
 medianpwdist2 = median(vpwdist2) ;
 
 penalty = threshfact / medianpwdist2 ;
     %  threshfact "makes this large", 
     %  and 1 / medianpwdist2 "puts on correct scale"
-[w,beta,residp,residn,alp,totalviolation,dualgap,flag] = sepelimdwd(trainp,trainn,penalty) ;
+%[w,beta,residp,residn,alp,totalviolation,dualgap,flag] = sepelimdwd(trainp,trainn,penalty) ;
+[w,~,~,~,~,~,~,flag] = sepelimdwd(trainp,trainn,penalty) ;
 
-if flag == -1 ;
+if flag == -1
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from DWD1SM:                           !!!') ;
   disp('!!!   sep optimization gave an inaccurate solution   !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-elseif flag == -2 ;
+elseif flag == -2
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Error from DWD1SM:                             !!!') ;
   disp('!!!   Infeasible or unbounded optimization problem   !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  dr = [] ;
   dirvec = [] ;
   return ;
-end ;
+end
 
 
 dirvec = w / norm(w) ;

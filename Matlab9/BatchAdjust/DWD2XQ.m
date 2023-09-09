@@ -44,11 +44,11 @@ function [dirvec,beta,dr] = DWD2XQ(trainp,trainn,weight,testdata,DWDpar)
 %            class and -1 for negative class.
 %
 
-%    Copyright (c) J. S. Marron 2002-2012, Xingye Qiao 2009-2010
+%    Copyright (c) J. S. Marron 2002-2023, Xingye Qiao 2009-2010
 
 
-global CACHE_SIZE   % cache size in kbytes
-global LOOP_LEVEL   % loop unrolling level
+global CACHE_SIZE   %#ok<GVMIS> % cache size in kbytes
+global LOOP_LEVEL   %#ok<GVMIS> % loop unrolling level
 CACHE_SIZE = 256 ;
 LOOP_LEVEL = 8 ;
 
@@ -57,27 +57,27 @@ nn = size(trainn,2) ;
 
 %  Adjust input parameters
 %-
-if nargin > 4 ;    %  then have input a threshfact, so use it
+if nargin > 4    %  then have input a threshfact, so use it
   threshfact = DWDpar ;
-else ;    %  then use default threshfact
+else    %  then use default threshfact
   threshfact = 100 ;
-end ;
+end
 
-if ~(nargin > 3) ;    %  then don't have test data, so set to empty
+if ~(nargin > 3)    %  then don't have test data, so set to empty
   testdata = [] ;
-  dr = [] ;
-end ;
+  dr = [] ; %#ok<NASGU>
+end
 
-if ~(nargin > 2) ;    %  then don't have weight specified, so set to default
+if ~(nargin > 2)    %  then don't have weight specified, so set to default
   weight = 2 ;
-end ;
+end
 
 
 %  Check dimensions of training data 
 %
 dtp = size(trainp,1) ;
 dtn = size(trainn,1) ;
-if ~(dtp == dtn) ;
+if ~(dtp == dtn)
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Error from DWD2XQ.m                      !!!') ;
   disp(['!!!   Dimension of positive training set is ' num2str(dtp)]) ;
@@ -89,11 +89,11 @@ if ~(dtp == dtn) ;
   dirvec = [] ;
   beta = [] ;
   return ;
-end ;
+end
 
-if ~isempty(testdata) ;
+if ~isempty(testdata)
   dtest = size(testdata,1) ;
-  if ~(dtp == dtest) ;
+  if ~(dtp == dtest)
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from DWD2XQ.m                      !!!') ;
     disp(['!!!   Dimension of training data set is ' num2str(dtp)]) ;
@@ -105,17 +105,17 @@ if ~isempty(testdata) ;
     dirvec = [] ;
     beta = [] ;
     return ;
-  end ;
-end ;
+  end
+end
 
 
 %  Calculate penalty
 %
 vpwdist2 = [] ;
-for ip = 1:np ;
+for ip = 1:np
   pwdist2 = sum((vec2matSM(trainp(:,ip),nn) - trainn).^2,1) ;
-  vpwdist2 = [vpwdist2 pwdist2] ;
-end ;
+  vpwdist2 = [vpwdist2 pwdist2] ; %#ok<AGROW>
+end
 medianpwdist2 = median(vpwdist2) ;
 
 penalty = threshfact / medianpwdist2 ;
@@ -125,12 +125,12 @@ penalty = threshfact / medianpwdist2 ;
 
 %  Set weights of binary classes
 %
-if weight == 1 ;
+if weight == 1
     weight = [1,1] ;
-elseif weight == 2 ;
+elseif weight == 2
     weight = [nn,np]/(np+nn) ;
-elseif  ~((max(size(weight)) == 2) & (min(size(weight)) == 1))  | ...
-           min(weight) < 0 ;
+elseif  ~((max(size(weight)) == 2) && (min(size(weight)) == 1))  || ...
+           min(weight) < 0
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Error from DWD2XQ:       !!!') ;
   disp('!!!   Invalid input: weight    !!!') ;
@@ -140,7 +140,7 @@ elseif  ~((max(size(weight)) == 2) & (min(size(weight)) == 1))  | ...
   dirvec = [] ;
   beta = [] ;
   return ;
-end ;
+end
 
 % set penalty parameters and weight parameters in DWD framework
 %
@@ -151,15 +151,17 @@ wtn = ones(nn,1) * weight(2) ;
 
 nonlin=0;
 
-[w,beta,residp,residn,alp,totalviolation,dualgap,flag]...
+%[w,beta,residp,residn,alp,totalviolation,dualgap,flag]...
+%    = sepelimdwdnonlinXQ(trainp,trainn,penalty,nonlin,ppp,ppn,wtp,wtn) ;
+[w,beta,~,~,~,~,~,flag]...
     = sepelimdwdnonlinXQ(trainp,trainn,penalty,nonlin,ppp,ppn,wtp,wtn) ;
 
-if flag == -1 ;
+if flag == -1
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from DWD2XQ:                           !!!') ;
   disp('!!!   sep optimization gave an inaccurate solution   !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-elseif flag == -2 ;
+elseif flag == -2
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Error from DWD2XQ:                             !!!') ;
   disp('!!!   Infeasible or unbounded optimization problem   !!!') ;
@@ -168,16 +170,16 @@ elseif flag == -2 ;
   dirvec = [] ;
   beta = [] ;
   return ;
-end ;
+end
 
 dirvec = w / norm(w) ; % normalize w and beta by norm of w
 beta= beta / norm(w) ;
 
 
-if ~isempty(testdata) ;    %  then classify additional data set
+if ~isempty(testdata)    %  then classify additional data set
   dr = dirvec' * testdata + beta >= 0 ;  %  1 where choose plus class, 0 otherwise
   dr = 2 * dr - 1 ;  %  1 where choose plus class, -1 otherwise
-else ;
+else
   dr = [] ;
-end ;
+end
 

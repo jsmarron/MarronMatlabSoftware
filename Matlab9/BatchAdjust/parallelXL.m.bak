@@ -8,13 +8,13 @@ n = size(mdat,2)/2 ;
 [q,s] = decompXL(mdat) ;  
 mdat = s ; 
 
-%%%% Parellel direction 
+%%%% Parelle direction 
 mdat1 = mdat(:,1:n) ; 
 mdat2 = mdat(:,(n+1):2*n) ; 
 datdiff = mdat1- mdat2; 
 %%%% X axis direction 
 datcomb= [datdiff,mdat2] ; 
-[EignM0,~] = qr(datcomb) ;  
+[EignM0,Eignv] = qr(datcomb) ;  
 EignM1 = EignM0(:,(n+1):2*n) ;  
 datM = EignM1'*mdat1 ; 
 [V1,D1]= eigs(datM*datM') ; 

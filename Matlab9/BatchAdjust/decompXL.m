@@ -11,13 +11,13 @@ index(1) = 1 ;
 k = 1 ; 
 mdir(:,1) = mdat(:,1)./sqrt(mdat(:,1)'*mdat(:,1)) ; 
 for i = 1:(n-1) 
-    vec = mdat(:,i+1) - mdir(:,1:k)*[mdat(:,i+1)'*mdir(:,1:k)]';
-    if sum(vec == zeros(d,1))~=d ; 
+    vec = mdat(:,i+1) - mdir(:,1:k)*(mdat(:,i+1)'*mdir(:,1:k))';
+    if sum(vec == zeros(d,1))~=d
         mdir(:,i+1) = vec./sqrt(vec'*vec) ; 
         k = k+1 ; 
-        index(i+1) = k ; 
+        index(i+1) = k ; %#ok<AGROW>
     else 
-        index(i+1) = k ; 
+        index(i+1) = k ; %#ok<AGROW>
     end
 end
 

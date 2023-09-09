@@ -1,4 +1,4 @@
-function [dirvec,beta] = SVMdir1SM(trainp,trainn,SVMpar) ;
+function [dirvec,beta] = SVM1SM(trainp,trainn,SVMpar)
 % SVM1SM, Support Vector Machine DIRection vector
 %   Steve Marron's matlab function
 %     Essentially pared down version of hdd1SM.m
@@ -28,27 +28,27 @@ function [dirvec,beta] = SVMdir1SM(trainp,trainn,SVMpar) ;
 
 
 
-if nargin > 2 ;    %  then have input a threshfact, so use it
+if nargin > 2    %  then have input a threshfact, so use it
   threshfact = SVMpar ;
-else ;    %  then use default threshfact
+else    %  then use default threshfact
   threshfact = 1000 ;
-end ;
+end
 
 
-d = size(trainp,1) ;
+%d = size(trainp,1) ;
 np = size(trainp,2) ;
 nn = size(trainn,2) ;
 
-if threshfact < 0 ;    %  then have signalled should adjust using
-                       %  median pairwise dist.
+if threshfact < 0    %  then have signalled should adjust using
+                     %  median pairwise dist.
 
   %  Compute median of pairwise distances squared between classes
   %
   vpwdist2 = [] ;
-  for ip = 1:np ;
+  for ip = 1:np
     pwdist2 = sum((vec2matSM(trainp(:,ip),nn) - trainn).^2,1) ;
-    vpwdist2 = [vpwdist2 pwdist2] ;
-  end ;
+    vpwdist2 = [vpwdist2 pwdist2] ; %#ok<AGROW>
+  end
   medianpwdist2 = median(vpwdist2) ;
 
   C = -threshfact / medianpwdist2 ;
@@ -56,35 +56,36 @@ if threshfact < 0 ;    %  then have signalled should adjust using
       %  and 1 / medianpwdist2 "puts on correct scale"
       %      [recall minus sign unencodes parameter]
 
-else ;
+else
 
   C = threshfact ;
 
-end ;
+end
 
-global CACHE_SIZE   % cache size in kbytes
-global LOOP_LEVEL   % loop unrolling level
+global CACHE_SIZE   %#ok<GVMIS> % cache size in kbytes
+global LOOP_LEVEL   %#ok<GVMIS> % loop unrolling level
 CACHE_SIZE = 256;
 LOOP_LEVEL = 8;
     %% set global variables for functions imported from LIPSOL
 
-[w,beta,residp,residn,alp,totalviolation,dualgap,flag] = sepelimsvm(trainp,trainn,C) ;
+%[w,beta,residp,residn,alp,totalviolation,dualgap,flag] = sepelimsvm(trainp,trainn,C) ;
+[w,beta,~,~,~,~,~,flag] = sepelimsvm(trainp,trainn,C) ;
 
 
-if flag == -1 ;
+if flag == -1
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from SVM1SM:                           !!!') ;
   disp('!!!   sep optimization gave an inaccurate solution   !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-elseif flag == -2 ;
+elseif flag == -2
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Error from SVM1SM:                             !!!') ;
   disp('!!!   Infeasible or unbounded optimization problem   !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  dr = [] ;
+
   dirvec = [] ;
   return ;
-end ;
+end
 
 dirvec = w / norm(w) ;
 

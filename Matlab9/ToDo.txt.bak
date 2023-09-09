@@ -3,12 +3,9 @@ BatchAdjustCC.m
 decompXL.m
 DiProPerm files
 ProjHypoTestSM.m
-DWD1SM.m
-DWD2XQ.m
 DWDlarge files
 parallelXL.m
 PCAParallelXL.m
-sepelimdwdnonlinXQ.m
 SigClust files
 SVM1SM.m
 SWISS files

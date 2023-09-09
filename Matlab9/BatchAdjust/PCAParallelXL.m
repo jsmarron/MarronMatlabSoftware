@@ -89,12 +89,12 @@ load  Ha05;  %% in Ha05, A39 is missing
                         'viout',[0 1 0 0 1], ...
                         'iscreenwrite',1) ;
     outstruct = pcaSM(Rawdata,pcaparamstruct) ;
-    mdir = getfield(outstruct,'meigvec') ;  
+    mdir = outstruct.meigvec ;  
     [pdir,val]= parallelXL(Rawdata,2) ; 
     mdir(:,3) = pdir(:,2) ; 
     mdir(:,4) = pdir(:,1) ; 
     savecolstr = ['PCAParallel-' num2str(part)] ; 
-    titcstr = {{ [savecolstr]  'Rawdata(Delet outliers)' ... 
+    titcstr = {{ savecolstr  'Rawdata(Delet outliers)' ... 
        ' Protocol A: + ; S: o'  ' Raw PCA and Parallel Axes'}} ;
     labelcellstr={{'PC1Direction';'PC2Direction';'Raw Parallel1'; ...
                     'Raw Parallel2'}};
@@ -103,12 +103,12 @@ load  Ha05;  %% in Ha05, A39 is missing
                         'viout',[0 1 0 0 1], ...
                         'iscreenwrite',1) ;
     outstruct = pcaSM(Rawdata,pcaparamstruct) ;
-    mdir = getfield(outstruct,'meigvec') ;  
+    mdir = outstruct.meigvec ;  
     [pdir,val]= parallelXL(Rawdata,2) ; 
     mdir(:,3) = pdir(:,2) ; 
     mdir(:,4) = pdir(:,1) ; 
     savecolstr = ['PCAParallel-' num2str(part)] ; 
-    titcstr = {{ [savecolstr]  'DWDdata(Delet outliers)' ... 
+    titcstr = {{ savecolstr  'DWDdata(Delet outliers)' ... 
        ' Protocol A: + ; S: o'  ' Raw PCA and Parallel Axes'}} ;
     labelcellstr={{'PC1Direction';'PC2Direction';'Raw Parallel1'; ...
                     'Raw Parallel2'}};
@@ -117,12 +117,12 @@ load  Ha05;  %% in Ha05, A39 is missing
                         'viout',[0 1 0 0 1], ...
                         'iscreenwrite',1) ;
     outstruct = pcaSM(DWDcoldata,pcaparamstruct) ;
-    mdir = getfield(outstruct,'meigvec') ;  
+    mdir = outstruct.meigvec ;  
     [pdir,val]= parallelXL(DWDcoldata,2) ; 
     mdir(:,3) = pdir(:,2) ; 
     mdir(:,4) = pdir(:,1) ;  
     savecolstr = ['PCAParallel-' num2str(part)] ; 
-    titcstr = {{ [savecolstr]  'DWDdata(Delet outliers)' ... 
+    titcstr = {{ savecolstr  'DWDdata(Delet outliers)' ... 
        ' Protocol A: + ; S: o'  ' Current PCA and Parallel Axes'}} ;
     labelcellstr={{'PC1Direction';'PC2Direction';'Current Parallel1'; ...
                     'Current Parallel2'}};
@@ -131,11 +131,11 @@ load  Ha05;  %% in Ha05, A39 is missing
  %%%%%different symbols for different Groups of Arrays: 
 %%%%%%  + for Protocol A, o for Protocol S
   markerstr = '+' ;
- for i = 1:(n-1) ;
-    markerstr = strvcat(markerstr,'+') ;
-  end ;
-for i = (n+1):2*n ;
-    markerstr = strvcat(markerstr,'o') ;
+ for i = 1:(n-1)
+    markerstr = char(markerstr,'+') ;
+ end
+for i = (n+1):2*n
+    markerstr = char(markerstr,'o') ;
 end
 
 %% Different colors for different Protocol  
@@ -156,7 +156,7 @@ mdataconn = [(1:n)',((n+1):2*n)'] ;
  maxaxis = [];
 %%%%%% set parameters in the plots 
 
- savestr = [savecolstr] ;
+ savestr = savecolstr ;
  %%%%%%%%%%%%% Draw plots%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
   paramstruct = struct('icolor',mcolor, ...
                        'markerstr',markerstr, ...
@@ -175,10 +175,10 @@ mdataconn = [(1:n)',((n+1):2*n)'] ;
                        'iscreenwrite',1) ;
    scatplotSM(data,mdir,paramstruct) ;
  
- if ~isempty(savestr) ;   %  then create postscript file
+ if ~isempty(savestr)   %  then create postscript file
     orient landscape ;
     print('-dpsc',savestr) ;
-end ;
+ end
 
  
  

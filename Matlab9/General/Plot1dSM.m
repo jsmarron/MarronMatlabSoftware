@@ -293,7 +293,7 @@ if nargin > 1    %  then paramstruct is an argument
     if  ~ischar(savestr)  &&  ~isempty(savestr)   
                           %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Warning from projplot1SM.m:  !!!') ;
+      disp('!!!   Warning from Plot1dSM.m:     !!!') ;
       disp('!!!   Invalid savestr,             !!!') ;
       disp('!!!   using default of no save     !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -322,7 +322,7 @@ n = size(data,2) ;
 
 if d > 1 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  disp('!!!   Error from projplot1SM.m:   !!!') ;
+  disp('!!!   Error from Plot1dSM.m:      !!!') ;
   disp('!!!   data must be a row vector   !!!') ;
   disp('!!!   Terminating execution       !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -332,14 +332,14 @@ end
 if  (size(icolor,1) > 1)  ||  (size(icolor,2) > 1)      %  if have color matrix
   if ~(3 == size(icolor,2)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot1SM.m:               !!!') ;
+    disp('!!!   Warning from Plot1dSM.m:                  !!!') ;
     disp('!!!   icolor as a matrix must have 3 columns    !!!') ;
     disp('!!!   Resetting to icolor = 1, Matlab default   !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     icolor = 1 ;
   elseif ~(n == size(icolor,1)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot1SM.m:               !!!') ;
+    disp('!!!   Warning from Plot1dSM.m:                  !!!') ;
     disp(['!!!   icolor as a matrix must have n = ' num2str(n) ' rows']) ;
     disp('!!!   Resetting to icolor = 1, Matlab default   !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -353,7 +353,7 @@ if  (isubpopkde == 1)  ||  (isubpopkde == 2)
   if ~(size(icolor,2) == 3)     
                      %  But have invalid color matrix for subpop kdes
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot1SM.m:    !!!') ;
+    disp('!!!   Warning from Plot1dSM.m:       !!!') ;
     disp(['!!!   isubpopkde = ' num2str(isubpopkde) ', but icolor     !!!']) ;
     disp('!!!   is not a valid color matrix    !!!') ;
     disp('!!!   Resetting isubpopkde to 0      !!!') ;
@@ -368,7 +368,7 @@ if  ~isempty(vaxlim)  &  ~(vaxlim == 1)  %#ok<AND2>
            (size(vaxlim,2) == 4) ))  || ...
       (size(vaxlim,2) == 1)  
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Error from projplot1SM.m:   !!!') ;
+    disp('!!!   Error from Plot1dSM.m:      !!!') ;
     disp('!!!   vaxlim must be empty, = 1   !!!') ;
     disp('!!!   or a 1 x 2 row vector       !!!') ;
     disp('!!!   or a 1 x 4 row vector       !!!') ;
@@ -380,7 +380,7 @@ end
 
 if  ~isempty(savestr) && ifigure == 0 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  disp('!!!   Warning from projplot1SM.m:    !!!') ;
+  disp('!!!   Warning from Plot1dSM.m:       !!!') ;
   disp('!!!   savestr ~= [], and ifigure = 0  !!!') ;
   disp('!!!   are inconsistent,              !!!') ;
   disp('!!!   Resetting ifigure to 1         !!!') ;
@@ -391,7 +391,7 @@ end
 if  ~isempty(mlegendcolor) 
   if ~(size(legendcellstr,2) == size(mlegendcolor,1)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot1SM.m:       !!!') ;
+    disp('!!!   Warning from Plot1dSM.m:          !!!') ;
     disp('!!!   legendcellstr &  mlegendcolor     !!!') ;
     disp('!!!   must have the same number         !!!') ;
     disp('!!!   of entries                        !!!') ;
@@ -409,7 +409,7 @@ end
 if  ~isempty(mlegendcolor) 
   if ~(size(mlegendcolor,2) == 3) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot1SM.m:   !!!') ;
+    disp('!!!   Warning from Plot1dSM.m:      !!!') ;
     disp('!!!   mlegendcolor                  !!!') ;
     disp('!!!   must have 3 columns           !!!') ;
     disp('!!!   Resetting to no legend        !!!') ;
@@ -421,7 +421,7 @@ end
 if  size(markerstr,1) == 1  &&  size(markerstr,2) == 1  
   if  (ibigdot == 1)  &&  ~strcmp(markerstr,'.')  
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot1SM.m:   !!!') ;
+    disp('!!!   Warning from Plot1dSM.m:      !!!') ;
     disp('!!!   ibigdot is set to 1,          !!!') ;
     disp('!!!   but a non-dot appears         !!!') ;
     disp('!!!   in markerstr                  !!!') ;
@@ -434,7 +434,7 @@ else
        size(markerstr,2) == 1  && ...
        ischar(markerstr)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Error from projplot1SM.m:             !!!') ;
+    disp('!!!   Error from Plot1dSM.m:                !!!') ;
     disp('!!!   markerstr must be a character array   !!!') ;
     disp('!!!   with n rows and one column            !!!') ;
     disp(['!!!   Size of input dat is:   ' num2str(size(data))]) ;
@@ -445,7 +445,7 @@ else
   end 
   if ibigdot == 1 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from projplot1SM.m:   !!!') ;
+    disp('!!!   Warning from Plot1dSM.m:      !!!') ;
     disp('!!!   ibigdot is set to 1,          !!!') ;
     disp('!!!   but markerstr has             !!!') ;
     disp('!!!   multiple entries              !!!') ;
@@ -527,7 +527,7 @@ elseif  size(icolor,2) == 3      %  then have valid color matrix
 else     %   invalid color matrix input
 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  disp('!!!   Error from projplot1SM.m:           !!!') ;
+  disp('!!!   Error from Plot1dSM.m:              !!!') ;
   disp('!!!   Invalid icolor input,               !!!') ;
   disp('!!!   must be a scalar, or color matrix   !!!') ;
   disp('!!!   Terminating execution               !!!') ;

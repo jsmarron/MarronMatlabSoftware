@@ -394,7 +394,18 @@ else    %  inputs OK, so do serious work
   end
 
   if isempty(markerstr)    %  then need to set default markerstr
-    for i = 1:length(batchlabels)
+    if batchlabels(1) == 1
+      markerstr = '+' ;
+    elseif batchlabels(1) == -1
+      markerstr = 'o' ;
+    else    %  should never get here, due to above check
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+      disp('!!!   Warning from BatchAdjustCC:          !!!') ;
+      disp(['!!!   batchlabels(' num2str(i) ') not in correct format ']) ;
+      disp('!!!   i.e. value is neither +1 nor -1      !!!') ;
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    end
+    for i = 2:length(batchlabels)
       if batchlabels(i) == 1
         markerstr = char(markerstr,'+') ;
       elseif batchlabels(i) == -1
@@ -409,6 +420,7 @@ else    %  inputs OK, so do serious work
     end
   end
 
+
   if  length(legcellstr) == 2  &&  isempty(mlegendcolor)
     mlegendcolor = [[1 0 0]; [0 0 1]] ;
   end
@@ -418,10 +430,10 @@ else    %  inputs OK, so do serious work
   %
   flagp = (batchlabels == 1) ;
   flagn = (batchlabels == -1) ;
-  np = sum(flagp) ;
-  nn = sum(flagn) ;
-  icolorp = icolor(flagp,:) ;
-  icolorn = icolor(flagn,:) ;
+%  np = sum(flagp) ;
+%  nn = sum(flagn) ;
+%  icolorp = icolor(flagp,:) ;
+%  icolorn = icolor(flagn,:) ;
 
 
   %  Find DWD direction

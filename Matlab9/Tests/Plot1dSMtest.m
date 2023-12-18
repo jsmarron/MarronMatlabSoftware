@@ -4,7 +4,7 @@ disp('Running MATLAB script file Plot1dSMtest.m') ;
 %    PLOT of 1 dimensonal data
 
 
-itest = 84 ;     %  0,...,84
+itest = 84 ;     %  0,...,85
 
 
 figure(1) ;

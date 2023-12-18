@@ -15,7 +15,7 @@ disp('Running MATLAB script file BatchAdjustCCtest.m') ;
 
 
 
-itest = 2 ;      %  1  Stanford Public data, Source adjustment
+itest = 130 ;      %  1  Stanford Public data, Source adjustment
                  %         (this illustrates a simple use of 
                  %          BatchAdjustCC.m)
                  %  2  Stanford Public data, Source & Batch adjustment
@@ -385,7 +385,7 @@ elseif itest == 108 ;    %  then test all plots, and save as files
   disp('Check for 4 output files:') ;
   disp(' ') ;
   
-  dir TestOutput*.ps
+  dir TestOutput*.fig
 
 
 elseif itest == 109 ;    %  then test titlestr on projection plots

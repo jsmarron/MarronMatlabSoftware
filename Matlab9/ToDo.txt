@@ -1,5 +1,4 @@
 Update files:
-BatchAdjustCC.m   is updated, but needs test program
 DiProPerm files
 ProjHypoTestSM.m
 DWDlarge files

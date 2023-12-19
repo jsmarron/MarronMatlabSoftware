@@ -1,5 +1,5 @@
-function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
-% DiProPermSM, DIrection PROjection PERMutation based
+function [stat,pval,PC,L,U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
+% DiProPermXY, DIrection PROjection PERMutation based
 % mean hypothesis test, intended for High Dimension, 
 % Low Sample Size settings
 %   Steve Marron's & Xi Yang's matlab function
@@ -19,8 +19,10 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %              (more powerful in strong signal settings)
 %       - Allowing FastDWD 
 %              (useful for large data sets where DWD is too slow)
+%       - Computing the Population Difference Criterion (PDC)
+%              (formerly called Z-score)
 %       - Computing Confidence Intervals for the Z-score
-%               (reflecting simulation variation)
+%              (reflecting simulation variation)
 %
 % Inputs:
 %     mdata1 - d x n1 data set 1
@@ -56,12 +58,12 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                         5  Support Vector Machine direction vector
 %                         6  DWDLarge direction vector 
 %                                (a new DWD algorithm for solving large 
-%                                 scale problems, and generalized DWD)                 
+%                                 scale problems, and generalized DWD)
 %                         7  DWDLarge direction vector (Param as for idir = 1)
 %
 %    iper             index for permutation
-%                         1  (default) all permutations
-%                         2  balanced permutations
+%                         1  all permutations (original method)
+%                         2  balanced permutations (current default) 
 %
 %    alpha            use 1-alpha confidence interval for z-score 
 %                            (default) alpha=0.05         
@@ -113,11 +115,11 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %
 %    ipval            index for p-value computation:
 %                         1  (default) Display all of p-value (empirical quantile),
-%                                Z-score and Z-score Confidence Interval
+%                                PDC and PDC Confidence Interval
 %                         2  Show only p-value (empirical quantile)
-%                         3  Show only Z-score (useful for comparisons, when
-%                                            p-values are all 0)
-%                         4  Show Z-score and Z-score Confidence Interval 
+%                         3  Show only PDC (useful for comparisons, when
+%                                            p-values are all < 1/nsim)
+%                         4  Show PDC and PDC Confidence Interval 
 %
 %    ishowperm        0  -  Just show two panel (projections & p-value) display
 %                     1  -  (default) Also show two panels of permuted 
@@ -128,15 +130,15 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                                       class labels
 %                           Note:  This is over-ridden by non-empty vaxh
 %                                       or by nsim = 0 
-%                     2  -  Similar to 1, except show smallest and biggest statistic 
+%                     2  -  Similar to 1, except show smallest and biggest stat 
 %                               Useful for diagnosing balance problems
 %
 %    nsim             Number of simulated relabellings to use
 %                           (default is 1000)
-%                     0  -  only do projection, and computation of statistic
+%                     0  -  only do projection, and computation of stat
 %                               with no permutation test for signficance.
 %                               (only gives the first graphical output,
-%                                returns pval & zscore as empty)
+%                                returns pval & PDC as empty)
 %
 %    nreport          How often to report permutation step taken to screen
 %                     default 100 (report after 100 steps)
@@ -154,8 +156,10 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                         for "rand"
 %
 %    icolor           0  fully black and white version (everywhere)
-%                     1  (default)  color version (Red for Class 1, Blue for Class 2)
-%                     2x3 color matrix, top row for Class 1, bottom row for Class 2
+%                     1  (default)  color version 
+%                        (Red for Class 1, Blue for Class 2)
+%                     2x3 color matrix, top row for Class 1, 
+%                                           bottom row for Class 2
 %                           Note:  larger color matrices are deliberately not 
 %                                  supported, since color provides important
 %                                  cues as to what the two classes are.
@@ -163,7 +167,7 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                                  same color), consider a formulation like:
 %                                       unique(icolor,'rows')
 %                                
-%    statstrcol       Color for strings where statistics are reported
+%    statstrcol       Color for strings where stats are reported
 %                             Default is dark green [0 0.6 0]
 %                             (this gets over-ridden to 'k' when icolor = 0)
 %
@@ -184,12 +188,14 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                              Only has effect on plot of simulated t-stats 
 %
 %    datovlaymax      maximum (on [0,1] scale, with 0 at bottom, 1 at top of plot)
-%                     of vertical range for overlaid data.  Default = 0.6
-%                     This applies to both the projected data, and the simulated t-stats
+%                     of vertical range for overlaid data.  Default = 0.5
+%                     This applies to both the projected data, 
+%                              and the simulated stats
 %
 %    datovlaymin      minimum (on [0,1] scale, with 0 at bottom, 1 at top of plot)
-%                     of vertical range for overlaid data.  Default = 0.5
-%                     This applies to both the projected data, and the simulated t-stats
+%                     of vertical range for overlaid data.  Default = 0.4
+%                     This applies to both the projected data, 
+%                              and the simulated stats
 %
 %    legendcellstr    cell array of strings for data set labels (2 of them),
 %                     useful for (colored) classes, create this using
@@ -237,7 +243,7 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %
 %    SVMpar            SVMpenalty factor
 %                         (SVMpar = C, when >= 0,
-%                          SVMpar = penalty factor, when < 0
+%                         SVMpar = penalty factor, when < 0
 %                              (will adjust by median pairwise dist.)
 %                         SVMpar = 1000 is default
 %                         (inactive, unless idir = 5)
@@ -245,11 +251,10 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %    savestr          string controlling saving of output,
 %                         either a full path, or a file prefix to
 %                         save in matlab's current directory
-%                         Will add .ps, and save as either
-%                             color postscript (icolor ~= 0)
-%                         or
-%                             black&white postscript (when icolor = 0)
-%                         Unspecified:  results only appear on screen
+%                       Will add file suffix determined by savetype
+%                         unspecified:  results only appear on screen
+%                       Note:  when savestr is nonempty, and ifigure = 0,
+%                            give warning and reset ifigure to 1
 %                         When mctl is nonempty, and vaxh is empty,
 %                             will create t postscript files, and append text:
 %                                   'd#s#'
@@ -257,7 +262,18 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                             and 2nd # represents istat for each statistic, 
 %                                 i.e. for each row of mctl
 %                         When both mctl and vaxh are nonempty,
-%                             will create single postscript file
+%                             will create single output file
+%
+%    savetype         indicator of output file type:
+%                         1 - (default)  Matlab figure file (.fig)
+%                         2 - (.png)  raster graphics
+%                         3 - (.pdf)  vector graphics
+%                         4 - (.eps)  Color vector 
+%                                     (use when icolor is not 0)
+%                         5 - (.eps)  Black and White vector 
+%                                     (use when icolor = 0)
+%                         6 - (.jpg)  raster
+%                         7 - (.svg)  vector
 %
 %    iscreenwrite     0  (default)  no screen writes
 %                     1  write to screen to show progress
@@ -266,19 +282,20 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %     Graphics in current Figure, 
 %         showing projected data in left hand plot
 %         and population of simulated pvalues in right hand plot
-%     When savestr exists,
-%        Postscript files saved in 'savestr'.ps
-%                 (color postscript for icolor ~= 0)
-%                 (B & W postscript for icolor = 0)
+%     When savestr exists, generate output files, 
+%        as indicated by savetype
 %     
 %     stat - value of statistic, computed for data projected 
 %                  onto direction vector
 %
 %     pval - pvalue, based on simulated quantiles.
 %                 summarizing results of permutation test
+%                 = '< 1 / nsim'  when smulated quantile is 0
 %
-%     zscore - Z-score summary (in permutation population),
+%     PDC - Population Difference Criterion
+%                 Essentially Z-score summary (in permutation population),
 %                 useful for comparisons, when pval = 0
+%                         (formerly called zscore)
 %
 %     L - Lower (1 - alpha) confidence limit on Z-score
 %
@@ -289,6 +306,7 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 % Assumes path can find personal functions:
 %    DWD2XQ.m
 %    SVM1SM.m
+%    Plot1dSM.m
 %    projplot1SM.m
 %    cprobSM.m
 %    axisSM.m
@@ -305,16 +323,18 @@ function [stat,pval,zscore, L, U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %    bwsnrSM.m
 %    iqrSM.m
 %    cquantSM.m
+%    printSM.m
+%    ROCcurveSM
 
-%    Copyright (c) J. S. Marron & Xi Yang 2005-2021
+%    Copyright (c) J. S. Marron & Xi Yang 2005-2023
 
 
 
 %  First set all parameters to defaults
 %
 idir = 1 ;
-iper = 1;
-alpha=0.05;
+iper = 2 ;
+alpha = 0.05 ;
 istat = 2 ;
 mctl = [] ;
 vaxh = [] ;
@@ -328,8 +348,8 @@ statstrcol = [0 0.6 0] ;
 markerstr = ['+';'o'] ;
 ibigdot = 0 ;
 idatovlay = 1 ;
-datovlaymax = 0.6 ;
-datovlaymin = 0.5 ;
+datovlaymax = 0.5 ;
+datovlaymin = 0.4 ;
 legendcellstr = {} ;
 title1str = '' ;
 title2str = '' ;
@@ -354,12 +374,15 @@ if nargin > 2 ;   %  then paramstruct is an argument
   if isfield(paramstruct,'idir') ;    %  then change to input value
     idir = getfield(paramstruct,'idir') ; 
   end ;
+
   if isfield(paramstruct,'iper') ;    %  then change to input value
     iper = getfield(paramstruct,'iper') ; 
   end ;
+
   if isfield(paramstruct,'alpha') ;    %  then change to input value
     alpha = getfield(paramstruct,'alpha') ; 
   end ;
+
   if isfield(paramstruct,'istat') ;    %  then change to input value
     istat = getfield(paramstruct,'istat') ; 
   end ;
@@ -376,9 +399,9 @@ if nargin > 2 ;   %  then paramstruct is an argument
               %  Check that all entries are handles,
               %  and that vaxh has 2 columns
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-        disp('!!!   Warning from DiProPermSM.m:     !!!') ;
+        disp('!!!   Warning from DiProPermXY.m:     !!!') ;
         disp('!!!   Invalid vaxh,                   !!!') ;
-        disp('!!!   using default of empty vaxh      !!!') ;
+        disp('!!!   using default of empty vaxh     !!!') ;
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         vaxh = [] ;
       end ;
@@ -481,7 +504,7 @@ if nargin > 2 ;   %  then paramstruct is an argument
     savestr = getfield(paramstruct,'savestr') ; 
     if ~(ischar(savestr) | isempty(savestr)) ;    %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Warning from DiProPermSM.m:    !!!') ;
+      disp('!!!   Warning from DiProPermXY.m:    !!!') ;
       disp('!!!   Invalid savestr,               !!!') ;
       disp('!!!   using default of no save       !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -502,7 +525,7 @@ end ;    %  of resetting of input parameters
 d = size(mdata1,1) ;
 if ~(d == size(mdata2,1)) ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  disp('!!!   Error from DiProPermSM.m:        !!!') ;
+  disp('!!!   Error from DiProPermXY.m:        !!!') ;
   disp('!!!   mdata1 and mdata2 must have      !!!') ;
   disp('!!!   same number of rows              !!!') ;
   disp('!!!   Terminating Execution            !!!') ;
@@ -536,7 +559,8 @@ if icolor == 0 ;    %  fully black and white version (everywhere)
   mlegcol = zeros(2,3) ;
   statstrcol = 'k' ;
       % override input choice
-elseif icolor == 1 ;    %  (default)  color version (Red for Class 1, Blue for Class 2)
+elseif icolor == 1 ;    %  (default)  color version 
+                        %      (Red for Class 1, Blue for Class 2)
   mcolor = [ones(n1,1) * [1 0 0] ; ...
             ones(n2,1) * [0 0 1]] ;
   mlegcol = [[1 0 0]; [0 0 1]] ;
@@ -547,7 +571,7 @@ elseif  size(icolor,1) == 2  &  size(icolor,2) == 3  ;
   mlegcol = icolor ;
 else ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  disp('!!!   Warning from DiProPermSM:        !!!') ;
+  disp('!!!   Warning from DiProPermXY:        !!!') ;
   disp('!!!   Input icolor is invalid          !!!') ;
   disp(['!!!   Need 2 rows,    input has ' num2str(size(icolor,1))]) ;
   disp(['!!!   Need 3 columns, input has ' num2str(size(icolor,2))]) ;
@@ -585,7 +609,7 @@ else ;
   if ~isempty(vaxh) ;    %  both mctl and vaxh non-empty, so check sizes
     if ~((size(mctl,1) == size(vaxh,1)) & (size(mctl,2) == size(vaxh,2))) ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Error from DiProPermSM.m:         !!!') ;
+      disp('!!!   Error from DiProPermXY.m:         !!!') ;
       disp('!!!   mctl & vaxh must have same size   !!!') ;
       disp('!!!       (when nonempty)               !!!') ;
       disp('!!!   Terminating Execution             !!!') ;
@@ -607,7 +631,7 @@ if  ~isempty(vaxh)  | ...
   if  ishowperm == 1  | ...
       ishowperm == 2  ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Warning from DiProPermSM:           !!!') ;
+    disp('!!!   Warning from DiProPermXY:           !!!') ;
     disp('!!!       ishowperm = 1 or 2              !!!') ;
     disp('!!!   cannot be used with nonempty vaxh   !!!') ;
     disp('!!!   Resetting to                        !!!') ;
@@ -712,7 +736,7 @@ for it = 1:nt ;
   else ;
 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    disp('!!!   Error from DiProPermSM.m:     !!!') ;
+    disp('!!!   Error from DiProPermXY.m:     !!!') ;
     disp('!!!       idir is invalid           !!!') ;
     disp('!!!   Terminating execution         !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -732,7 +756,7 @@ for it = 1:nt ;
   if iistat == 1 ;    %  2 sample t-statistics
     if iidir == 3 ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Error from DiProPermSM:   !!!') ;
+      disp('!!!   Error from DiProPermXY:   !!!') ;
       disp('!!!   Cannot compute t-stat,    !!!') ;
       disp('!!!        (istat = 1)          !!!') ;
       disp('!!!   for Max Data Piling Dir   !!!') ;
@@ -754,7 +778,7 @@ for it = 1:nt ;
   elseif iistat == 4 ;    %  MAD rescaled Median Difference
     if iidir == 3 ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Error from DiProPermSM:        !!!') ;
+      disp('!!!   Error from DiProPermXY:        !!!') ;
       disp('!!!   Cannot compute MAD rescaling,  !!!') ;
       disp('!!!        (istat = 4)               !!!') ;
       disp('!!!   for Max Data Piling Dir        !!!') ;
@@ -771,7 +795,7 @@ for it = 1:nt ;
   elseif iistat == 5 ;    %  AUC, from ROC
     if iidir == 3 ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Error from DiProPermSM:   !!!') ;
+      disp('!!!   Error from DiProPermXY:   !!!') ;
       disp('!!!   Cannot compute AUC,       !!!') ;
       disp('!!!        (istat = 5)          !!!') ;
       disp('!!!   for Max Data Piling Dir   !!!') ;
@@ -785,7 +809,7 @@ for it = 1:nt ;
   elseif iistat == 6 ;    %  Paired sampling t-statistic
     if n1 ~= n2 ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Error from DiProPermSM:         !!!') ;
+      disp('!!!   Error from DiProPermXY:         !!!') ;
       disp('!!!   Cannot compute paired t-stat,   !!!') ;
       disp('!!!        (istat = 6)                !!!') ;
       disp('!!!   for different sample sizes      !!!') ;
@@ -795,7 +819,7 @@ for it = 1:nt ;
     end ;
     if iidir == 3 ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Error from DiProPermSM:         !!!') ;
+      disp('!!!   Error from DiProPermXY:         !!!') ;
       disp('!!!   Cannot compute paired t-stat,   !!!') ;
       disp('!!!        (istat = 6)                !!!') ;
       disp('!!!   for Max Data Piling Dir         !!!') ;
@@ -813,7 +837,7 @@ for it = 1:nt ;
   elseif iistat == 7 ;    %  Complement Cluster Index
     if iidir == 3 ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Error from DiProPermSM:         !!!') ;
+      disp('!!!   Error from DiProPermXY:         !!!') ;
       disp('!!!   CCI is not useful               !!!') ;
       disp('!!!        (istat = 7)                !!!') ;
       disp('!!!   for Max Data Piling Dir         !!!') ;
@@ -832,7 +856,6 @@ for it = 1:nt ;
     statstr = 'CCI' ;
   end ;
   stat = [stat; statt] ;
-
       %  save for output purposes, and for later comparisons
 
 
@@ -931,7 +954,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
       indperm(n1+index2)=index1;
     else
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-      disp('!!!   Error from DiProPermSM:         !!!') ;
+      disp('!!!   Error from DiProPermXY:         !!!') ;
       disp('!!!       iper must be 1 or 2         !!!') ;
       disp('!!!    selection for all/balanced     !!!') ;
       disp('!!!           permutation             !!!') ;
@@ -1043,7 +1066,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
       if iistat == 1 ;    %  2 sample t-statistics
         if iidir == 3 ;
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-          disp('!!!   Error from DiProPermSM:   !!!') ;
+          disp('!!!   Error from DiProPermXY:   !!!') ;
           disp('!!!   Cannot compute t-stat,    !!!') ;
           disp('!!!        (istat = 1)          !!!') ;
           disp('!!!   for Max Data Piling Dir   !!!') ;
@@ -1064,7 +1087,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
       elseif iistat == 4 ;    %  MAD rescaled Median Difference
         if iidir == 3 ;
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-          disp('!!!   Error from DiProPermSM:        !!!') ;
+          disp('!!!   Error from DiProPermXY:        !!!') ;
           disp('!!!   Cannot compute MAD rescaling,  !!!') ;
           disp('!!!        (istat = 4)               !!!') ;
           disp('!!!   for Max Data Piling Dir        !!!') ;
@@ -1080,7 +1103,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
       elseif iistat == 5 ;    %  AUC, from ROC
         if iidir == 3 ;
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-          disp('!!!   Error from DiProPermSM:   !!!') ;
+          disp('!!!   Error from DiProPermXY:   !!!') ;
           disp('!!!   Cannot compute AUC,       !!!') ;
           disp('!!!        (istat = 5)          !!!') ;
           disp('!!!   for Max Data Piling Dir   !!!') ;
@@ -1094,7 +1117,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
       elseif iistat == 6 ;    %  Paired sampling t-statistic
         if n1 ~= n2 ;
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-          disp('!!!   Error from DiProPermSM:         !!!') ;
+          disp('!!!   Error from DiProPermXY:         !!!') ;
           disp('!!!   Cannot compute paired t-stat,   !!!') ;
           disp('!!!        (istat = 6)                !!!') ;
           disp('!!!   for different sample sizes      !!!') ;
@@ -1263,9 +1286,9 @@ if ~(nsim == 0) ;    %  Then do permutation test
      zscore_U = [zscore_U; zscore_U_ci] ;
      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
-    zscore=ad(iper)*zscore;
-    zscore_L=ad(iper)*zscore_L;
-    zscore_U=ad(iper)*zscore_U;
+    zscore = ad(iper) * zscore;
+    zscore_L = ad(iper) * zscore_L;
+    zscore_U = ad(iper) * zscore_U;
     
 
     %  add results to graphics
@@ -1344,7 +1367,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
 
       else ;
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-        disp('!!!   Warning from DiProPermSM.m:         !!!') ;
+        disp('!!!   Warning from DiProPermXY.m:         !!!') ;
         disp('!!!   Invalid ipval,                      !!!') ;
         disp('!!!   using default of all displays       !!!') ;
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -1456,12 +1479,7 @@ if ~isempty(savestr) ;   %  then create postscript file(s)
   if  ~isempty(vaxh)  |  (nt == 1)  ;    %  do single page print
 
     orient landscape ;
-
-    if  (size(icolor,2) > 1.5)  |  (icolor ~= 0)  ;     %  then make color postscript
-      print('-dpsc',savestr) ;
-    else ;                %  then make black and white
-      print('-dps',savestr) ;
-    end ;
+    printSM(savestr,savetype) ;
 
   else ;
 
@@ -1476,12 +1494,7 @@ if ~isempty(savestr) ;   %  then create postscript file(s)
       end ;
 
       orient landscape ;
-
-      if  (size(icolor,2) > 1.5)  |  (icolor ~= 0)  ;     %  then make color postscript
-        print('-dpsc',[savestr savestradd]) ;
-      else ;                %  then make black and white
-        print('-dps',[savestr savestradd]) ;
-      end ;
+      printSM([savestr savestradd],savetype) ;
 
     end ;    %  of it loop for postscript file generation
 

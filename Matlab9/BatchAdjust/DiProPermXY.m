@@ -1,4 +1,4 @@
-function [stat,pval,PC,L,U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
+function [stat,pval,PDC,L,U] = DiProPermXY(mdata1,mdata2,paramstruct) 
 % DiProPermXY, DIrection PROjection PERMutation based
 % mean hypothesis test, intended for High Dimension, 
 % Low Sample Size settings
@@ -21,7 +21,7 @@ function [stat,pval,PC,L,U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %              (useful for large data sets where DWD is too slow)
 %       - Computing the Population Difference Criterion (PDC)
 %              (formerly called Z-score)
-%       - Computing Confidence Intervals for the Z-score
+%       - Computing Confidence Intervals for the PDC
 %              (reflecting simulation variation)
 %
 % Inputs:
@@ -65,7 +65,7 @@ function [stat,pval,PC,L,U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                         1  all permutations (original method)
 %                         2  balanced permutations (current default) 
 %
-%    alpha            use 1-alpha confidence interval for z-score 
+%    alpha            use 1-alpha confidence interval for PDC 
 %                            (default) alpha=0.05         
 %
 %    istat            index for test statistic
@@ -297,9 +297,9 @@ function [stat,pval,PC,L,U] = DiProPermXY(mdata1,mdata2,paramstruct) ;
 %                 useful for comparisons, when pval = 0
 %                         (formerly called zscore)
 %
-%     L - Lower (1 - alpha) confidence limit on Z-score
+%     L - Lower (1 - alpha) confidence limit on PDC
 %
-%     U - Upper (1 - alpha) confidence limit on Z-score
+%     U - Upper (1 - alpha) confidence limit on PDC
 %
 
 
@@ -347,7 +347,6 @@ icolor = 1 ;
 statstrcol = [0 0.6 0] ;
 markerstr = ['+';'o'] ;
 ibigdot = 0 ;
-idatovlay = 1 ;
 datovlaymax = 0.5 ;
 datovlaymin = 0.4 ;
 legendcellstr = {} ;
@@ -362,6 +361,7 @@ labelfontsize = [] ;
 DWDpar = 100 ;
 SVMpar = 1000 ;
 savestr = [] ;
+savetype = 1 ;
 iscreenwrite = 0 ;
 
 
@@ -369,33 +369,33 @@ iscreenwrite = 0 ;
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 2 ;   %  then paramstruct is an argument
+if nargin > 2    %  then paramstruct is an argument
 
-  if isfield(paramstruct,'idir') ;    %  then change to input value
-    idir = getfield(paramstruct,'idir') ; 
-  end ;
+  if isfield(paramstruct,'idir')    %  then change to input value
+    idir = paramstruct.idir ; 
+  end 
 
-  if isfield(paramstruct,'iper') ;    %  then change to input value
-    iper = getfield(paramstruct,'iper') ; 
-  end ;
+  if isfield(paramstruct,'iper')    %  then change to input value
+    iper = paramstruct.iper ; 
+  end 
 
-  if isfield(paramstruct,'alpha') ;    %  then change to input value
-    alpha = getfield(paramstruct,'alpha') ; 
-  end ;
+  if isfield(paramstruct,'alpha')    %  then change to input value
+    alpha = paramstruct.alpha ; 
+  end
 
-  if isfield(paramstruct,'istat') ;    %  then change to input value
-    istat = getfield(paramstruct,'istat') ; 
-  end ;
+  if isfield(paramstruct,'istat')    %  then change to input value
+    istat = paramstruct.istat ; 
+  end 
 
-  if isfield(paramstruct,'mctl') ;    %  then change to input value
-    mctl = getfield(paramstruct,'mctl') ; 
-  end ;
+  if isfield(paramstruct,'mctl')    %  then change to input value
+    mctl = paramstruct.mctl ; 
+  end 
 
-  if isfield(paramstruct,'vaxh') ;    %  then change to input value
-    vaxh = getfield(paramstruct,'vaxh') ; 
-    if ~isempty(vaxh) ;
-      if ~(sum(sum(ishandle(vaxh))) == (size(vaxh,1) * 2)) | ...
-             ~(size(vaxh,2) == 2) ;
+  if isfield(paramstruct,'vaxh')    %  then change to input value
+    vaxh = paramstruct.vaxh ; 
+    if ~isempty(vaxh) 
+      if ~(sum(sum(ishandle(vaxh))) == (size(vaxh,1) * 2)) || ...
+             ~(size(vaxh,2) == 2) 
               %  Check that all entries are handles,
               %  and that vaxh has 2 columns
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -404,126 +404,126 @@ if nargin > 2 ;   %  then paramstruct is an argument
         disp('!!!   using default of empty vaxh     !!!') ;
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         vaxh = [] ;
-      end ;
-    end ;
-  end ;
+      end 
+    end 
+  end 
 
-  if isfield(paramstruct,'ipval') ;    %  then change to input value
-    ipval = getfield(paramstruct,'ipval') ; 
-  end ;
+  if isfield(paramstruct,'ipval')    %  then change to input value
+    ipval = paramstruct.ipval ; 
+  end 
 
-  if isfield(paramstruct,'ishowperm') ;    %  then change to input value
-    ishowperm = getfield(paramstruct,'ishowperm') ; 
-  end ;
+  if isfield(paramstruct,'ishowperm')    %  then change to input value
+    ishowperm = paramstruct.ishowperm ; 
+  end 
 
-  if isfield(paramstruct,'nsim') ;    %  then change to input value
-    nsim = getfield(paramstruct,'nsim') ; 
-  end ;
+  if isfield(paramstruct,'nsim')    %  then change to input value
+    nsim = paramstruct.nsim ; 
+  end 
 
-  if isfield(paramstruct,'nreport') ;    %  then change to input value
-    nreport = getfield(paramstruct,'nreport') ; 
-  end ;
+  if isfield(paramstruct,'nreport')    %  then change to input value
+    nreport = paramstruct.nreport ; 
+  end 
 
-  if isfield(paramstruct,'seed') ;    %  then change to input value
-    seed = getfield(paramstruct,'seed') ; 
-  end ;
+  if isfield(paramstruct,'seed')    %  then change to input value
+    seed = paramstruct.seed ; 
+  end 
 
-  if isfield(paramstruct,'icolor') ;    %  then change to input value
-    icolor = getfield(paramstruct,'icolor') ; 
-  end ;
+  if isfield(paramstruct,'icolor')    %  then change to input value
+    icolor = paramstruct.icolor ; 
+  end 
 
-  if isfield(paramstruct,'statstrcol') ;    %  then change to input value
-    statstrcol = getfield(paramstruct,'statstrcol') ; 
-  end ;
+  if isfield(paramstruct,'statstrcol')    %  then change to input value
+    statstrcol = paramstruct.statstrcol ; 
+  end 
 
-  if isfield(paramstruct,'markerstr') ;    %  then change to input value
-    markerstr = getfield(paramstruct,'markerstr') ; 
-  end ;
+  if isfield(paramstruct,'markerstr')    %  then change to input value
+    markerstr = paramstruct.markerstr ; 
+  end 
 
-  if isfield(paramstruct,'ibigdot') ;    %  then change to input value
-    ibigdot = getfield(paramstruct,'ibigdot') ; 
-  end ;
+  if isfield(paramstruct,'ibigdot')    %  then change to input value
+    ibigdot = paramstruct.ibigdot ; 
+  end 
 
-  if isfield(paramstruct,'idatovlay') ;    %  then change to input value
-    idatovlay = getfield(paramstruct,'idatovlay') ; 
-  end ;
+  if isfield(paramstruct,'datovlaymax')    %  then change to input value
+    datovlaymax = paramstruct.datovlaymax ; 
+  end 
 
-  if isfield(paramstruct,'datovlaymax') ;    %  then change to input value
-    datovlaymax = getfield(paramstruct,'datovlaymax') ; 
-  end ;
+  if isfield(paramstruct,'datovlaymin')    %  then change to input value
+    datovlaymin = paramstruct.datovlaymin ; 
+  end 
 
-  if isfield(paramstruct,'datovlaymin') ;    %  then change to input value
-    datovlaymin = getfield(paramstruct,'datovlaymin') ; 
-  end ;
+  if isfield(paramstruct,'legendcellstr')    %  then change to input value
+    legendcellstr = paramstruct.legendcellstr ; 
+  end 
 
-  if isfield(paramstruct,'legendcellstr') ;    %  then change to input value
-    legendcellstr = getfield(paramstruct,'legendcellstr') ; 
-  end ;
+  if isfield(paramstruct,'title1str')    %  then change to input value
+    title1str = paramstruct.title1str ; 
+  end 
 
-  if isfield(paramstruct,'title1str') ;    %  then change to input value
-    title1str = getfield(paramstruct,'title1str') ; 
-  end ;
+  if isfield(paramstruct,'title2str')    %  then change to input value
+    title2str = paramstruct.title2str ; 
+  end 
 
-  if isfield(paramstruct,'title2str') ;    %  then change to input value
-    title2str = getfield(paramstruct,'title2str') ; 
-  end ;
+  if isfield(paramstruct,'titlefontsize')    %  then change to input value
+    titlefontsize = paramstruct.titlefontsize ; 
+  end 
 
-  if isfield(paramstruct,'titlefontsize') ;    %  then change to input value
-    titlefontsize = getfield(paramstruct,'titlefontsize') ; 
-  end ;
+  if isfield(paramstruct,'xlabel1str')    %  then change to input value
+    xlabel1str = paramstruct.xlabel1str ; 
+  end 
 
-  if isfield(paramstruct,'xlabel1str') ;    %  then change to input value
-    xlabel1str = getfield(paramstruct,'xlabel1str') ; 
-  end ;
+  if isfield(paramstruct,'xlabel2str')    %  then change to input value
+    xlabel2str = paramstruct.xlabel2str ; 
+  end 
 
-  if isfield(paramstruct,'xlabel2str') ;    %  then change to input value
-    xlabel2str = getfield(paramstruct,'xlabel2str') ; 
-  end ;
+  if isfield(paramstruct,'ylabel1str')    %  then change to input value
+    ylabel1str = paramstruct.ylabel1str ; 
+  end 
 
-  if isfield(paramstruct,'ylabel1str') ;    %  then change to input value
-    ylabel1str = getfield(paramstruct,'ylabel1str') ; 
-  end ;
+  if isfield(paramstruct,'ylabel2str')    %  then change to input value
+    ylabel2str = paramstruct.ylabel2str ; 
+  end 
 
-  if isfield(paramstruct,'ylabel2str') ;    %  then change to input value
-    ylabel2str = getfield(paramstruct,'ylabel2str') ; 
-  end ;
+  if isfield(paramstruct,'labelfontsize')    %  then change to input value
+    labelfontsize = paramstruct.labelfontsize ; 
+  end 
 
-  if isfield(paramstruct,'labelfontsize') ;    %  then change to input value
-    labelfontsize = getfield(paramstruct,'labelfontsize') ; 
-  end ;
+  if isfield(paramstruct,'DWDpar')    %  then change to input value
+    DWDpar = paramstruct.DWDpar ; 
+  end 
 
-  if isfield(paramstruct,'DWDpar') ;    %  then change to input value
-    DWDpar = getfield(paramstruct,'DWDpar') ; 
-  end ;
+  if isfield(paramstruct,'SVMpar')    %  then change to input value
+    SVMpar = paramstruct.SVMpar ; 
+  end 
 
-  if isfield(paramstruct,'SVMpar') ;    %  then change to input value
-    SVMpar = getfield(paramstruct,'SVMpar') ; 
-  end ;
-
-  if isfield(paramstruct,'savestr') ;    %  then use input value
-    savestr = getfield(paramstruct,'savestr') ; 
-    if ~(ischar(savestr) | isempty(savestr)) ;    %  then invalid input, so give warning
+  if isfield(paramstruct,'savestr')    %  then change to input value
+    savestr = paramstruct.savestr ; 
+    if ~(ischar(savestr) || isempty(savestr))    %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from DiProPermXY.m:    !!!') ;
       disp('!!!   Invalid savestr,               !!!') ;
       disp('!!!   using default of no save       !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       savestr = [] ;
-    end ;
-  end ;
+    end 
+  end 
 
-  if isfield(paramstruct,'iscreenwrite') ;    %  then change to input value
-    iscreenwrite = getfield(paramstruct,'iscreenwrite') ; 
-  end ;
+  if isfield(paramstruct,'savetype')    %  then change to input value
+    savetype = paramstruct.savetype ; 
+  end 
+
+  if isfield(paramstruct,'iscreenwrite')    %  then change to input value
+    iscreenwrite = paramstruct.iscreenwrite ; 
+  end 
 
 
-end ;    %  of resetting of input parameters
+end    %  of resetting of input parameters
 
 
 %  Initiate parameters
 %
 d = size(mdata1,1) ;
-if ~(d == size(mdata2,1)) ;
+if ~(d == size(mdata2,1)) 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Error from DiProPermXY.m:        !!!') ;
   disp('!!!   mdata1 and mdata2 must have      !!!') ;
@@ -534,42 +534,43 @@ if ~(d == size(mdata2,1)) ;
   pval = [] ;
   PDC = [] ;
   return ;
-end ;
+end 
 n1 = size(mdata1,2) ;
 n2 = size(mdata2,2) ;
 n = n1 + n2 ;
-r0 = round(n1*n2/(n1+n2));
-ad=[sqrt(1-(n1+n2)/(4*n1*n2-n1-n2)) sqrt(1-(n1+n2)/(4*n1*n2-2*n1-2*n2))];%% [all balanced]
+r0 = round(n1*n2/(n1+n2)) ;
+ad=[sqrt(1-(n1+n2)/(4*n1*n2-n1-n2)) sqrt(1-(n1+n2)/(4*n1*n2-2*n1-2*n2))];
+    % [all balanced]
 mdata = [mdata1 mdata2] ;
 perstr={'All' 'Balanced'};
 
 
-if ~isempty(seed) ;
+if ~isempty(seed) 
   rng(seed) ;
-end ;
+end 
 
-if nsim == 0 ;
+if nsim == 0 
   nax = 1 ;
-else ;
+else 
   nax = 2 ;
-end ;
+end 
 
-if icolor == 0 ;    %  fully black and white version (everywhere)
+if icolor == 0    %  fully black and white version (everywhere)
   mcolor = zeros(n1 + n2,3) ;
   mlegcol = zeros(2,3) ;
   statstrcol = 'k' ;
       % override input choice
-elseif icolor == 1 ;    %  (default)  color version 
-                        %      (Red for Class 1, Blue for Class 2)
+elseif icolor == 1    %  (default)  color version 
+                      %      (Red for Class 1, Blue for Class 2)
   mcolor = [ones(n1,1) * [1 0 0] ; ...
             ones(n2,1) * [0 0 1]] ;
   mlegcol = [[1 0 0]; [0 0 1]] ;
-elseif  size(icolor,1) == 2  &  size(icolor,2) == 3  ;
+elseif  size(icolor,1) == 2  &&  size(icolor,2) == 3 
                   %  have 2 rows two icolor, as required
   mcolor = [ones(n1,1) * icolor(1,:) ; ...
             ones(n2,1) * icolor(2,:)] ;
   mlegcol = icolor ;
-else ;
+else 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from DiProPermXY:        !!!') ;
   disp('!!!   Input icolor is invalid          !!!') ;
@@ -582,32 +583,32 @@ else ;
             ones(n2,1) * [0 0 1]] ;
   mlegcol = [[1 0 0]; [0 0 1]] ;
   statstrcol = [0 0.6 0] ;
-end ;
+end 
 
-if size(markerstr,1) == 1 ;    %  then can use as single symbol
+if size(markerstr,1) == 1    %  then can use as single symbol
   vmarkerstr = markerstr ;
-elseif size(markerstr,1) == 2 ;    %  then need to expand out
-  vmarkerstr = [] ;
-  for i = 1:n1 ;
-    vmarkerstr = strvcat(vmarkerstr,markerstr(1,1)) ;
-  end ;
-  for i = 1:n2 ;
-    vmarkerstr = strvcat(vmarkerstr,markerstr(2,1)) ;
-  end ;
-else ;    %  pass given markerstr through to graphics
+elseif size(markerstr,1) == 2    %  then need to expand out
+  vmarkerstr = markerstr(1,1) ;
+  for i = 2:n1 
+    vmarkerstr = char(vmarkerstr,markerstr(1,1)) ;
+  end 
+  for i = 1:n2 
+    vmarkerstr = char(vmarkerstr,markerstr(2,1)) ;
+  end 
+else    %  pass given markerstr through to graphics
   vmarkerstr = markerstr ;
-end ;
+end 
 
 
-if isempty(mctl) ;
+if isempty(mctl) 
   vidir = idir ;
   vistat = istat ;
-else ;
+else 
   vidir = mctl(:,1) ;
   vistat = mctl(:,2) ;
 
-  if ~isempty(vaxh) ;    %  both mctl and vaxh non-empty, so check sizes
-    if ~((size(mctl,1) == size(vaxh,1)) & (size(mctl,2) == size(vaxh,2))) ;
+  if ~isempty(vaxh)    %  both mctl and vaxh non-empty, so check sizes
+    if ~((size(mctl,1) == size(vaxh,1)) && (size(mctl,2) == size(vaxh,2))) 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from DiProPermXY.m:         !!!') ;
       disp('!!!   mctl & vaxh must have same size   !!!') ;
@@ -618,18 +619,18 @@ else ;
       pval = [] ;
       PDC = [] ;
       return ;
-    end ;
-  end ;
+    end 
+  end 
 
-end ;
+end 
 nt = length(vidir) ;
 
 
-if  ~isempty(vaxh)  | ...
-    nsim == 0       ;
+if  ~isempty(vaxh)  || ...
+    nsim == 0 
 
-  if  ishowperm == 1  | ...
-      ishowperm == 2  ;
+  if  ishowperm == 1  || ...
+      ishowperm == 2 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from DiProPermXY:           !!!') ;
     disp('!!!       ishowperm = 1 or 2              !!!') ;
@@ -639,16 +640,22 @@ if  ~isempty(vaxh)  | ...
     disp('!!!   and proceeding                      !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     ishowperm = 0 ;
-  end ;
+  end 
 
-end ;
+end 
 
 
 
 %  Find full data directions, and statistics
 %
 stat = [] ;
-for it = 1:nt ;
+    %  Initialize vector for results
+stat = [] ;
+pval = [] ;
+PDC = [] ;
+    %  set these to empty, to give some outputs 
+    %  when a terminal error is encountered
+for it = 1:nt 
 
   iidir = vidir(it) ;
   iistat = vistat(it) ;
@@ -656,25 +663,25 @@ for it = 1:nt ;
 
   %  Find Data 1 vs. Data 2 direction vector
   %
-  if iidir == 1 ;    %  DWD direction vector
+  if iidir == 1    %  DWD direction vector
 
     dirstr = 'DWD' ;
     vdir = DWD2XQ(mdata1,mdata2,1,[],DWDpar) ;
         %  DWD direction vector, pointing from 2nd group towards first
 
-  elseif iidir == 2 ;    %  Mean Difference (aka centroid) direction vector
+  elseif iidir == 2    %  Mean Difference (aka centroid) direction vector
 
     dirstr = 'MD' ;
     vdir = mean(mdata1,2) - mean(mdata2,2) ;
         %  MD direction vector, pointing from 2nd group towards first
 
-  elseif iidir == 3 ;    %  Maximal Data Piling direction vector
+  elseif iidir == 3    %  Maximal Data Piling direction vector
 
     dirstr = 'MDP' ;
     vdir = MaxDatPilJA(mdata1,mdata2) ;
         %  Maximal Data Piling Vector
 
-  elseif iidir == 4 ;    %  Fisher Linear Discrimination direction vector
+  elseif iidir == 4    %  Fisher Linear Discrimination direction vector
 
     dirstr = 'FLD' ;
     vmean1 = mean(mdata1,2) ;
@@ -691,13 +698,13 @@ for it = 1:nt ;
     vdir = mcovinv * (vmean1 - vmean2) ;
         %  Fisher Linear Discriminant Vector
 
-  elseif iidir == 5 ;    %  Support Vector Machine direction vector
+  elseif iidir == 5    %  Support Vector Machine direction vector
 
     dirstr = 'SVM' ;
     vdir = SVM1SM(mdata1,mdata2,SVMpar) ;
         %  SVM direction vector, pointing from 2nd group towards first
 
-  elseif iidir == 6 ;    %  DWD Large direction vector
+  elseif iidir == 6    %  DWD Large direction vector
 
     dirstr = 'DWD Large' ;
     S = rng ;
@@ -714,7 +721,7 @@ for it = 1:nt ;
     rng(S) ;
         %  restore state of random number generator
 
-  elseif iidir == 7 ;    %  DWD Large direction vector, parametrized to give DWD2
+  elseif iidir == 7    %  DWD Large direction vector, parametrized to give DWD2
 
     dirstr = 'DWD Large ~ DWD2' ;
     S = rng ;
@@ -733,28 +740,24 @@ for it = 1:nt ;
     rng(S) ;
         %  restore state of random number generator
 
-  else ;
+  else 
 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from DiProPermXY.m:     !!!') ;
     disp('!!!       idir is invalid           !!!') ;
     disp('!!!   Terminating execution         !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-    stat = [] ;
-    pval = [] ;
-    PDC = [] ;
-        %  set to empty, to avoid error.
     return ;
 
-  end ;
+  end 
   vdir = vdir / sqrt(sum(vdir.^2)) ;
       %  divide by length, to make it a unit vector
 
 
   %  Compute Statistic
   %
-  if iistat == 1 ;    %  2 sample t-statistics
-    if iidir == 3 ;
+  if iistat == 1    %  2 sample t-statistics
+    if iidir == 3 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from DiProPermXY:   !!!') ;
       disp('!!!   Cannot compute t-stat,    !!!') ;
@@ -764,19 +767,19 @@ for it = 1:nt ;
       disp('!!!   Terminating Execution     !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       return ;
-    end ;
-    [h,pval,ci,stats] = ttest2(mdata1' * vdir, ...
+    end 
+    [~,~,~,stats] = ttest2(mdata1' * vdir, ...
                                mdata2' * vdir) ;
-    statt = getfield(stats,'tstat') ;
+    statt = stats.tstat ;
     statstr = 't-stat' ;
-  elseif iistat == 2 ;    %  Mean Difference
+  elseif iistat == 2    %  Mean Difference
     statt = mean(mdata1' * vdir) - mean(mdata2' * vdir) ;
     statstr = 'Mean-Diff' ;
-  elseif iistat == 3 ;    %  Median Difference
+  elseif iistat == 3    %  Median Difference
     statt = median(mdata1' * vdir) - median(mdata2' * vdir) ;
     statstr = 'Med-Diff' ;
-  elseif iistat == 4 ;    %  MAD rescaled Median Difference
-    if iidir == 3 ;
+  elseif iistat == 4    %  MAD rescaled Median Difference
+    if iidir == 3 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from DiProPermXY:        !!!') ;
       disp('!!!   Cannot compute MAD rescaling,  !!!') ;
@@ -786,14 +789,14 @@ for it = 1:nt ;
       disp('!!!   Terminating Execution          !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       return ;
-    end ;
+    end 
     pmdata1 = mdata1' * vdir ;
     pmdata2 = mdata2' * vdir ;
     statt = (median(pmdata1) - median(pmdata2)) / ...
                 mean([madSM(pmdata1); madSM(pmdata2)]) ;
     statstr = 'Med/MAD' ;
-  elseif iistat == 5 ;    %  AUC, from ROC
-    if iidir == 3 ;
+  elseif iistat == 5    %  AUC, from ROC
+    if iidir == 3 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from DiProPermXY:   !!!') ;
       disp('!!!   Cannot compute AUC,       !!!') ;
@@ -803,11 +806,11 @@ for it = 1:nt ;
       disp('!!!   Terminating Execution     !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       return ;
-    end ;
-    [temp, statt] = ROCcurveSM(mdata1' * vdir,mdata2' * vdir,0) ;
+    end 
+    [~, statt] = ROCcurveSM(mdata1' * vdir,mdata2' * vdir,0) ;
     statstr = 'AUC-ROC' ;
-  elseif iistat == 6 ;    %  Paired sampling t-statistic
-    if n1 ~= n2 ;
+  elseif iistat == 6    %  Paired sampling t-statistic
+    if n1 ~= n2 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from DiProPermXY:         !!!') ;
       disp('!!!   Cannot compute paired t-stat,   !!!') ;
@@ -816,8 +819,8 @@ for it = 1:nt ;
       disp('!!!   Terminating Execution           !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       return ;
-    end ;
-    if iidir == 3 ;
+    end
+    if iidir == 3
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from DiProPermXY:         !!!') ;
       disp('!!!   Cannot compute paired t-stat,   !!!') ;
@@ -827,15 +830,15 @@ for it = 1:nt ;
       disp('!!!   Terminating Execution           !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       return ;
-    end ;
+    end 
     pmdata1 = mdata1' * vdir ;
     pmdata2 = mdata2' * vdir ;
     pmdata = pmdata1 - pmdata2 ;
-    [h,pval,ci,stats] = ttest(pmdata) ;
-    statt = getfield(stats,'tstat') ;
+    [~,~,~,stats] = ttest(pmdata) ;
+    statt = stats.tstat ;
     statstr = 'Paired-t' ;
-  elseif iistat == 7 ;    %  Complement Cluster Index
-    if iidir == 3 ;
+  elseif iistat == 7    %  Complement Cluster Index
+    if iidir == 3 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from DiProPermXY:         !!!') ;
       disp('!!!   CCI is not useful               !!!') ;
@@ -847,44 +850,44 @@ for it = 1:nt ;
       disp('!!!   Terminating Execution           !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       return ;
-    end ;
+    end 
     pmdata1 = mdata1' * vdir ;
     pmdata2 = mdata2' * vdir ;
     statt = (n1 + n2) * (mean(pmdata1) - mean(pmdata2))^2 / 4 ;
     oamean = mean([pmdata1; pmdata2]) ;
     statt = statt / (sum((pmdata1 - oamean).^2) + sum((pmdata2 - oamean).^2)) ;
     statstr = 'CCI' ;
-  end ;
-  stat = [stat; statt] ;
+  end 
+  stat = [stat; statt] ; %#ok<AGROW>
       %  save for output purposes, and for later comparisons
 
 
   %  Make Hypo test output plot
   %
-  if isempty(vaxh) ;
-    if ~isempty(mctl) ;
+  if isempty(vaxh) 
+    if ~isempty(mctl) 
       figure(it) ;
       clf ;
-    end ;
-    if  ishowperm == 1  | ...
-        ishowperm == 2  ;
+    end 
+    if  ishowperm == 1  || ...
+        ishowperm == 2 
       subplot(2,nax,1) ;
-    else ;
+    else 
       subplot(1,nax,1) ;
-    end ;
-  else ;
-    axes(vaxh(it,1)) ;
-  end ;
+    end 
+  else 
+    axes(vaxh(it,1)) ; %#ok<LAXES>
+  end 
 
-  if isempty(title1str) ;
+  if isempty(title1str) 
     projtitstr = ['Projections on ' dirstr ' Direction']  ;
-  else ;
-    if isempty(mctl) ;
+  else 
+    if isempty(mctl) 
       projtitstr = title1str ;
-    else ;
+    else 
       projtitstr = [title1str ' - ' dirstr ' Dir.'] ;
-    end ;
-  end ;
+    end 
+  end 
 
 
   paramstructPP1 = struct('icolor',mcolor, ...
@@ -898,10 +901,10 @@ for it = 1:nt ;
                           'datovlaymin',datovlaymin, ...
                           'datovlaymax',datovlaymax, ...
                           'iscreenwrite',iscreenwrite) ;
-  if ~(isempty(legendcellstr)) ;
-    paramstructPP1 = setfield(paramstructPP1,'legendcellstr',legendcellstr) ;
-    paramstructPP1 = setfield(paramstructPP1,'mlegendcolor',mlegcol) ;
-  end ;
+  if ~(isempty(legendcellstr)) 
+    paramstructPP1.legendcellstr = legendcellstr ;
+    paramstructPP1.mlegendcolor = mlegcol ;
+  end 
 
   projplot1SM(mdata,vdir,paramstructPP1) ;
 
@@ -917,41 +920,46 @@ for it = 1:nt ;
   hold off ;
 
 
-end ;    %  of 1st it loop
+end    %  of 1st it loop
 
 
 
-if ~(nsim == 0) ;    %  Then do permutation test
+if ~(nsim == 0)    %  Then do permutation test
 
   %  Recompute t-stats over random relabellings
   %
   mstat = zeros(nsim,nt) ;
-  if ishowperm == 1 ;
+  if ishowperm == 1 
     Perm12Cell = cell(7,nt) ;
         %  create 9 x nt cell array for storing info 
         %          from 1st & 2nd Permutations
-  end ;
-  for isim = 1:nsim ;
+  end 
+  for isim = 1:nsim 
 
 
-    if (isim / nreport) == floor(isim / nreport) ;
-      if iscreenwrite == 1 ;
+    if (isim / nreport) == floor(isim / nreport) 
+      if iscreenwrite == 1 
         disp(['    Working on sim ' num2str(isim) ' of ' num2str(nsim)]) ;
-      end ;
-    end ;
+      end 
+    end 
     flagss1sim = [ones(1,n1), zeros(1,n2)] ;
 
-    if iper==1   
-      flagss1sim = [ones(1,n1), zeros(1,n2)] ;
+    if iper == 1    %  all permutations   
       vunif = rand(1,n) ;
-      [temp,indperm] = sort(vunif) ;
+      [~,indperm] = sort(vunif) ;
           %  indices of random permutation
-    elseif iper==2
-      index1=randsample(n1,r0);
-      index2=randsample(n2,r0);
-      indperm=1:n;
-      indperm(index1)=index2+n1;
-      indperm(n1+index2)=index1;
+    elseif iper == 2    %  balanced permutations
+      index1 = randsample(n1,r0) ;
+          %  vector of length r0 chosen from 1,...,n1
+          %  indices of 1st n1 to swap
+      index2 = randsample(n2,r0) ;
+          %  vector of length r0 chosen from 1,...,n2
+          %  indices of last n2 to swap
+      indperm = 1:n ;
+      indperm(index1) = index2 + n1 ;
+      indperm(n1+index2) = index1 ;
+          %  swap the r0 indices chosen from 1,...,n1 with
+          %  the r0 indices chosen from n1+1,...,n1+n2
     else
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from DiProPermXY:         !!!') ;
@@ -959,8 +967,9 @@ if ~(nsim == 0) ;    %  Then do permutation test
       disp('!!!    selection for all/balanced     !!!') ;
       disp('!!!           permutation             !!!') ;
       disp('!!!                                   !!!') ;
-      disp('!!!                                   !!!') ;
+      disp('!!!     Terminating Execution         !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;    
+      return
     end
 
     flagss1sim = flagss1sim(indperm) ;
@@ -970,34 +979,34 @@ if ~(nsim == 0) ;    %  Then do permutation test
 
     %  Find permuted data directions, and statistics
     %
-    for it = 1:nt ;
+    for it = 1:nt 
 
       iidir = vidir(it) ;
       iistat = vistat(it) ;
 
       %  Find Data 1 vs. Data 2 direction vector
       %
-      if iidir == 1 ;    %  DWD direction vector
+      if iidir == 1    %  DWD direction vector
 
         dirstr = 'DWD' ;
         vdirc = DWD2XQ(mdata(:,comboss1flag), ...
                          mdata(:,~comboss1flag),1,[],DWDpar) ;
             %  DWD direction vector, pointing from 2nd group towards first
 
-      elseif iidir == 2 ;    %  Mean Difference (aka centroid) direction vector
+      elseif iidir == 2    %  Mean Difference (aka centroid) direction vector
 
         dirstr = 'MD' ;
         vdirc = mean(mdata(:,comboss1flag),2) - mean(mdata(:,~comboss1flag),2) ;
             %  MD direction vector, pointing from 2nd group towards first
 
-      elseif iidir == 3 ;    %  Maximal Data Piling direction vector
+      elseif iidir == 3    %  Maximal Data Piling direction vector
 
         dirstr = 'MDP' ;
         vdirc = MaxDatPilJA(mdata(:,comboss1flag), ...
                                mdata(:,~comboss1flag)) ;
             %  Maximal Data Piling Vector
 
-      elseif iidir == 4 ;    %  Fisher Linear Discrimination direction vector
+      elseif iidir == 4    %  Fisher Linear Discrimination direction vector
 
         dirstr = 'FLD' ;
         vmean1 = mean(mdata(:,comboss1flag),2) ;
@@ -1016,14 +1025,14 @@ if ~(nsim == 0) ;    %  Then do permutation test
         vdirc = mcovinv * (vmean1 - vmean2) ;
             %  Fisher Linear Discriminant Vector
 
-      elseif iidir == 5 ;    %  Support Vector Machine direction vector
+      elseif iidir == 5    %  Support Vector Machine direction vector
 
         dirstr = 'SVM' ;
         vdirc = SVM1SM(mdata(:,comboss1flag), ...
                          mdata(:,~comboss1flag),SVMpar) ;
             %  SVM direction vector, pointing from 2nd group towards first
 
-      elseif iidir == 6 ;    %  DWDLarge  algorithm direction vector
+      elseif iidir == 6    %  DWDLarge  algorithm direction vector
 
         S = rng ;
             %  save state of random number generator
@@ -1033,12 +1042,12 @@ if ~(nsim == 0) ;    %  Then do permutation test
         DWDLarge_yp = [ones(1, size(mdata(:,comboss1flag), 2)) ...
                        -ones(1, size(mdata(:,~comboss1flag), 2))]' ;
         options.method = 1 ; 
-        [Cp,ddistp] = penaltyParameter(DWDLarge_Xp,DWDLarge_yp,1) ;
+        [Cp,~] = penaltyParameter(DWDLarge_Xp,DWDLarge_yp,1) ;
         vdirc = genDWDweighted(DWDLarge_Xp,DWDLarge_yp,Cp,1,options) ;
         rng(S) ;
             %  restore state of random number generator
 
-      elseif iidir == 7 ;    %  DWDLarge, parametrized to give DWD2
+      elseif iidir == 7    %  DWDLarge, parametrized to give DWD2
 
         S = rng ;
             %  save state of random number generator
@@ -1048,14 +1057,15 @@ if ~(nsim == 0) ;    %  Then do permutation test
         DWDLarge_yp = [ones(1, size(mdata(:,comboss1flag), 2)) ...
                        -ones(1, size(mdata(:,~comboss1flag), 2))]' ;
         options.method = 1 ; 
-        [Cp,ddistp] = penaltyParameter(DWDLarge_Xp,DWDLarge_yp,1) ;
-        Cpa = C / median(ddist)^2 ;
+        [Cp,~] = penaltyParameter(DWDLarge_Xp,DWDLarge_yp,1) ;
+%        Cpa = C / median(ddist)^2 ;
+        Cpa = Cp / median(ddist)^2 ;
             %  this rescaling makes DWD Large work like DWD2
         vdirc = genDWDweighted(DWDLarge_Xp,DWDLarge_yp,Cpa,1,options) ;
         rng(S) ;
             %  restore state of random number generator
 
-      end ;
+      end 
 
       vdirc = vdirc / sqrt(sum(vdirc.^2)) ;
           %  divide by length, to make it a unit vector
@@ -1063,8 +1073,8 @@ if ~(nsim == 0) ;    %  Then do permutation test
 
       %  Compute Statistic
       %
-      if iistat == 1 ;    %  2 sample t-statistics
-        if iidir == 3 ;
+      if iistat == 1    %  2 sample t-statistics
+        if iidir == 3 
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
           disp('!!!   Error from DiProPermXY:   !!!') ;
           disp('!!!   Cannot compute t-stat,    !!!') ;
@@ -1074,18 +1084,18 @@ if ~(nsim == 0) ;    %  Then do permutation test
           disp('!!!   Terminating Execution     !!!') ;
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
           return ;
-        end ;
-        [h,pval,ci,stats] = ttest2(mdata(:,comboss1flag)' * vdirc, ...
+        end 
+        [~,~,~,stats] = ttest2(mdata(:,comboss1flag)' * vdirc, ...
                                    mdata(:,~comboss1flag)' * vdirc) ;
-        statsim = getfield(stats,'tstat') ;
-      elseif iistat == 2 ;    %  Mean Difference
+        statsim = stats.tstat ;
+      elseif iistat == 2    %  Mean Difference
         statsim = mean(mdata(:,comboss1flag)' * vdirc) - ...
                         mean(mdata(:,~comboss1flag)' * vdirc) ;
-      elseif iistat == 3 ;    %  Median Difference
+      elseif iistat == 3    %  Median Difference
         statsim = median(mdata(:,comboss1flag)' * vdirc) - ...
                         median(mdata(:,~comboss1flag)' * vdirc) ;
-      elseif iistat == 4 ;    %  MAD rescaled Median Difference
-        if iidir == 3 ;
+      elseif iistat == 4    %  MAD rescaled Median Difference
+        if iidir == 3 
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
           disp('!!!   Error from DiProPermXY:        !!!') ;
           disp('!!!   Cannot compute MAD rescaling,  !!!') ;
@@ -1095,13 +1105,13 @@ if ~(nsim == 0) ;    %  Then do permutation test
           disp('!!!   Terminating Execution          !!!') ;
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
           return ;
-        end ;
+        end 
         pmdata1 = mdata(:,comboss1flag)' * vdirc ;
         pmdata2 = mdata(:,~comboss1flag)' * vdirc ;
         statsim = (median(pmdata1) - median(pmdata2)) / ...
                     mean([madSM(pmdata1); madSM(pmdata2)]) ;
-      elseif iistat == 5 ;    %  AUC, from ROC
-        if iidir == 3 ;
+      elseif iistat == 5    %  AUC, from ROC
+        if iidir == 3 
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
           disp('!!!   Error from DiProPermXY:   !!!') ;
           disp('!!!   Cannot compute AUC,       !!!') ;
@@ -1111,11 +1121,11 @@ if ~(nsim == 0) ;    %  Then do permutation test
           disp('!!!   Terminating Execution     !!!') ;
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
           return ;
-        end ;
-        [temp, statsim] = ROCcurveSM(mdata(:,comboss1flag)' * vdirc, ...
+        end 
+        [~, statsim] = ROCcurveSM(mdata(:,comboss1flag)' * vdirc, ...
                                       mdata(:,~comboss1flag)' * vdirc,0) ;
-      elseif iistat == 6 ;    %  Paired sampling t-statistic
-        if n1 ~= n2 ;
+      elseif iistat == 6    %  Paired sampling t-statistic
+        if n1 ~= n2 
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
           disp('!!!   Error from DiProPermXY:         !!!') ;
           disp('!!!   Cannot compute paired t-stat,   !!!') ;
@@ -1124,53 +1134,53 @@ if ~(nsim == 0) ;    %  Then do permutation test
           disp('!!!   Terminating Execution           !!!') ;
           disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
           return ;
-        end ;
+        end 
         pmdata1 = mdata(:,comboss1flag)' * vdirc ;
         pmdata2 = mdata(:,~comboss1flag)' * vdirc ;
         pmdata = pmdata1 - pmdata2 ;
-        [h,pval,ci,stats] = ttest(pmdata) ;
-        statsim = getfield(stats,'tstat') ;
-      elseif iistat == 7 ;    %  Complement Cluster Index
+        [~,~,~,stats] = ttest(pmdata) ;
+        statsim = stats.tstat ;
+      elseif iistat == 7    %  Complement Cluster Index
         pmdata1 = mdata(:,comboss1flag)' * vdirc ;
         pmdata2 = mdata(:,~comboss1flag)' * vdirc ;
         statsim = (n1 + n2) * (mean(pmdata1) - mean(pmdata2))^2 / 4 ;
         oamean = mean([pmdata1; pmdata2]) ;
         statsim = statsim / (sum((pmdata1 - oamean).^2) + sum((pmdata2 - oamean).^2)) ;
-      end ;
+      end 
 
 
       mstat(isim,it) = statsim ;
           %  save for plotting, and p-value combination
 
 
-      if ishowperm == 1 ;
-        if isim == 1 ;
+      if ishowperm == 1 
+        if isim == 1 
           vdirperm1 = vdirc ;
           statperm1 = statsim ;
           Perm12Cell{1,it} = vdirperm1 ;
           Perm12Cell{2,it} = statperm1 ;
           mcolorsim = mcolor(indperm,:) ;
           Perm12Cell{3,it} = mcolorsim ;
-        elseif isim == 2 ;
+        elseif isim == 2 
           vdirperm2 = vdirc ;
           statperm2 = statsim ;
           Perm12Cell{4,it} = vdirperm2 ;
           Perm12Cell{5,it} = statperm2 ;
           mcolorsim = mcolor(indperm,:) ;
           Perm12Cell{6,it} = mcolorsim ;
-        end ;
+        end 
         Perm12Cell{7,it} = dirstr ;
-      elseif ishowperm == 2 ;
-        if isim == 1 ;
+      elseif ishowperm == 2 
+        if isim == 1 
           vdirperm1 = vdirc ;
           statperm1 = statsim ;
           mcolorsim1 = mcolor(indperm,:) ;
-        elseif isim == 2 ;
+        elseif isim == 2 
           vdirperm2 = vdirc ;
           statperm2 = statsim ;
           mcolorsim2 = mcolor(indperm,:) ;
 
-          if statperm1 <= statperm2 ;
+          if statperm1 <= statperm2 
             statmin = statperm1 ;
             statmax = statperm2 ;
             Perm12Cell{1,it} = vdirperm1 ;
@@ -1179,7 +1189,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
             Perm12Cell{4,it} = vdirperm2 ;
             Perm12Cell{5,it} = statperm2 ;
             Perm12Cell{6,it} = mcolorsim2 ;
-          else ;
+          else 
             statmin = statperm2 ;
             statmax = statperm1 ;
             Perm12Cell{1,it} = vdirperm2 ;
@@ -1188,36 +1198,37 @@ if ~(nsim == 0) ;    %  Then do permutation test
             Perm12Cell{4,it} = vdirperm1 ;
             Perm12Cell{5,it} = statperm1 ;
             Perm12Cell{6,it} = mcolorsim1 ;
-          end ;
-        else ;    %  later than first two isims
+          end 
+        else    %  later than first two isims
           statperm = statsim ;
-          if statperm < statmin ;    %  then replace min by this
+          if statperm < statmin    %  then replace min by this
             statmin = statperm ;
             vdirperm = vdirc ;
             mcolorsim = mcolor(indperm,:) ;
             Perm12Cell{1,it} = vdirperm ;
             Perm12Cell{2,it} = statperm ;
             Perm12Cell{3,it} = mcolorsim ;
-          elseif statmax < statperm ;    %  then replace max by this
+          elseif statmax < statperm    %  then replace max by this
             statmax = statperm ;
             vdirperm = vdirc ;
             mcolorsim = mcolor(indperm,:) ;
             Perm12Cell{4,it} = vdirperm ;
             Perm12Cell{5,it} = statperm ;
             Perm12Cell{6,it} = mcolorsim ;
-          end ;
+          end 
 
-        end ;    %  of isim if-block
+        end    %  of isim if-block
         
         Perm12Cell{7,it} = dirstr ;
-      end ;    %  of ishowperm if-block
+
+      end    %  of ishowperm if-block
 
 
-    end ;    %  of it loop inside sim loop
+    end    %  of it loop inside sim loop
 
 
 
-  end ;    %  of isim loop through simulated permutations
+  end    %  of isim loop through simulated permutations
 
 
 
@@ -1227,29 +1238,29 @@ if ~(nsim == 0) ;    %  Then do permutation test
   PDC = [] ;
   PDC_L = [] ;
   PDC_U = [] ;
-  for it = 1:nt ;
+  for it = 1:nt 
 
     iistat = vistat(it) ;
-    if iistat == 1 ;    %  2 sample t-statistics
+    if iistat == 1    %  2 sample t-statistics
       statstr = 't-stat' ;
-    elseif iistat == 2 ;    %  Mean Difference
+    elseif iistat == 2    %  Mean Difference
       statstr = 'Mean-Diff' ;
-    elseif iistat == 3 ;    %  Median Difference
+    elseif iistat == 3    %  Median Difference
       statstr = 'Med-Diff' ;
-    elseif iistat == 4 ;    %  MAD rescaled Median Difference
+    elseif iistat == 4    %  MAD rescaled Median Difference
       statstr = 'Med/MAD' ;
-    elseif iistat == 5 ;    %  AUC, from ROC
+    elseif iistat == 5    %  AUC, from ROC
       statstr = 'AUC-ROC' ;
-    elseif iistat == 6 ;    %  Paired Difference t-statistic
+    elseif iistat == 6    %  Paired Difference t-statistic
       statstr = 'Paired-t' ;
-    elseif iistat == 7 ;    %  Complement Cluster Index
+    elseif iistat == 7    %  Complement Cluster Index
       statstr = 'CCI' ;
-    end ;
+    end 
 
 
     %  Compute p-values
     %
-    pval = [pval; 1 - cprobSM(mstat(:,it),stat(it))] ;
+    pval = [pval; 1 - cprobSM(mstat(:,it),stat(it))] ; %#ok<AGROW>
         %  empirical p-value
 %    simmean = mean(mstat(:,it)) ;
 %    simsd = std(mstat(:,it)) ;
@@ -1261,7 +1272,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
       pdf_ci=datasample(mstat(:,it),length(mstat(:,it)));
       simmean_ci = mean(pdf_ci) ;
       simsd_ci = std(pdf_ci) ;
-      z_ci=[z_ci (stat(it) - simmean_ci) / simsd_ci];
+      z_ci=[z_ci (stat(it) - simmean_ci) / simsd_ci]; %#ok<AGROW>
     end
     PDC_L_ci=prctile(z_ci,alpha*50);
     PDC_U_ci=prctile(z_ci,100-alpha*50);
@@ -1271,19 +1282,19 @@ if ~(nsim == 0) ;    %  Then do permutation test
     simmean = mean(mstat(:,it)) ;
     simsd = std(mstat(:,it)) ;
 
-    if sum(mstat(:,it) == mstat(1,it)) == length(mstat(:,it));
+    if sum(mstat(:,it) == mstat(1,it)) == length(mstat(:,it))
              %  if entries of mstat are all the same, return PDC of 0
-      PDC = [PDC; 0] ;
+      PDC = [PDC; 0] ; %#ok<AGROW>
 
      %%%%%%%%%%%%%%%%%%% added %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-       PDC_L = [PDC_L; 0] ;
-       PDC_U = [PDC_U; 0] ;
+       PDC_L = [PDC_L; 0] ; %#ok<AGROW>
+       PDC_U = [PDC_U; 0] ; %#ok<AGROW>
      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     else
-      PDC = [PDC; (stat(it) - simmean) / simsd] ;
+      PDC = [PDC; (stat(it) - simmean) / simsd] ; %#ok<AGROW>
     %%%%%%%%%%%%%%%%%%% added %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-     PDC_L = [PDC_L; PDC_L_ci] ;
-     PDC_U = [PDC_U; PDC_U_ci] ;
+     PDC_L = [PDC_L; PDC_L_ci] ; %#ok<AGROW>
+     PDC_U = [PDC_U; PDC_U_ci] ; %#ok<AGROW>
      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
     PDC = ad(iper) * PDC;
@@ -1293,26 +1304,26 @@ if ~(nsim == 0) ;    %  Then do permutation test
 
     %  add results to graphics
     %
-    if isempty(vaxh) ;
-      if ~isempty(mctl) ;
+    if isempty(vaxh) 
+      if ~isempty(mctl) 
         figure(it) ;
-      end ;
-      if  ishowperm == 1  | ...
-          ishowperm == 2  ;
+      end 
+      if  ishowperm == 1  || ...
+          ishowperm == 2  
         subplot(2,2,2) ;
-      else ;
+      else 
         subplot(1,2,2) ;
-      end ;
-    else ;
-      axes(vaxh(it,2)) ;
-    end ;
+      end 
+    else 
+      axes(vaxh(it,2)) ; %#ok<LAXES>
+    end 
 
     vax = axisSM([mstat(:,it); stat(it)]) ;
-    if isempty(title2str) ;
+    if isempty(title2str) 
       kdetitstr = [num2str(nsim) ' ' statstr 's, from ' perstr{iper} ' Permuted Labels'] ;
-    else ;
+    else 
       kdetitstr = title2str ;
-    end ;
+    end 
 
     kdeparamstruct = struct('vxgrid',vax, ...
                             'linecolor','k', ...
@@ -1336,44 +1347,59 @@ if ~(nsim == 0) ;    %  Then do permutation test
       text(vax(1) + 0.3 * (vax(2) - vax(1)), ...
            vax(3) + 0.9 * (vax(4) - vax(3)), ...
            [statstr ' = ' num2str(stat(it))],'Color',statstrcol) ;
-      if ipval == 1 ;
+      if ipval == 1 
+        if pval(it) == 0 
+          pvalstr = ['pval < ' num2str(1 / nsim)] ;
+        else
+          pvalstr = ['pval = ' num2str(pval(it))] ;
+        end
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
              vax(3) + 0.8 * (vax(4) - vax(3)), ...
-             ['pval = ' num2str(pval(it))],'Color','k') ;
+             pvalstr,'Color','k') ;
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
              vax(3) + 0.7 * (vax(4) - vax(3)), ...
-             ['Z-score = ' num2str(PDC(it))],'Color','k') ;
+             ['PDC = ' num2str(PDC(it))],'Color','k') ;
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
               vax(3) + 0.6 * (vax(4) - vax(3)), ...
              ['PDC CI =' '[' num2str(PDC_L(it)) ',' num2str(PDC_U(it)) ']'],'Color','k') ;
 
-      elseif ipval == 2 ;
+      elseif ipval == 2 
+        if pval(it) == 0 
+          pvalstr = ['pval < ' num2str(1 / nsim)] ;
+        else
+          pvalstr = ['pval = ' num2str(pval(it))] ;
+        end
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
              vax(3) + 0.8 * (vax(4) - vax(3)), ...
-             ['pval = ' num2str(pval(it))],'Color','k') ;
+             pvalstr,'Color','k') ;
 
-      elseif ipval == 3 ;
+      elseif ipval == 3 
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
              vax(3) + 0.8 * (vax(4) - vax(3)), ...
-             ['Z-score = ' num2str(PDC(it))],'Color','k') ;
+             ['PDC = ' num2str(PDC(it))],'Color','k') ;
 
-      elseif ipval == 4 ;
+      elseif ipval == 4 
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
              vax(3) + 0.8 * (vax(4) - vax(3)), ...
-             ['Z-score = ' num2str(PDC(it))],'Color','k') ;
+             ['PDC = ' num2str(PDC(it))],'Color','k') ;
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
               vax(3) + 0.7 * (vax(4) - vax(3)), ...
              ['PDC CI = ' '[' num2str(PDC_L(it)) ',' num2str(PDC_U(it)) ']'],'Color','k') ;
 
-      else ;
+      else 
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         disp('!!!   Warning from DiProPermXY.m:         !!!') ;
         disp('!!!   Invalid ipval,                      !!!') ;
         disp('!!!   using default of all displays       !!!') ;
         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+        if pval(it) == 0 
+          pvalstr = ['pval < ' num2str(1 / nsim)] ;
+        else
+          pvalstr = ['pval = ' num2str(pval(it))] ;
+        end
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
              vax(3) + 0.8 * (vax(4) - vax(3)), ...
-             ['pval = ' num2str(pval(it))],'Color','k') ;
+             pvalstr,'Color','k') ;
         text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
              vax(3) + 0.7 * (vax(4) - vax(3)), ...
              ['PDC = ' num2str(PDC(it))],'Color','k') ;
@@ -1381,7 +1407,7 @@ if ~(nsim == 0) ;    %  Then do permutation test
               vax(3) + 0.6 * (vax(4) - vax(3)), ...
              ['PDC CI = ' '[' num2str(PDC_L(it)) ',' num2str(PDC_U(it)) ']'],'Color','k') ;
    
-      end ;
+      end 
 
       %    Create output variables
       %
@@ -1391,18 +1417,18 @@ if ~(nsim == 0) ;    %  Then do permutation test
     hold off ;
 
 
-    if  ishowperm == 1  | ...
-        ishowperm == 2  ;
+    if  ishowperm == 1  || ...
+        ishowperm == 2  
 
       dirstr = Perm12Cell{7,it} ;
 
-      if ishowperm == 1 ;
+      if ishowperm == 1 
         titlestr1 = ['1st Permuted ' dirstr ' Projections'] ;
         titlestr2 = ['2nd Permuted ' dirstr ' Projections'] ;
-      else ;
+      else 
         titlestr1 = ['Min Permuted ' dirstr ' Projections'] ;
         titlestr2 = ['Max Permuted ' dirstr ' Projections'] ;
-      end ;
+      end 
 
       subplot(2,2,3)
       vdirperm1 = Perm12Cell{1,it} ;
@@ -1455,52 +1481,52 @@ if ~(nsim == 0) ;    %  Then do permutation test
       hold off ;
 
 
-    end ; 
+    end 
 
 
-  end ;    %  of it loop for p-value calculation, and graphics generation
+  end    %  of it loop for p-value calculation, and graphics generation
 
 
 
-else ;    %  for nsim = 0
+else    %  for nsim = 0
 
   pval = [] ;
   PDC = [] ;
       %  set to empty, to avoid error.
 
-end ;
+end 
 
 
 
 %  Save graphical output(s) (if needed)
 %
-if ~isempty(savestr) ;   %  then create postscript file(s)
+if ~isempty(savestr)    %  then create postscript file(s)
 
-  if  ~isempty(vaxh)  |  (nt == 1)  ;    %  do single page print
+  if  ~isempty(vaxh)  ||  (nt == 1)    %  do single page print
 
     orient landscape ;
     printSM(savestr,savetype) ;
 
-  else ;
+  else 
 
-    for it = 1:nt ;
+    for it = 1:nt 
 
       figure(it) ;
 
-      if ~isempty(mctl) ;
+      if ~isempty(mctl) 
         savestradd = ['d' num2str(vidir(it)) 's' num2str(vistat(it))] ;
-      else ;
+      else 
         savestradd = [] ;
-      end ;
+      end 
 
       orient landscape ;
       printSM([savestr savestradd],savetype) ;
 
-    end ;    %  of it loop for postscript file generation
+    end    %  of it loop for postscript file generation
 
-  end ;
+  end 
 
-end ;
+end 
 
 
 

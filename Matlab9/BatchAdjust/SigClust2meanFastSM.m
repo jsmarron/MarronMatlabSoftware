@@ -119,11 +119,19 @@ function  [BestClass, bestCI] = SigClust2meanFastSM(data,paramstruct)
 %    savestr          string controlling saving of output,
 %                         either a full path, or a file prefix to
 %                         save in matlab's current directory
-%                         Will add .ps, and save as either
-%                             color postscript (for plot with Entry 3 = 1)
-%                         or
-%                             black&white postscript (other plots)
-%                         unspecified:  results only appear on screen
+%                         Will add file suffix determined by savetype
+%                             unspecified:  results only appear on screen
+%
+%    savetype         indicator of output file type:
+%                         1 - (default)  Matlab figure file (.fig)
+%                         2 - (.png)  raster graphics
+%                         3 - (.pdf)  vector graphics
+%                         4 - (.eps)  Color vector 
+%                                     (use when icolor is not 0)
+%                         5 - (.eps)  Black and White vector 
+%                                     (use when icolor = 0)
+%                         6 - (.jpg)  raster
+%                         7 - (.svg)  vector
 %
 %    iscreenwrite     0  (default)  no screen writes
 %                     1  write to screen to show progress
@@ -144,6 +152,8 @@ function  [BestClass, bestCI] = SigClust2meanFastSM(data,paramstruct)
 %    lbinrSM.m
 %    vec2matSM.m
 %    pcaSM.m
+%    Plot1dSM.m
+%    Plot2dSM.m
 %    projplot1SM.m
 %    projplot2SM.m
 %    bwrfphSM.m
@@ -154,8 +164,9 @@ function  [BestClass, bestCI] = SigClust2meanFastSM(data,paramstruct)
 %    iqrSM.m
 %    cquantSM.m
 %    axisSM.m
+%    printSM.m
 
-%    Copyright (c) J. S. Marron 2007
+%    Copyright (c) J. S. Marron 2007-2023
 
 
 
@@ -164,7 +175,7 @@ function  [BestClass, bestCI] = SigClust2meanFastSM(data,paramstruct)
 maxstep = 10 ;
 ioutplot = 1 ;
 icolor = [[1 0 0]; [0 0 1]] ;
-markerstr = strvcat('o','+') ;
+markerstr = char('o','+') ;
 maxlim = [] ;
 iplotaxes = 1 ;
 iplotdirvec = 0 ;
@@ -174,92 +185,97 @@ titlefontsize = [] ;
 labelcellstr = {} ;
 labelfontsize = [] ;
 savestr = [] ;
+savetype = 1 ;
 iscreenwrite = 0 ;
 
 
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct is an argument
+if nargin > 1    %  then paramstruct is an argument
 
-  if isfield(paramstruct,'maxstep') ;    %  then change to input value
-    maxstep = getfield(paramstruct,'maxstep') ; 
-  end ;
+  if isfield(paramstruct,'maxstep')    %  then change to input value
+    maxstep = paramstruct.maxstep ; 
+  end 
 
-  if isfield(paramstruct,'ioutplot') ;    %  then change to input value
-    ioutplot = getfield(paramstruct,'ioutplot') ; 
-  end ;
+  if isfield(paramstruct,'ioutplot')    %  then change to input value
+    ioutplot = paramstruct.ioutplot ; 
+  end 
 
-  if isfield(paramstruct,'icolor') ;    %  then change to input value
-    icolor = getfield(paramstruct,'icolor') ; 
-  end ;
+  if isfield(paramstruct,'icolor')    %  then change to input value
+    icolor = paramstruct.icolor ; 
+  end 
 
-  if isfield(paramstruct,'markerstr') ;    %  then change to input value
-    markerstr = getfield(paramstruct,'markerstr') ; 
-  end ;
+  if isfield(paramstruct,'markerstr')    %  then change to input value
+    markerstr = paramstruct.markerstr ; 
+  end 
 
-  if isfield(paramstruct,'maxlim') ;    %  then change to input value
-    maxlim = getfield(paramstruct,'maxlim') ; 
-  end ;
+  if isfield(paramstruct,'maxlim')    %  then change to input value
+    maxlim = paramstruct.maxlim ; 
+  end 
 
-  if isfield(paramstruct,'iplotaxes') ;    %  then change to input value
-    iplotaxes = getfield(paramstruct,'iplotaxes') ; 
-  end ;
+  if isfield(paramstruct,'iplotaxes')    %  then change to input value
+    iplotaxes = paramstruct.iplotaxes ; 
+  end 
 
-  if isfield(paramstruct,'iplotdirvec') ;    %  then change to input value
-    iplotdirvec = getfield(paramstruct,'iplotdirvec') ; 
-  end ;
+  if isfield(paramstruct,'iplotdirvec')    %  then change to input value
+    iplotdirvec = paramstruct.iplotdirvec ; 
+  end 
 
-  if isfield(paramstruct,'ibelowdiag') ;    %  then change to input value
-    ibelowdiag = getfield(paramstruct,'ibelowdiag') ; 
-  end ;
+  if isfield(paramstruct,'ibelowdiag')    %  then change to input value
+    ibelowdiag = paramstruct.ibelowdiag ; 
+  end 
 
-  if isfield(paramstruct,'titlestr') ;    %  then change to input value
-    titlestr = getfield(paramstruct,'titlestr') ; 
-  end ;
+  if isfield(paramstruct,'titlestr')    %  then change to input value
+    titlestr = paramstruct.titlestr ; 
+  end
 
-  if isfield(paramstruct,'titlefontsize') ;    %  then change to input value
-    titlefontsize = getfield(paramstruct,'titlefontsize') ; 
-  end ;
+  if isfield(paramstruct,'titlefontsize')    %  then change to input value
+    titlefontsize = paramstruct.titlefontsize ; 
+  end 
 
-  if isfield(paramstruct,'labelcellstr') ;    %  then change to input value
-    labelcellstr = getfield(paramstruct,'labelcellstr') ; 
-  end ;
+  if isfield(paramstruct,'labelcellstr')    %  then change to input value
+    labelcellstr = paramstruct.labelcellstr ; 
+  end 
 
-  if isfield(paramstruct,'labelfontsize') ;    %  then change to input value
-    labelfontsize = getfield(paramstruct,'labelfontsize') ; 
-  end ;
+  if isfield(paramstruct,'labelfontsize')    %  then change to input value
+    labelfontsize = paramstruct.labelfontsize ; 
+  end 
 
-  if isfield(paramstruct,'savestr') ;    %  then use input value
-    savestr = getfield(paramstruct,'savestr') ; 
-    if ~(ischar(savestr) | isempty(savestr)) ;    %  then invalid input, so give warning
+  if isfield(paramstruct,'savestr')    %  then use input value
+    savestr = paramstruct.savestr ; 
+    if ~(ischar(savestr) || isempty(savestr))    %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from SigClust2meanFastSM:  !!!') ;
       disp('!!!   Invalid savestr,                   !!!') ;
       disp('!!!   using default of no save           !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       savestr = [] ;
-    end ;
-  end ;
+    end 
+  end 
 
-  if isfield(paramstruct,'iscreenwrite') ;    %  then change to input value
-    iscreenwrite = getfield(paramstruct,'iscreenwrite') ; 
-  end ;
+  if isfield(paramstruct,'savetype')     %  then use input value
+    savetype = paramstruct.savetype ; 
+  end 
 
-end ;    %  of resetting of input parameters
+  if isfield(paramstruct,'iscreenwrite')    %  then change to input value
+    iscreenwrite = paramstruct.iscreenwrite ; 
+  end 
+
+end    %  of resetting of input parameters
 
 
 
-if ioutplot ~= 0 ;  %  Will make plots, so close current windows
+if ioutplot ~= 0    %  Will make plots, so close current windows
   close all ;
-end ;
+end
 
 rankdata = rank(data) ;
 
 
 %  Start with PC1 labelling
 %
-if size(data,1) > 1 ;    %  d > 1, so actually do PCA
+if size(data,1) > 1    %  d > 1, so actually do PCA
 
   viout = [0 0 0 0 1] ;    %  Output mpc  -  npc x n matrix of 
                            %     "principal components", 
@@ -270,33 +286,33 @@ if size(data,1) > 1 ;    %  d > 1, so actually do PCA
                        'viout',viout,...
                        'iscreenwrite',0) ;
   outstruct = pcaSM(data,paramstruct) ;
-  vpc = getfield(outstruct,'mpc') ;
-else ;
+  vpc = outstruct.mpc ;
+else 
   vpc = data ;
-end ;
+end 
 curClass = (vpc > median(vpc)) ;
     %  vector of 0s and 1s for class labels
 curClass = curClass + 1 ;
     %  vector of 1s and 2s for class labels
 curCI = ClustIndSM(data,(curClass == 1),(curClass == 2)) ;
-if iscreenwrite == 1 ;
+if iscreenwrite == 1
   disp(['    2 Means Fast, PC1 Cluster Index = ' num2str(curCI)]) ;
-end ;
+end
 
-if ioutplot == 2 ;  %  Make output plot using 
+if ioutplot == 2    %  Make output plot using 
                     %    original data PCA coordinates
 
   figure ;
-  if isempty(titlestr) ;
+  if isempty(titlestr) 
     titlecellstr = {{['2-Means Fast, Step ' num2str(1)] 'Starting Cluster'}} ;
-  else ;
+  else 
     titlecellstr = {{['2-Means Fast, Step ' num2str(1)] 'Starting Cluster' titlestr}} ;
-  end ;
-  if ~isempty(savestr) ;
+  end 
+  if ~isempty(savestr) 
     savestrout = [savestr 'Step' num2str(1) 'StartClust'] ;
-  else ;
+  else 
     savestrout = [] ;
-  end ;
+  end 
   paramstruct = struct('iMDdir',0,...
                        'icolor',icolor,...
                        'markerstr',markerstr,...
@@ -314,13 +330,13 @@ if ioutplot == 2 ;  %  Make output plot using
 
   %  Update to properly handle empty components
   %
-  if ~(isempty(labelcellstr)) ;
-    paramstruct = setfield(paramstruct,'labelcellstr',labelcellstr{1}) ;
-  end ;
+  if ~(isempty(labelcellstr)) 
+    paramstruct.labelcellstr = labelcellstr{1} ;
+  end 
 
   SigClustLabelPlotSM(data,curClass,paramstruct) ; 
 
-end ;
+end 
 
 
 
@@ -331,29 +347,29 @@ CurMMeanStart = [mean(data(:,(curClass == 1)),2) mean(data(:,(curClass == 2)),2)
 curClass = idx' ;
 curCI = ClustIndSM(data,(curClass == 1),(curClass == 2)) ;
 CurMMeanStart = mc' ;
-if iscreenwrite == 1 ;
+if iscreenwrite == 1 
   disp(['    2 Means Fast, Step 1 Cluster Index = ' num2str(curCI)]) ;
-end ;
+end 
 MDdir = CurMMeanStart(:,1) - CurMMeanStart(:,2) ;
 MDdir = MDdir / norm(MDdir) ;
 mdirexc = MDdir ;
     %  matrix of directions to exclude
 
-if ioutplot ~= 0 ;  %  Make output plot using 
+if ioutplot ~= 0    %  Make output plot using 
                     %    new PCA coordinates
 
 
   figure ;
-  if isempty(titlestr) ;
+  if isempty(titlestr) 
     titlecellstr = {{['2-Means Fast, Step ' num2str(1)] '2-means Result'}} ;
-  else ;
+  else 
     titlecellstr = {{['2-Means Fast, Step ' num2str(1)] '2-means Result' titlestr}} ;
-  end ;
-  if ~isempty(savestr) ;
+  end 
+  if ~isempty(savestr) 
     savestrout = [savestr 'Step' num2str(1) 'Res2mean'] ;
-  else ;
+  else 
     savestrout = [] ;
-  end ;
+  end 
   paramstruct = struct('iMDdir',1,...
                        'icolor',icolor,...
                        'markerstr',markerstr,...
@@ -371,13 +387,13 @@ if ioutplot ~= 0 ;  %  Make output plot using
 
   %  Update to properly handle empty components
   %
-  if ~(isempty(labelcellstr)) ;
-    paramstruct = setfield(paramstruct,'labelcellstr',labelcellstr{1}) ;
-  end ;
+  if ~(isempty(labelcellstr)) 
+    paramstruct.labelcellstr = labelcellstr{1} ;
+  end 
 
   SigClustLabelPlotSM(data,curClass,paramstruct) ; 
 
-end ;
+end 
 
 
 bestCI = curCI ;
@@ -385,9 +401,9 @@ BestClass = curClass ;
 
 
 
-for istep = 2:maxstep ;
+for istep = 2:maxstep 
 
-  if size(mdirexc,2) < rankdata ;    %  then can work with non-excluded data
+  if size(mdirexc,2) < rankdata    %  then can work with non-excluded data
 
     %  Project data on non-excluded directions
     %
@@ -407,35 +423,35 @@ for istep = 2:maxstep ;
                          'viout',viout,...
                          'iscreenwrite',0) ;
     outstruct = pcaSM(projdata,paramstruct) ;
-    vpc = getfield(outstruct,'mpc') ;
-    vcurPCdir = getfield(outstruct,'meigvec') ;
+    vpc = outstruct.mpc ;
+    vcurPCdir = outstruct.meigvec ;
     curClass = (vpc > median(vpc)) ;
         %  vector of 0s and 1s for class labels
     curClass = curClass + 1 ;
         %  vector of 1s and 2s for class labels
     curCI = ClustIndSM(data,(curClass == 1),(curClass == 2)) ;
-    if curCI < bestCI ;
+    if curCI < bestCI 
       bestCI = curCI ;
       BestClass = curClass ;
-    end ;
-    if iscreenwrite == 1 ;
+    end 
+    if iscreenwrite == 1 
       disp(['    2 Means Fast, Step ' num2str(istep) ' Ortho PC1 Cluster Index = ' num2str(curCI)]) ;
-    end ;
+    end 
 
-    if ioutplot == 2 ;  %  Make output plot using 
+    if ioutplot == 2    %  Make output plot using 
                         %    original data PCA coordinates
 
       figure ;
-      if isempty(titlestr) ;
+      if isempty(titlestr) 
         titlecellstr = {{['2-Means Fast, Step ' num2str(istep)] 'Starting Cluster'}} ;
-      else ;
+      else 
         titlecellstr = {{['2-Means Fast, Step ' num2str(istep)] 'Starting Cluster' titlestr}} ;
-      end ;
-      if ~isempty(savestr) ;
+      end 
+      if ~isempty(savestr) 
         savestrout = [savestr 'Step' num2str(istep) 'StartClust'] ;
-      else ;
+      else 
         savestrout = [] ;
-      end ;
+      end 
       paramstruct = struct('iMDdir',0,...
                            'icolor',icolor,...
                            'markerstr',markerstr,...
@@ -453,13 +469,13 @@ for istep = 2:maxstep ;
 
       %  Update to properly handle empty components
       %
-      if ~(isempty(labelcellstr)) ;
-        paramstruct = setfield(paramstruct,'labelcellstr',labelcellstr{1}) ;
-      end ;
+      if ~(isempty(labelcellstr)) 
+        paramstruct.labelcellstr = labelcellstr{1} ;
+      end 
 
       SigClustLabelPlotSM(data,curClass,paramstruct) ; 
 
-    end ;
+    end 
 
 
 
@@ -470,39 +486,39 @@ for istep = 2:maxstep ;
     curClass = idx' ;
     curCI = ClustIndSM(data,(curClass == 1),(curClass == 2)) ;
     CurMMeanStart = mc' ;
-    if curCI < bestCI ;
+    if curCI < bestCI 
       bestCI = curCI ;
       BestClass = curClass ;
-    end ;
-    if iscreenwrite == 1 ;
+    end 
+    if iscreenwrite == 1 
       disp(['    2 Means Fast, Step ' num2str(istep) ' Cluster Index = ' num2str(curCI)]) ;
-    end ;
+    end 
     MDdir = CurMMeanStart(:,1) - CurMMeanStart(:,2) ;
     MDdir = MDdir / norm(MDdir) ;
 
-    if sum(abs(mprojexc * MDdir - MDdir)) > 0 ;
+    if sum(abs(mprojexc * MDdir - MDdir)) > 0 
                             %  this direction already in excluded subspace
-      mdirexc = [mdirexc vcurPCdir] ;
+      mdirexc = [mdirexc vcurPCdir] ; %#ok<AGROW>
           %  matrix of directions to exclude
-    else ;    %  have component outside current subspace
-      mdirexc = [mdirexc MDdir] ;
+    else    %  have component outside current subspace
+      mdirexc = [mdirexc MDdir] ; %#ok<AGROW>
           %  matrix of directions to exclude
-    end ;
+    end 
 
-    if ioutplot ~= 0 ;  %  Make output plot using 
+    if ioutplot ~= 0    %  Make output plot using 
                         %    new PCA coordinates
 
       figure ;
-      if isempty(titlestr) ;
+      if isempty(titlestr) 
         titlecellstr = {{['2-Means Fast, Step ' num2str(istep)] '2-means Result'}} ;
-      else ;
+      else 
         titlecellstr = {{['2-Means Fast, Step ' num2str(istep)] '2-means Result' titlestr}} ;
-      end ;
-      if ~isempty(savestr) ;
+      end 
+      if ~isempty(savestr) 
         savestrout = [savestr 'Step' num2str(istep) 'Res2mean'] ;
-      else ;
+      else 
         savestrout = [] ;
-      end ;
+      end 
       paramstruct = struct('iMDdir',1,...
                            'icolor',icolor,...
                            'markerstr',markerstr,...
@@ -520,19 +536,19 @@ for istep = 2:maxstep ;
 
       %  Update to properly handle empty components
       %
-      if ~(isempty(labelcellstr)) ;
-        paramstruct = setfield(paramstruct,'labelcellstr',labelcellstr{1}) ;
-      end ;
+      if ~(isempty(labelcellstr)) 
+        paramstruct.labelcellstr = labelcellstr{1} ;
+      end 
 
       SigClustLabelPlotSM(data,curClass,paramstruct) ; 
 
-    end ;
+    end 
 
 
-  end ;
+  end 
 
 
-end ;
+end 
 
 
 

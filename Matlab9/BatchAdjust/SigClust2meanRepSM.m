@@ -31,10 +31,7 @@ function  [bestclass, vindex, midx] = SigClust2meanRepSM(data,paramstruct)
 %    nrep             Number of repetitions (random restarts).
 %                     When not specified, default is 100
 %
-%    randstate        State of uniform random number generator
-%                     When empty, or not specified, just use current seed  
-%
-%    randnstate       State of normal random number generator
+%    randseed         Seed of uniform random number generator
 %                     When empty, or not specified, just use current seed  
 %
 %    iscreenwrite     0  (default)  no screen writes
@@ -58,60 +55,52 @@ function  [bestclass, vindex, midx] = SigClust2meanRepSM(data,paramstruct)
 % Assumes path can find personal functions:
 %    vec2matSM.m
 
-%    Copyright (c) J. S. Marron 2007
+%    Copyright (c) J. S. Marron 2007 - 2023
 
 
 
 %  First set all parameters to defaults
 %
 nrep = 100 ;
-randstate = [] ;
-randnstate = [] ;
+randseed = [] ;
 iscreenwrite = 0 ;
 
 
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct is an argument
+if nargin > 1    %  then paramstruct is an argument
 
-  if isfield(paramstruct,'nrep') ;    %  then change to input value
-    nrep = getfield(paramstruct,'nrep') ; 
-  end ;
+  if isfield(paramstruct,'nrep')    %  then change to input value
+    nrep = paramstruct.nrep ; 
+  end 
 
-  if isfield(paramstruct,'randstate') ;    %  then change to input value
-    randstate = getfield(paramstruct,'randstate') ; 
-  end ;
+  if isfield(paramstruct,'randseed')    %  then change to input value
+    randseed = paramstruct.randseed ; 
+  end 
 
-  if isfield(paramstruct,'randnstate') ;    %  then change to input value
-    randnstate = getfield(paramstruct,'randnstate') ; 
-  end ;
+  if isfield(paramstruct,'iscreenwrite')    %  then change to input value
+    iscreenwrite = paramstruct.iscreenwrite ; 
+  end 
 
-  if isfield(paramstruct,'iscreenwrite') ;    %  then change to input value
-    iscreenwrite = getfield(paramstruct,'iscreenwrite') ; 
-  end ;
-
-end ;    %  of resetting of input parameters
+end    %  of resetting of input parameters
 
 
 
 %  set preliminary stuff
 %
-d = size(data,1) ;
+%d = size(data,1) ;
          %  dimension of each data curve
-n = size(data,2) ;
+%n = size(data,2) ;
          %  number of data curves
 
 
 
 %  Run nrep 2-means clusterings, with random restarts
 %
-if ~isempty(randstate) ;
-  rand('state',randstate) ;
-end ;
-if ~isempty(randnstate) ;
-  randn('state',randnstate) ;
-end ;
+if ~isempty(randseed) 
+  rng(randseed) ;
+end 
 
 totd = sum(sum((data - vec2matSM(mean(data,2),size(data,2))).^2)) ;
     %  Total sum of square distance from mean of column vectors
@@ -119,20 +108,21 @@ totd = sum(sum((data - vec2matSM(mean(data,2),size(data,2))).^2)) ;
 midx = [] ;
 vindex = [] ;
 for irep = 1:nrep
-  if iscreenwrite ~= 0 ;
+  if iscreenwrite ~= 0 
     disp(['        Working on repetition ' num2str(irep) ' of ' num2str(nrep)]) ;
-  end ;
-  [idx,c,sumd] = kmeans(data',2,'EmptyAction','singleton') ;
-  midx = [midx; idx'] ;
-  vindex = [vindex; sum(sumd)/totd] ;
-end ;
+  end 
+%  [idx,c,sumd] = kmeans(data',2,'EmptyAction','singleton') ;
+  [idx,~,sumd] = kmeans(data',2,'EmptyAction','singleton') ;
+  midx = [midx; idx'] ; %#ok<AGROW>
+  vindex = [vindex; sum(sumd)/totd] ; %#ok<AGROW>
+end 
 
-if iscreenwrite ~= 0 ;
-  disp(['Finished 2 means Clustering']) ;
+if iscreenwrite ~= 0 
+  disp('Finished 2 means Clustering') ;
   disp(' ') ;
-end ;
+end 
 
 
 
-[temp,imin] = min(vindex) ;
+[~,imin] = min(vindex) ;
 bestclass = midx(imin,:) ;

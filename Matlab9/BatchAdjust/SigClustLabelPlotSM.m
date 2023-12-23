@@ -143,11 +143,19 @@ function SigClustLabelPlotSM(data,vclass,paramstruct)
 %    savestr          string controlling saving of output,
 %                         either a full path, or a file prefix to
 %                         save in matlab's current directory
-%                         Will add .ps, and save as either
-%                             color postscript (for plot with Entry 3 = 1)
-%                         or
-%                             black&white postscript (other plots)
-%                         unspecified:  results only appear on screen
+%                         Will add file suffix determined by savetype
+%                             unspecified:  results only appear on screen
+%
+%    savetype         indicator of output file type:
+%                         1 - (default)  Matlab figure file (.fig)
+%                         2 - (.png)  raster graphics
+%                         3 - (.pdf)  vector graphics
+%                         4 - (.eps)  Color vector 
+%                                     (use when icolor is not 0)
+%                         5 - (.eps)  Black and White vector 
+%                                     (use when icolor = 0)
+%                         6 - (.jpg)  raster
+%                         7 - (.svg)  vector
 %
 %    iscreenwrite     0  (default)  no screen writes
 %                     1  write to screen to show progress
@@ -165,6 +173,8 @@ function SigClustLabelPlotSM(data,vclass,paramstruct)
 %    lbinrSM.m
 %    vec2matSM.m
 %    pcaSM.m
+%    Plot1dSM.m
+%    Plot2dSM.m
 %    projplot1SM.m
 %    projplot2SM.m
 %    bwrfphSM.m
@@ -175,8 +185,9 @@ function SigClustLabelPlotSM(data,vclass,paramstruct)
 %    iqrSM.m
 %    cquantSM.m
 %    axisSM.m
+%    printSM.m
 
-%    Copyright (c) J. S. Marron 2007
+%    Copyright (c) J. S. Marron 2007-2023
 
 
 
@@ -184,7 +195,7 @@ function SigClustLabelPlotSM(data,vclass,paramstruct)
 %
 iMDdir = 1 ;
 icolor = [[1 0 0]; [0 0 1]] ;
-markerstr = strvcat('o','+') ;
+markerstr = char('o','+') ;
 legendcellstr = {} ;
 mlegendcolor = [] ;
 maxlim = [] ;
@@ -196,83 +207,88 @@ titlefontsize = [] ;
 labelcellstr = {} ;
 labelfontsize = [] ;
 savestr = [] ;
+savetype = 1 ;
 iscreenwrite = 0 ;
 
 
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 2 ;   %  then paramstruct is an argument
+if nargin > 2    %  then paramstruct is an argument
 
-  if isfield(paramstruct,'iMDdir') ;    %  then change to input value
-    iMDdir = getfield(paramstruct,'iMDdir') ; 
-  end ;
+  if isfield(paramstruct,'iMDdir')    %  then change to input value
+    iMDdir = paramstruct.iMDdir ; 
+  end 
 
-  if isfield(paramstruct,'icolor') ;    %  then change to input value
-    icolor = getfield(paramstruct,'icolor') ; 
-  end ;
+  if isfield(paramstruct,'icolor')    %  then change to input value
+    icolor = paramstruct.icolor ; 
+  end 
 
-  if isfield(paramstruct,'markerstr') ;    %  then change to input value
-    markerstr = getfield(paramstruct,'markerstr') ; 
-  end ;
+  if isfield(paramstruct,'markerstr')    %  then change to input value
+    markerstr = paramstruct.markerstr ; 
+  end 
 
-  if isfield(paramstruct,'legendcellstr') ;    %  then change to input value
-    legendcellstr = getfield(paramstruct,'legendcellstr') ; 
-  end ;
+  if isfield(paramstruct,'legendcellstr')    %  then change to input value
+    legendcellstr = paramstruct.legendcellstr ; 
+  end 
 
-  if isfield(paramstruct,'mlegendcolor') ;    %  then change to input value
-    mlegendcolor = getfield(paramstruct,'mlegendcolor') ; 
-  end ;
+  if isfield(paramstruct,'mlegendcolor')    %  then change to input value
+    mlegendcolor = paramstruct.mlegendcolor ; 
+  end 
 
-  if isfield(paramstruct,'maxlim') ;    %  then change to input value
-    maxlim = getfield(paramstruct,'maxlim') ; 
-  end ;
+  if isfield(paramstruct,'maxlim')    %  then change to input value
+    maxlim = paramstruct.maxlim ; 
+  end 
 
-  if isfield(paramstruct,'iplotaxes') ;    %  then change to input value
-    iplotaxes = getfield(paramstruct,'iplotaxes') ; 
-  end ;
+  if isfield(paramstruct,'iplotaxes')     %  then change to input value
+    iplotaxes = paramstruct.iplotaxes ; 
+  end 
 
-  if isfield(paramstruct,'iplotdirvec') ;    %  then change to input value
-    iplotdirvec = getfield(paramstruct,'iplotdirvec') ; 
-  end ;
+  if isfield(paramstruct,'iplotdirvec')    %  then change to input value
+    iplotdirvec = paramstruct.iplotdirvec ; 
+  end 
 
-  if isfield(paramstruct,'ibelowdiag') ;    %  then change to input value
-    ibelowdiag = getfield(paramstruct,'ibelowdiag') ; 
-  end ;
+  if isfield(paramstruct,'ibelowdiag')    %  then change to input value
+    ibelowdiag = paramstruct.ibelowdiag ; 
+  end 
 
-  if isfield(paramstruct,'titlecellstr') ;    %  then change to input value
-    titlecellstr = getfield(paramstruct,'titlecellstr') ; 
-  end ;
+  if isfield(paramstruct,'titlecellstr')    %  then change to input value
+    titlecellstr = paramstruct.titlecellstr ; 
+  end 
 
-  if isfield(paramstruct,'titlefontsize') ;    %  then change to input value
-    titlefontsize = getfield(paramstruct,'titlefontsize') ; 
-  end ;
+  if isfield(paramstruct,'titlefontsize')    %  then change to input value
+    titlefontsize = paramstruct.titlefontsize ; 
+  end 
 
-  if isfield(paramstruct,'labelcellstr') ;    %  then change to input value
-    labelcellstr = getfield(paramstruct,'labelcellstr') ; 
-  end ;
+  if isfield(paramstruct,'labelcellstr')    %  then change to input value
+    labelcellstr = paramstruct.labelcellstr ; 
+  end 
 
-  if isfield(paramstruct,'labelfontsize') ;    %  then change to input value
-    labelfontsize = getfield(paramstruct,'labelfontsize') ; 
-  end ;
+  if isfield(paramstruct,'labelfontsize')    %  then change to input value
+    labelfontsize = paramstruct.labelfontsize ; 
+  end 
 
-  if isfield(paramstruct,'savestr') ;    %  then use input value
-    savestr = getfield(paramstruct,'savestr') ; 
-    if ~(ischar(savestr) | isempty(savestr)) ;    %  then invalid input, so give warning
+  if isfield(paramstruct,'savestr')    %  then use input value
+    savestr = paramstruct.savestr ; 
+    if ~(ischar(savestr) || isempty(savestr))    %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from SigClustLabelPlotSM:  !!!') ;
       disp('!!!   Invalid savestr,                   !!!') ;
       disp('!!!   using default of no save           !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       savestr = [] ;
-    end ;
-  end ;
+    end 
+  end 
 
-  if isfield(paramstruct,'iscreenwrite') ;    %  then change to input value
-    iscreenwrite = getfield(paramstruct,'iscreenwrite') ; 
-  end ;
+  if isfield(paramstruct,'savetype')     %  then use input value
+    savetype = paramstruct.savetype ; 
+  end 
 
-end ;    %  of resetting of input parameters
+  if isfield(paramstruct,'iscreenwrite')    %  then change to input value
+    iscreenwrite = paramstruct.iscreenwrite ; 
+  end 
+
+end     %  of resetting of input parameters
 
 
 
@@ -286,8 +302,8 @@ n = size(data,2) ;
 vflag1 = (vclass == 1) ;
 vflag2 = (vclass == 2) ;
 
-if (size(vclass,1) ~= 1) | (size(vclass,2) ~= n) | ...
-       (sum(vflag1) + sum(vflag2) ~= n) ;
+if (size(vclass,1) ~= 1) || (size(vclass,2) ~= n) || ...
+       (sum(vflag1) + sum(vflag2) ~= n) 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from SigClustLabelPlotSM.m:   !!!') ;
   disp('!!!   Invalid vclass,                       !!!') ;
@@ -296,10 +312,10 @@ if (size(vclass,1) ~= 1) | (size(vclass,2) ~= n) | ...
   disp('!!!   Terminating Execution                 !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   return ;
-end ;
+end 
 
-if (size(icolor,1) ~= 2) | (size(icolor,2) ~= 3) ;
-  if ~((size(icolor,1) == 1) & (size(icolor,2) == 1) & (icolor == 0)) ;
+if (size(icolor,1) ~= 2) || (size(icolor,2) ~= 3) 
+  if ~((size(icolor,1) == 1) && (size(icolor,2) == 1) && (icolor == 0)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from SigClustLabelPlotSM.m:   !!!') ;
     disp('!!!   Invalid size of icolor,               !!!') ;
@@ -307,10 +323,10 @@ if (size(icolor,1) ~= 2) | (size(icolor,2) ~= 3) ;
     disp('!!!   Resetting to all black                !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     icolor = 0 ;
-  end ;
-end ;
+  end 
+end 
 
-if (size(markerstr,1) ~= 2) | (size(markerstr,2) ~= 1) | (~ischar(markerstr)) ;
+if (size(markerstr,1) ~= 2) || (size(markerstr,2) ~= 1) || (~ischar(markerstr)) 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from SigClustLabelPlotSM.m:   !!!') ;
   disp('!!!   Invalid markerstr,                    !!!') ;
@@ -318,34 +334,34 @@ if (size(markerstr,1) ~= 2) | (size(markerstr,2) ~= 1) | (~ischar(markerstr)) ;
   disp('!!!   Must be a character array             !!!') ;
   disp('!!!   Resetting to default                  !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  markerstr = strvcat('o','+') ;
-end ;
+  markerstr = char('o','+') ;
+end 
 
-if (length(legendcellstr) == 2) & isempty(mlegendcolor) ;
+if (length(legendcellstr) == 2) && isempty(mlegendcolor) 
   mlegendcolor = icolor ;
-end ;
+end 
 
 
 
-if d == 1 ;    %  then use projplot1SM.m 
+if d == 1    %  then use projplot1SM.m 
 
   %  Set paramstruct for call to scatplotSM.m
   %
-  if icolor == 0 ;
+  if icolor == 0 
     icolorin = 0 ;
     mlegendcolor = [] ;
-  else ;
+  else 
     icolorin = vflag1' * icolor(1,:) + vflag2' * icolor(2,:) ;
-  end ;
+  end 
 
   markerstrin = [] ;
-  for i = 1:n ;
-    if vflag1(i) ;
-      markerstrin = strvcat(markerstrin,markerstr(1,:)) ;
-    else ;
-      markerstrin = strvcat(markerstrin,markerstr(2,:)) ;
-    end ;
-  end ;
+  for i = 1:n 
+    if vflag1(i) 
+      markerstrin = char(markerstrin,markerstr(1,:)) ;
+    else 
+      markerstrin = char(markerstrin,markerstr(2,:)) ;
+    end 
+  end 
 
   paramstruct = struct('icolor',icolorin, ...
                        'markerstr',markerstrin, ...
@@ -357,78 +373,78 @@ if d == 1 ;    %  then use projplot1SM.m
 
   %  Update to properly handle empty components
   %
-  if ~(isempty(legendcellstr)) ;
-    paramstruct = setfield(paramstruct,'legendcellstr',legendcellstr) ;
-  end ;
-  if ~(isempty(mlegendcolor)) ;
-    paramstruct = setfield(paramstruct,'mlegendcolor',mlegendcolor) ;
-  end ;
-  if ~(isempty(titlecellstr)) ;
-    paramstruct = setfield(paramstruct,'titlestr',titlecellstr{1}) ;
-  end ;
-  if ~(isempty(labelcellstr)) ;
-    paramstruct = setfield(paramstruct,'labelstr',labelcellstr{1}) ;
-  end ;
+  if ~(isempty(legendcellstr)) 
+    paramstruct.legendcellstr = legendcellstr ;
+  end 
+  if ~(isempty(mlegendcolor)) 
+    paramstruct.mlegendcolor = mlegendcolor ;
+  end 
+  if ~(isempty(titlecellstr)) 
+    paramstruct.titlestr = titlecellstr{1} ;
+  end 
+  if ~(isempty(labelcellstr)) 
+    paramstruct.labelstr = labelcellstr{1} ;
+  end 
 
   projplot1SM(data,1,paramstruct) ;
 
 
-else ;    %  then use scatplotSM.m
+else    %  then use scatplotSM.m
 
   %  Set directions
   %
-  if iMDdir == 0 ;    %  Then use ordinary directions
-                      %      (regular for d = 2-4, PC otherwise)
+  if iMDdir == 0    %  Then use ordinary directions
+                    %      (regular for d = 2-4, PC otherwise)
 
-    if d == 1 ;
+    if d == 1 
       mdir = 1 ;
       npcadiradd = 0 ;
-    elseif  d == 2  |  d == 3  |  d == 4  ;
+    elseif  d == 2  ||  d == 3  ||  d == 4  
       mdir = eye(d) ;
       npcadiradd = 0 ;
-    else ;
+    else 
       mdir = [] ;
       npcadiradd = 4 ;
-    end ;
+    end 
 
-  else ;    %  Then use Mean Difference and orthogonal PC directions
+  else    %  Then use Mean Difference and orthogonal PC directions
 
-    if d == 1 ;
+    if d == 1 
       mdir = 1 ;
       npcadiradd = 0 ;
-    elseif  d == 2  |  d == 3  ;
+    elseif  d == 2  ||  d == 3  
       vMD = mean(data(:,vflag1),2) - mean(data(:,vflag2),2) ;
       vMD = vMD / norm(vMD) ;
       mdir = vMD ;
       npcadiradd = -(d - 1) ;
-    else ;
+    else 
       vMD = mean(data(:,vflag1),2) - mean(data(:,vflag2),2) ;
       vMD = vMD / norm(vMD) ;
       mdir = vMD ;
       npcadiradd = -3 ;
-    end ;
+    end 
 
-  end ;
+  end 
 
 
 
   %  Set paramstruct for call to scatplotSM.m
   %
-  if icolor == 0 ;
+  if icolor == 0 
     icolorin = 0 ;
     mlegendcolor = [] ;
-  else ;
+  else 
     icolorin = vflag1' * icolor(1,:) + vflag2' * icolor(2,:) ;
-  end ;
+  end 
 
   markerstrin = [] ;
-  for i = 1:n ;
-    if vflag1(i) ;
-      markerstrin = strvcat(markerstrin,markerstr(1,:)) ;
-    else ;
-      markerstrin = strvcat(markerstrin,markerstr(2,:)) ;
-    end ;
-  end ;
+  for i = 1:n 
+    if vflag1(i) 
+      markerstrin = char(markerstrin,markerstr(1,:)) ;
+    else 
+      markerstrin = char(markerstrin,markerstr(2,:)) ;
+    end 
+  end 
 
   paramstruct = struct('icolor',icolorin, ...
                        'npcadiradd',npcadiradd, ...
@@ -444,26 +460,24 @@ else ;    %  then use scatplotSM.m
 
   %  Update to properly handle empty components
   %
-  if ~(isempty(legendcellstr)) ;
-    paramstruct = setfield(paramstruct,'legendcellstr',legendcellstr) ;
-  end ;
-  if ~(isempty(mlegendcolor)) ;
-    paramstruct = setfield(paramstruct,'mlegendcolor',mlegendcolor) ;
-  end ;
-  if ~(isempty(titlecellstr)) ;
-    paramstruct = setfield(paramstruct,'titlecellstr',titlecellstr) ;
-  end ;
-  if ~(isempty(labelcellstr)) ;
-    paramstruct = setfield(paramstruct,'labelcellstr',labelcellstr) ;
-  elseif iMDdir ~= 0 ;
-    paramstruct = setfield(paramstruct,'labelcellstr',{'Mean Diff Direction'}) ;
-  end ;
+  if ~(isempty(legendcellstr)) 
+    paramstruct.legendcellstr = legendcellstr ;
+  end 
+  if ~(isempty(mlegendcolor)) 
+    paramstruct.mlegendcolor = mlegendcolor ;
+  end 
+  if ~(isempty(titlecellstr)) 
+    paramstruct.titlecellstr = titlecellstr ;
+  end 
+  if ~(isempty(labelcellstr)) 
+    paramstruct.labelcellstr = labelcellstr ;
+  elseif iMDdir ~= 0 
+    paramstruct.labelcellstr = 'Mean Diff Direction' ;
+  end 
 
   scatplotSM(data,mdir,paramstruct) ;
 
 
-end ;
-
-
+end 
 
 

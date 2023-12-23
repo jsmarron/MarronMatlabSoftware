@@ -81,22 +81,12 @@ function  [pval, zscore] = SigClustSM(data,paramstruct)
 %                     for main p-value computation
 %                     (default = 1000)
 %
-%    InitRandstate    State of uniform random number generator,
+%    InitRandseed    Seed of uniform random number generator,
 %                         for Initial Calculation of Data Cluster Index
 %                     When empty, or not specified, just use current seed  
 %                         (has no effect, unless twoMtype = 1 & vclass = 0)
 %
-%    InitRandnstate   State of normal random number generator,
-%                         for Initial Calculation of Data Cluster Index
-%                     When empty, or not specified, just use current seed  
-%                         (has no effect, unless twoMtype = 1 & vclass = 0)
-%
-%    SimRandstate     State of uniform random number generator,
-%                         for Main Simulation
-%                     When empty, or not specified, just use current seed  
-%                         (has no effect, unless twoMtype = 1)
-%
-%    SimRandnstate    State of normal random number generator,
+%    SimRandseed     Seed of uniform random number generator,
 %                         for Main Simulation
 %                     When empty, or not specified, just use current seed  
 %                         (has no effect, unless twoMtype = 1)
@@ -126,8 +116,7 @@ function  [pval, zscore] = SigClustSM(data,paramstruct)
 %                         Will add:
 %                             'KDE' for plot i.
 %                             'QQ' for plot ii.
-%                         Will also add .ps (so don't do this again!), 
-%                         and save as color postscript files.
+%                         Will add file suffix determined by savetype
 %                         Unspecified (or empty):
 %                             Results only appear on screen
 %                         Only has effect when iBGSDdiagplot = 1
@@ -143,8 +132,7 @@ function  [pval, zscore] = SigClustSM(data,paramstruct)
 %                         save in matlab's current directory.
 %                         Probably makes sense to end with 
 %                         something like:         'EstEigVal'
-%                         Will also add .ps (so don't do this again!), 
-%                         and save as color postscript files.
+%                         Will add file suffix determined by savetype
 %                         Unspecified (or empty):
 %                             Results only appear on screen
 %                         Only has effect when iCovEdiagplot = 1
@@ -158,11 +146,19 @@ function  [pval, zscore] = SigClustSM(data,paramstruct)
 %                         save in matlab's current directory.
 %                         Probably makes sense to end with 
 %                         something like:         'pVal'
-%                         Will also add .ps (so don't do this again!), 
-%                         and save as color postscript files.
+%                         Will add file suffix determined by savetype
 %                         Unspecified (or empty):
 %                             Results only appear on screen
 %                         Only has effect when ipValplot = 1
+%
+%    savetype         indicator of output file type:
+%                         1 - (default)  Matlab figure file (.fig)
+%                         2 - (.png)  raster graphics
+%                         3 - (.pdf)  vector graphics
+%                         4 - (.eps)  Color vector 
+%                         5 - (.eps)  Black and White vector 
+%                         6 - (.jpg)  raster
+%                         7 - (.svg)  vector
 %
 %    legendcellstr    For p Value Plot:
 %                     cell array of strings for legend (nl of them),
@@ -211,7 +207,7 @@ function  [pval, zscore] = SigClustSM(data,paramstruct)
 %
 %    Graphics in different Figure windows
 %    When ___savestr exists,
-%        Color Postscript files saved in '___savestr'.ps
+%        Output files saved in '___savestr'.ps
 %
 % Assumes path can find personal functions:
 %    SigClust2meanRepSM.m
@@ -228,6 +224,8 @@ function  [pval, zscore] = SigClustSM(data,paramstruct)
 %    lbinrSM.m
 %    vec2matSM.m
 %    pcaSM.m
+%    Plot1dSM.m
+%    Plot2dSM.m
 %    projplot1SM.m
 %    projplot2SM.m
 %    bwrfphSM.m
@@ -238,9 +236,10 @@ function  [pval, zscore] = SigClustSM(data,paramstruct)
 %    iqrSM.m
 %    cquantSM.m
 %    nmfSM.m
+%    printSM.m
 
 
-%    Copyright (c) J. S. Marron 2007,2008,2009,2014
+%    Copyright (c) J. S. Marron 2007,2008,2009,2014,2023
 
 
 
@@ -253,10 +252,8 @@ ipvaltype = 3 ;
 twoMtype = 2 ;
 twoMsteps = 1 ;
 nsim = 1000 ;
-InitRandstate = [] ;
-InitRandnstate = [] ;
-SimRandstate = [] ;
-SimRandnstate = [] ;
+InitRandseed = [] ;
+SimRandseed = [] ;
 datastr = [] ;
 iBGSDdiagplot = 1 ;
 BGSDsavestr = [] ;
@@ -264,6 +261,7 @@ iCovEdiagplot = 1 ;
 CovEsavestr = [] ;
 ipValplot = 1 ;
 pValsavestr = [] ;
+savetype = 1 ;
 legendcellstr = {} ;
 mlegendcolor = [] ;
 iscreenwrite = 0 ;
@@ -303,20 +301,12 @@ if nargin > 1 ;   %  then paramstruct is an argument
     nsim = getfield(paramstruct,'nsim') ; 
   end ;
 
-  if isfield(paramstruct,'InitRandstate') ;    %  then change to input value
-    InitRandstate = getfield(paramstruct,'InitRandstate') ; 
+  if isfield(paramstruct,'InitRandseed') ;    %  then change to input value
+    InitRandseed = getfield(paramstruct,'InitRandseed') ; 
   end ;
 
-  if isfield(paramstruct,'InitRandnstate') ;    %  then change to input value
-    InitRandnstate = getfield(paramstruct,'InitRandnstate') ; 
-  end ;
-
-  if isfield(paramstruct,'SimRandstate') ;    %  then change to input value
-    SimRandstate = getfield(paramstruct,'SimRandstate') ; 
-  end ;
-
-  if isfield(paramstruct,'SimRandnstate') ;    %  then change to input value
-    SimRandnstate = getfield(paramstruct,'SimRandnstate') ; 
+  if isfield(paramstruct,'SimRandseed') ;    %  then change to input value
+    SimRandseed = getfield(paramstruct,'SimRandseed') ; 
   end ;
 
   if isfield(paramstruct,'datastr') ;    %  then change to input value
@@ -370,6 +360,10 @@ if nargin > 1 ;   %  then paramstruct is an argument
       pValsavestr = [] ;
     end ;
   end ;
+
+  if isfield(paramstruct,'savetype')     %  then use input value
+    savetype = paramstruct.savetype ; 
+  end 
 
   if isfield(paramstruct,'legendcellstr') ;    %  then change to input value
     legendcellstr = getfield(paramstruct,'legendcellstr') ; 
@@ -480,8 +474,7 @@ if vclass == 0 ;    %  No initial clustering given, so compute from data
   if twoMtype == 1 ;    %  Use Random Restarts for computation
 
     paramstruct = struct('nrep',twoMsteps,  ...
-                         'randstate',InitRandstate, ...
-                         'randnstate',InitRandnstate, ...
+                         'randseed',InitRandseed, ...
                          'iscreenwrite',iscreenwritemost) ;
     [temp, vindex] = SigClust2meanRepSM(data,paramstruct) ;
         %  Ignore usual output of BestClass (Cluster Labelling)
@@ -607,9 +600,8 @@ if iCovEst ~= 2 ;    %  then need to consider thresholding
         hold off ;
 
         if ~isempty(BGSDsavestr) ;
-          orient landscape ;
             savestr = [BGSDsavestr 'KDE.ps'] ;
-          print('-dpsc2',savestr) ;
+          printSM(savestr,savetype) ;
         end ;
 
 
@@ -838,9 +830,8 @@ if iCovEdiagplot == 1 ;    %  Then make COVariance Estimation DIAGnostic PLOT
   end ;
 
   if ~isempty(CovEsavestr) ;
-    orient landscape ;
       savestr = [CovEsavestr '.ps'] ;
-    print('-dpsc2',savestr) ;
+    printSM(savestr,savetype) ;
   end ;
 
 end ;    %  of iCovEdiagplot if-block
@@ -858,11 +849,8 @@ end ;
 
 %  Main Simulation Loop
 %
-if ~isempty(SimRandstate) ;    %  Then set random number generation seed
-  rand('state',SimRandstate) ;
-end ;
-if ~isempty(SimRandnstate) ;    %  Then set random number generation seed
-  randn('state',SimRandnstate) ;
+if ~isempty(SimRandseed) ;    %  Then set random number generation seed
+  rng(SimRandseed) ;
 end ;
 
 vscale = sqrt(vsimeigval) ;
@@ -1010,9 +998,8 @@ if ipValplot == 1 ;    %  Then make p Value plot
   hold off ;
 
   if ~isempty(pValsavestr) ;
-    orient landscape ;
       savestr = [pValsavestr '.ps'] ;
-    print('-dpsc2',savestr) ;
+    printSM(savestr,savetype) ;
   end ;
 
 end ;    %  of ipValplot if-block

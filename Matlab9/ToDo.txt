@@ -1,8 +1,5 @@
 Update files:
-DiProPerm files
-ProjHypoTestSM.m
-DWDlarge files
-SigClust files
+SigClust files  (print & rand)
 SWISS files
 
 
@@ -10,5 +7,6 @@ Update directory:
 FRwarping-PNS
 
 
+Further explore parameters in DWDlarge, especially using Matlab9/Tests/DWDLargetest.m
 
 

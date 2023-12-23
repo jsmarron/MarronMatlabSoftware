@@ -54,10 +54,7 @@ function [BestClass, bestCI] = SigClust2meanPerfSM(data,paramstruct)
 %                                   Sorted Start Number vs. Sorted Case Number
 %                     When not specified, default is:  [1 1 1 1 1 1 1] 
 %
-%    randstate        State of uniform random number generator
-%                     When empty, or not specified, just use current seed  
-%
-%    randnstate       State of normal random number generator
+%    randseed         Seed of uniform random number generator
 %                     When empty, or not specified, just use current seed  
 %
 %    titlestr         string to start titles of output plot
@@ -76,12 +73,20 @@ function [BestClass, bestCI] = SigClust2meanPerfSM(data,paramstruct)
 %
 %    savestr          string controlling saving of output,
 %                         either a full path, or a file prefix to
-%                         save in matlab's current directory
-%                         Will add .ps, and save as either
-%                             color postscript (for plot with Entry 3 = 1)
-%                         or
-%                             black&white postscript (other plots)
-%                         unspecified:  results only appear on screen
+%                         save in matlab's current directory 
+%                         Will add file suffix determined by savetype
+%                             unspecified:  results only appear on screen
+%
+%    savetype         indicator of output file type:
+%                         1 - (default)  Matlab figure file (.fig)
+%                         2 - (.png)  raster graphics
+%                         3 - (.pdf)  vector graphics
+%                         4 - (.eps)  Color vector 
+%                                     (use when icolor is not 0)
+%                         5 - (.eps)  Black and White vector 
+%                                     (use when icolor = 0)
+%                         6 - (.jpg)  raster
+%                         7 - (.svg)  vector
 %
 %    iscreenwrite     0  (default)  no screen writes
 %                     1  write to screen to show progress
@@ -102,6 +107,7 @@ function [BestClass, bestCI] = SigClust2meanPerfSM(data,paramstruct)
 % Assumes path can find personal functions:
 %    vec2matSM.m
 %    axisSM.m
+%    printSM.m
 
 %    Copyright (c) J. S. Marron 2007
 
@@ -111,65 +117,65 @@ function [BestClass, bestCI] = SigClust2meanPerfSM(data,paramstruct)
 %
 nrep = 100 ;
 viplot = [1 1 1 1 1 1 1] ;
-randstate = [] ;
-randnstate = [] ;
+randseed = [] ;
 titlestr = [] ;
 titlefontsize = [] ;
 labelfontsize = [] ;
 savestr = [] ;
+savetype = 1 ;
 iscreenwrite = 0 ;
 
 
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct is an argument
+if nargin > 1    %  then paramstruct is an argument
 
-  if isfield(paramstruct,'nrep') ;    %  then change to input value
-    nrep = getfield(paramstruct,'nrep') ; 
-  end ;
+  if isfield(paramstruct,'nrep')    %  then change to input value
+    nrep = paramstruct.nrep ; 
+  end 
 
-  if isfield(paramstruct,'viplot') ;    %  then change to input value
-    viplot = getfield(paramstruct,'viplot') ; 
-  end ;
+  if isfield(paramstruct,'viplot')    %  then change to input value
+    viplot = paramstruct.viplot ; 
+  end 
 
-  if isfield(paramstruct,'randstate') ;    %  then change to input value
-    randstate = getfield(paramstruct,'randstate') ; 
-  end ;
+  if isfield(paramstruct,'randseed')    %  then change to input value
+    randseed = paramstruct.randseed ; 
+  end 
 
-  if isfield(paramstruct,'randnstate') ;    %  then change to input value
-    randnstate = getfield(paramstruct,'randnstate') ; 
-  end ;
+  if isfield(paramstruct,'titlestr')    %  then change to input value
+    titlestr = paramstruct.titlestr ; 
+  end 
 
-  if isfield(paramstruct,'titlestr') ;    %  then change to input value
-    titlestr = getfield(paramstruct,'titlestr') ; 
-  end ;
+  if isfield(paramstruct,'titlefontsize')    %  then change to input value
+    titlefontsize = paramstruct.titlefontsize ; 
+  end 
 
-  if isfield(paramstruct,'titlefontsize') ;    %  then change to input value
-    titlefontsize = getfield(paramstruct,'titlefontsize') ; 
-  end ;
+  if isfield(paramstruct,'labelfontsize')    %  then change to input value
+    labelfontsize = paramstruct.labelfontsize ; 
+  end 
 
-  if isfield(paramstruct,'labelfontsize') ;    %  then change to input value
-    labelfontsize = getfield(paramstruct,'labelfontsize') ; 
-  end ;
-
-  if isfield(paramstruct,'savestr') ;    %  then use input value
-    savestr = getfield(paramstruct,'savestr') ; 
-    if ~(ischar(savestr) | isempty(savestr)) ;    %  then invalid input, so give warning
+  if isfield(paramstruct,'savestr')    %  then use input value
+    savestr = paramstruct.savestr ; 
+    if ~(ischar(savestr) || isempty(savestr))    %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from SigClust2meanPerfSM:  !!!') ;
       disp('!!!   Invalid savestr,                   !!!') ;
       disp('!!!   using default of no save           !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       savestr = [] ;
-    end ;
-  end ;
+    end 
+  end 
 
-  if isfield(paramstruct,'iscreenwrite') ;    %  then change to input value
-    iscreenwrite = getfield(paramstruct,'iscreenwrite') ; 
-  end ;
+  if isfield(paramstruct,'savetype')     %  then use input value
+    savetype = paramstruct.savetype ; 
+  end 
 
-end ;    %  of resetting of input parameters
+  if isfield(paramstruct,'iscreenwrite')    %  then change to input value
+    iscreenwrite = paramstruct.iscreenwrite ; 
+  end 
+
+end    %  of resetting of input parameters
 
 
 
@@ -177,16 +183,16 @@ end ;    %  of resetting of input parameters
 %
 maxviplot = 7 ;
     %  largest useful size for viout 
-if size(viplot,1) > 1 ;    %  if have more than one row
+if size(viplot,1) > 1    %  if have more than one row
   viplot = viplot' ;
-end ;
-if size(viplot,1) == 1 ;    %  then have row vector
+end 
+if size(viplot,1) == 1    %  then have row vector
 
-  if length(viplot) < maxviplot ;    %  then pad with 0s
+  if length(viplot) < maxviplot    %  then pad with 0s
     viplot = [viplot zeros(1,maxviplot - length(viplot))] ;
-  end ;
+  end 
 
-else ;    %  invalid viplot, so indicate and quit
+else    %  invalid viplot, so indicate and quit
 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Error from SigClust2meanPerfSM:  !!!') ;
@@ -195,13 +201,13 @@ else ;    %  invalid viplot, so indicate and quit
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   return ;
 
-end ;
+end 
 
 
 
 %  set preliminary stuff
 %
-d = size(data,1) ;
+%d = size(data,1) ;
          %  dimension of each data curve
 n = size(data,2) ;
          %  number of data curves
@@ -211,44 +217,44 @@ n = size(data,2) ;
 %  Run nrep 2-means clusterings, with random restarts
 %
 paramstruct = struct('nrep',nrep,...
-                     'randstate',randstate,...
-                     'randnstate',randnstate,...
+                     'randseed',randseed,...
                      'iscreenwrite',iscreenwrite) ;
 [BestClass, vindex, midx] = SigClust2meanRepSM(data,paramstruct) ;
 
 
 
 nfigopen = 0 ;
-if viplot(1) == 1 ;    %  Make plot of Cluster Index vs. Restart Number
-                       %            both sorted and unsorted.
+if viplot(1) == 1    %  Make plot of Cluster Index vs. Restart Number
+                     %            both sorted and unsorted.
 
   nfigopen = nfigopen + 1 ;
   figure(nfigopen) ;
   clf ;
 
-  [vindexsort,vindsort] = sort(vindex) ;
+%  [vindexsort,vindsort] = sort(vindex) ;
+  vindexsort = sort(vindex) ;
 
   subplot(2,1,1) ;
     plot(1:nrep,vindex,'ko') ;
       vax = axisSM(1:nrep,vindex) ;
-      if vax(3) == vax(4) ;
+      if vax(3) == vax(4) 
         vax(3) = 0 ;
         vax(4) = 1 ;
-      end ;
+      end 
       axis([0, (nrep + 1), vax(3), vax(4)]) ;
-      if isempty(titlefontsize) ;
+      if isempty(titlefontsize) 
         title([titlestr '2 - Means CI, over ' num2str(nrep) ' random restarts']) ;
-      else ;
+      else 
         title([titlestr '2 - Means CI, over ' num2str(nrep) ' random restarts'], ...
               'FontSize',titlefontsize) ;
-      end ;
-      if isempty(labelfontsize) ;
+      end 
+      if isempty(labelfontsize) 
         xlabel('Random Start Number') ;
         ylabel('Cluster Index') ;
-      else ;
+      else 
         xlabel('Random Start Number','FontSize',labelfontsize) ;
         ylabel('Cluster Index','FontSize',labelfontsize) ;
-      end ;
+      end 
       text(0.1 * (nrep + 1), ...
            vax(3) + 0.9 * (vax(4) - vax(3)), ...
            ['Proportional Difference = ' num2str((vindexsort(nrep) - vindexsort(1)) / vindexsort(1))]) ;
@@ -256,32 +262,31 @@ if viplot(1) == 1 ;    %  Make plot of Cluster Index vs. Restart Number
   subplot(2,1,2) ;
     plot(1:nrep,vindexsort,'ko') ;
       axis([0, (nrep + 1), vax(3), vax(4)]) ;
-      if isempty(titlefontsize) ;
+      if isempty(titlefontsize) 
         title([titlestr 'Sorted Version of Above']) ;
-      else ;
+      else 
         title([titlestr 'Sorted Version of Above'], ...
               'FontSize',titlefontsize) ;
-      end ;
-      if isempty(labelfontsize) ;
+      end 
+      if isempty(labelfontsize) 
         xlabel('Sorted (on Index) Start Number') ;
         ylabel('Cluster Index') ;
-      else ;
+      else 
         xlabel('Sorted (on Index) Start Number','FontSize',labelfontsize) ;
         ylabel('Cluster Index','FontSize',labelfontsize) ;
-      end ;
+      end 
 
-  if ~isempty(savestr) ;
-    orient landscape ;
-    print('-dps2',[savestr 'Clust2Index.ps']) ;
-  end ;
-
-
-end ;
+  if ~isempty(savestr) 
+    printSM([savestr 'Clust2Index.ps'],savetype) ;
+  end 
 
 
+end 
 
-if viplot(2) == 1 ;    %  Image plot, Showing Cluster Results
-                           %        Random Start Number vs. Case Number
+
+
+if viplot(2) == 1    %  Image plot, Showing Cluster Results
+                     %        Random Start Number vs. Case Number
 
   nfigopen = nfigopen + 1 ;
   figure(nfigopen) ;
@@ -289,39 +294,39 @@ if viplot(2) == 1 ;    %  Image plot, Showing Cluster Results
 
   colormap([ones(1,3); zeros(1,3)]) ;
   image(midx) ;
-    if isempty(titlefontsize) ;
+    if isempty(titlefontsize) 
       title([titlestr 'Image of Cluster Labels']) ;
-    else ;
+    else 
       title([titlestr 'Image of Cluster Labels'], ...
             'FontSize',titlefontsize) ;
-    end ;
-    if isempty(labelfontsize) ;
+    end 
+    if isempty(labelfontsize) 
       xlabel('Case Number') ;
       ylabel('Random Start Number') ;
-    else ;
+    else 
       xlabel('Case Number','FontSize',labelfontsize) ;
       ylabel('Random Start Number','FontSize',labelfontsize) ;
-    end ;
+    end 
 
-  if ~isempty(savestr) ;
-    orient landscape ;
-    print('-dps2',[savestr 'ImageClustRaw.ps']) ;
-  end ;
-
-
-end ;
+  if ~isempty(savestr) 
+    printSM([savestr 'ImageClustRaw.ps'],savetype) ;
+  end 
 
 
+end 
 
-if sum(viplot(3:end) > 0.5) ;    %  then need to sort rows by cluster index  
 
-  [vindexsort,vindsort] = sort(vindex) ;
+
+if sum(viplot(3:end) > 0.5)     %  then need to sort rows by cluster index  
+
+%  [vindexsort,vindsort] = sort(vindex) ;
+  [~,vindsort] = sort(vindex) ;
   midxs = midx(vindsort,:) ;
       %  Sort rows by cluster index
 
 
-  if viplot(3) == 1 ;    %  Image plot, Showing Cluster Results
-                         %        Sorted (on Cluster Index Start Number vs. Case Number
+  if viplot(3) == 1    %  Image plot, Showing Cluster Results
+                       %        Sorted (on Cluster Index Start Number vs. Case Number
 
     nfigopen = nfigopen + 1 ;
     figure(nfigopen) ;
@@ -329,67 +334,66 @@ if sum(viplot(3:end) > 0.5) ;    %  then need to sort rows by cluster index
 
     colormap([ones(1,3); zeros(1,3)]) ;
     image(midxs) ;
-      if isempty(titlefontsize) ;
+      if isempty(titlefontsize) 
         title([titlestr 'Sort Rows on Cluster Index']) ;
-      else ;
+      else 
         title([titlestr 'Sort Rows on Cluster Index'], ...
               'FontSize',titlefontsize) ;
-      end ;
-      if isempty(labelfontsize) ;
+      end 
+      if isempty(labelfontsize) 
         xlabel('Case Number') ;
         ylabel('Sorted (on Cluster Index) Start Number') ;
-      else ;
+      else 
         xlabel('Case Number','FontSize',labelfontsize) ;
         ylabel('Sorted (on Cluster Index) Start Number','FontSize',labelfontsize) ;
-      end ;
+      end 
 
-    if ~isempty(savestr) ;
-      orient landscape ;
-      print('-dps2',[savestr 'ImageClustSortR.ps']) ;
-    end ;
-
-
-  end ;
+    if ~isempty(savestr) 
+      printSM([savestr 'ImageClustSortR.ps'],savetype) ;
+    end 
 
 
+  end 
 
-  if sum(viplot(4:end) > 0.5) ;    %  then need to find most common restarts
+
+
+  if sum(viplot(4:end) > 0.5)    %  then need to find most common restarts
 
     vncommonindex = [] ;
-    for irep = 1:nrep ;    %  loop through restarts
+    for irep = 1:nrep    %  loop through restarts
       vidxs = midxs(irep,:) ;
           %  vector of cluster indices, for this restart
       ncommonindex = 0 ;
           %  will count number of restarts
           %  with same clustering
-      for irepp = 1:nrep ;
-        if sum(vidxs == midxs(irepp,:)) == n ;    
+      for irepp = 1:nrep 
+        if sum(vidxs == midxs(irepp,:)) == n   
                         % has same clustering
           ncommonindex = ncommonindex + 1 ;
-        end ;
-      end ;
-      vncommonindex = [vncommonindex; ncommonindex] ;
-    end ;
+        end 
+      end 
+      vncommonindex = [vncommonindex; ncommonindex] ; %#ok<AGROW>
+    end 
 
-    [temp,imax] = max(vncommonindex) ;
+    [~,imax] = max(vncommonindex) ;
         %  index of maximizer of vncommonindex
 
     vidxcommon = midxs(imax,:) ;
         %  vector of indices for most common restart
     vcommonset = [] ;
-    for irep = 1:nrep ;    %  loop through restarts
-      if sum(vidxcommon == midxs(irep,:)) == n ;    
+    for irep = 1:nrep    %  loop through restarts
+      if sum(vidxcommon == midxs(irep,:)) == n 
                       % are always assigned to the same cluster
-        vcommonset = [vcommonset; irep] ;
+        vcommonset = [vcommonset; irep] ; %#ok<AGROW>
             %  then keep this index among common set
-      end ;
-    end ; 
+      end 
+    end 
 
 
 
-    if viplot(4) == 1 ;    %  Image plot, Showing Cluster Results
-                           %        Sorted Start Number vs. Case Number
-                           %        Highlight most common restarts
+    if viplot(4) == 1    %  Image plot, Showing Cluster Results
+                         %        Sorted Start Number vs. Case Number
+                         %        Highlight most common restarts
 
       nfigopen = nfigopen + 1 ;
       figure(nfigopen) ;
@@ -401,55 +405,54 @@ if sum(viplot(3:end) > 0.5) ;    %  then need to sort rows by cluster index
 
       colormap([ones(1,3); zeros(1,3); [1 0 0 ]; [0 0 1]]) ;
       image(midxsc) ;
-        if isempty(titlefontsize) ;
+        if isempty(titlefontsize) 
           title([titlestr 'Most Common Colored']) ;
-        else ;
+        else 
           title([titlestr 'Most Common Colored'], ...
                 'FontSize',titlefontsize) ;
-        end ;
-        if isempty(labelfontsize) ;
+        end 
+        if isempty(labelfontsize) 
           xlabel('Case Number') ;
           ylabel('Sorted (on Cluster Index) Start Number') ;
-        else ;
+        else 
           xlabel('Case Number','FontSize',labelfontsize) ;
           ylabel('Sorted (on Cluster Index) Start Number','FontSize',labelfontsize) ;
-        end ;
+        end 
 
-      if ~isempty(savestr) ;
-        orient landscape ;
+      if ~isempty(savestr) 
         print('-dpsc2',[savestr 'ImageClustComCol.ps']) ;
-      end ;
+      end 
 
 
-    end ;
+    end 
 
 
 
-    if sum(viplot(5:end) > 0.5) ;    %  then need to find those similar to most common restarts
+    if sum(viplot(5:end) > 0.5)    %  then need to find those similar to most common restarts
 
       visimilar = [] ;
           %  vector if indices of restarts that similar 
           %  in at least half the reprtitions
-      for irep = 1:nrep ;    %  loop through cases
+      for irep = 1:nrep    %  loop through cases
         countsim = sum(vidxcommon == midxs(irep,:)) ;
-        if countsim > n / 2 ;    
+        if countsim > n / 2 
                         % are assigned to the same cluster more than half the time
-          visimilar = [visimilar; irep] ;
+          visimilar = [visimilar; irep] ; %#ok<AGROW>
               %  then keep this index among similar set
-        elseif countsim == n / 2 ;    
+        elseif countsim == n / 2 
                         % are assigned to the same cluster exactly half the time
-          if midxs(irep,1) == vidxcommon(1) ;
+          if midxs(irep,1) == vidxcommon(1) 
                           %  break tie, by using 1st case
-            visimilar = [visimilar; irep] ;
+            visimilar = [visimilar; irep] ; %#ok<AGROW>
                 %  then keep this index among similar set
-          end ;
-        end ;
-      end ; 
+          end 
+        end 
+      end 
 
 
-      if viplot(5) == 1 ;    %  Image plot, Showing Cluster Results
-                             %        Sorted Start Number vs. Case Number
-                             %        Highlight those similar to most common 
+      if viplot(5) == 1    %  Image plot, Showing Cluster Results
+                           %        Sorted Start Number vs. Case Number
+                           %        Highlight those similar to most common 
 
         nfigopen = nfigopen + 1 ;
         figure(nfigopen) ;
@@ -461,31 +464,30 @@ if sum(viplot(3:end) > 0.5) ;    %  then need to sort rows by cluster index
 
         colormap([ones(1,3); zeros(1,3); [1 0 0 ]; [0 0 1]]) ;
         image(midxsc) ;
-          if isempty(titlefontsize) ;
+          if isempty(titlefontsize) 
             title([titlestr 'Similar Colored']) ;
-          else ;
+          else 
             title([titlestr 'Similar Colored'], ...
                   'FontSize',titlefontsize) ;
-          end ;
-          if isempty(labelfontsize) ;
+          end 
+          if isempty(labelfontsize) 
             xlabel('Case Number') ;
             ylabel('Sorted (on Cluster Index) Start Number') ;
-          else ;
+          else 
             xlabel('Case Number','FontSize',labelfontsize) ;
             ylabel('Sorted (on Cluster Index) Start Number','FontSize',labelfontsize) ;
-          end ;
+          end 
 
-        if ~isempty(savestr) ;
-          orient landscape ;
-          print('-dpsc2',[savestr 'ImageClustSimCol.ps']) ;
-        end ;
-
-
-      end ;
+        if ~isempty(savestr) 
+          printSM([savestr 'ImageClustSimCol.ps'],savetype) ;
+        end 
 
 
+      end 
 
-      if sum(viplot(6:end) > 0.5) ;    %  then need to flip restarts, to make then all similar
+
+
+      if sum(viplot(6:end) > 0.5)    %  then need to flip restarts, to make then all similar
 
         midxsf = midxs ;
             %  flipped version of midx
@@ -493,9 +495,9 @@ if sum(viplot(3:end) > 0.5) ;    %  then need to sort rows by cluster index
             %  mapping that gives:   1 --> 2,   2 --> 1
 
 
-        if viplot(6) == 1 ;    %  Image plot, Showing Cluster Results
-                               %        Sorted Start Number vs. Case Number
-                               %        Classes Flipped, to be similar to most common
+        if viplot(6) == 1    %  Image plot, Showing Cluster Results
+                             %        Sorted Start Number vs. Case Number
+                             %        Classes Flipped, to be similar to most common
 
           nfigopen = nfigopen + 1 ;
           figure(nfigopen) ;
@@ -503,38 +505,37 @@ if sum(viplot(3:end) > 0.5) ;    %  then need to sort rows by cluster index
 
           colormap([ones(1,3); zeros(1,3)]) ;
           image(midxsf) ;
-            if isempty(titlefontsize) ;
+            if isempty(titlefontsize) 
               title([titlestr 'Flipped Similar Cases']) ;
-            else ;
+            else 
               title([titlestr 'Flipped Similar Cases'], ...
                     'FontSize',titlefontsize) ;
-            end ;
-            if isempty(labelfontsize) ;
+            end 
+            if isempty(labelfontsize) 
               xlabel('Case Number') ;
               ylabel('Sorted (on Cluster Index) Start Number') ;
-            else ;
+            else 
               xlabel('Case Number','FontSize',labelfontsize) ;
               ylabel('Sorted (on Cluster Index) Start Number','FontSize',labelfontsize) ;
-            end ;
+            end 
 
-          if ~isempty(savestr) ;
-            orient landscape ;
-            print('-dps2',[savestr 'ImageClustFlip.ps']) ;
-          end ;
-
-
-        end ;
+          if ~isempty(savestr) 
+            printSM([savestr 'ImageClustFlip.ps'],savetype) ;
+          end 
 
 
+        end 
 
-        if viplot(7) == 1 ;    %  Image plot, Showing Cluster Results
-                                   %        Classes with common cases in Class 1
-                                   %        Sorted Start Number vs. Sorted Case Number
+
+
+        if viplot(7) == 1    %  Image plot, Showing Cluster Results
+                             %        Classes with common cases in Class 1
+                             %        Sorted Start Number vs. Sorted Case Number
 
           mflag2 = (midxsf == 2) ;
           vflag2 = sum(mflag2,1) ;
               %  number of 2s in each column
-          [temp,vind] = sort(vflag2) ;
+          [~,vind] = sort(vflag2) ;
           midxsfs = midxsf(:,vind) ;
               %  sort columns by number of 2s
 
@@ -544,43 +545,42 @@ if sum(viplot(3:end) > 0.5) ;    %  then need to sort rows by cluster index
 
           colormap([ones(1,3); zeros(1,3)]) ;
           image(midxsfs) ;
-            if isempty(titlefontsize) ;
+            if isempty(titlefontsize) 
               title([titlestr 'Rows & Cols Sorted']) ;
-            else ;
+            else 
               title([titlestr 'Rows & Cols Sorted'], ...
                     'FontSize',titlefontsize) ;
-            end ;
-            if isempty(labelfontsize) ;
+            end 
+            if isempty(labelfontsize) 
               xlabel('Sorted (on # of 2s) Case Number') ;
               ylabel('Sorted (on Cluster Index) Start Number') ;
-            else ;
+            else 
               xlabel('Sorted (on # of 2s) Case Number','FontSize',labelfontsize) ;
               ylabel('Sorted (on Cluster Index) Start Number','FontSize',labelfontsize) ;
-            end ;
+            end 
 
-          if ~isempty(savestr) ;
-            orient landscape ;
-            print('-dps2',[savestr 'ImageClustSortRC.ps']) ;
-          end ;
-
-
-        end ;
+          if ~isempty(savestr) 
+            printSM([savestr 'ImageClustSortRC.ps'],savetype) ;
+          end 
 
 
-      end ;
+        end 
 
 
-    end ;
+      end 
 
 
-  end ;
+    end 
 
 
-end ; 
+  end 
 
 
-if nargout > 1 ;    %  Then need to create output variable
+end 
+
+
+if nargout > 1    %  Then need to create output variable
 
   bestCI = min(vindex) ;
 
-end ;
+end 

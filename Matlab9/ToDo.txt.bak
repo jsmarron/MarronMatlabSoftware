@@ -1,8 +1,4 @@
 Update files:
-BatchAdjustCC.m   is updated, but needs test program
-DiProPerm files
-ProjHypoTestSM.m
-DWDlarge files
 SigClust files
 SWISS files
 
@@ -11,5 +7,6 @@ Update directory:
 FRwarping-PNS
 
 
+Further explore parameters in DWDlarge, especially using Matlab9/Tests/DWDLargetest.m
 
 

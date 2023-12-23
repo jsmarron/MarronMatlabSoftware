@@ -42,7 +42,7 @@ function  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b)
 %
 d = size(vsampeigv,1) ;
          %  dimension of data & covariance matrix
-if size(vsampeigv,2) > 1 ;
+if size(vsampeigv,2) > 1 
   veigvest = [] ;
   tau = [] ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -52,7 +52,7 @@ if size(vsampeigv,2) > 1 ;
   disp('!!!   Terminating Execution               !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   return ;
-end ;
+end 
 
 
 
@@ -62,7 +62,7 @@ vdiff = vsampeigv(2:end) - vsampeigv(1:(end-1)) ;
 flag = (vdiff > 0) ;
     %  one where have an increase in sample eigenvalues
 
-if sum(flag) > 0 ;    %  then have an increase somewhere
+if sum(flag) > 0    %  then have an increase somewhere
   veigvest = [] ;
   tau = [] ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -72,8 +72,8 @@ if sum(flag) > 0 ;    %  then have an increase somewhere
   disp('!!!   Terminating Execution                   !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   return ;
-end ;
-if min(vsampeigv) < 0 ;    %  then have a negative eigenvalue
+end 
+if min(vsampeigv) < 0    %  then have a negative eigenvalue
   veigvest = [] ;
   tau = [] ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -83,7 +83,7 @@ if min(vsampeigv) < 0 ;    %  then have a negative eigenvalue
   disp('!!!   Terminating Execution              !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   return ;
-end ;
+end 
 
 
 
@@ -92,7 +92,7 @@ end ;
 vtaucand = vsampeigv - sig2b ;
     %  vector of initial candidates for the threshold tau
 
-if vtaucand(end) >= 0 ;    %  if all of these are positive
+if vtaucand(end) >= 0    %  if all of these are positive
   veigvest = vsampeigv ;
       %  in this case, just use sample eigenvalues
   tau = 0 ;
@@ -105,7 +105,7 @@ if vtaucand(end) >= 0 ;    %  if all of these are positive
   disp('!!!   Terminating Execution                    !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   return ;
-end ;
+end 
 
 
 
@@ -114,7 +114,7 @@ end ;
 totpow = sum(vsampeigv) ;
     %  total signal power in data = sum of eigenvalues
 
-if totpow <= d * sig2b ;  
+if totpow <= d * sig2b 
   veigvest = sig2b * ones(d,1) ;
       %  set output to constant value of sig2b
   tau = vtaucand(1) ;
@@ -132,13 +132,13 @@ if totpow <= d * sig2b ;
   disp('!!!   Terminating Execution                    !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   return ;
-end ;
+end 
 
 
 
 %  Find threshold, to preserve total signal power
 %
-[temp, icut] = max(vtaucand <= 0) ;
+[~, icut] = max(vtaucand <= 0) ;
     %  index of first element of vtaucan that is <= 0
 icut = icut - 1 ;
     %  index of last eigenvalue, with taucand > 0 
@@ -162,35 +162,35 @@ vpowershifted = (vi - 1) .* vtaucand(1:icut) + vcumtaucand ;
 
 flag = vpowershifted < power2shift ;
     %  one where not enough power shifted
-if sum(flag) == 0 ;    %  then itau should include everything
+if sum(flag) == 0    %  then itau should include everything
   itau = 0 ;
       %  use this to flag case where everything is included
       %  in this case use icut as index
-else ;    %  then find itau using max
-  [temp,itau] = max(flag) ;
+else    %  then find itau using max
+  [~,itau] = max(flag) ;
       %  index of first element with not enough power shifted
-end ;
+end 
 
-if itau == 1 ;
+if itau == 1 
   powerprop = power2shift / vpowershifted ;
     %  proportion of desired power, relative to candidate powers
   tau = powerprop * vtaucand(1) ;
     %  interpolated value of tau, 
     %  that moves power in the amount of power2shift
-elseif itau == 0 ;    %  then choose tau based only on last
+elseif itau == 0    %  then choose tau based only on last
   powerprop = power2shift / vpowershifted(icut) ;
     %  proportion of desired power, relative to candidate powers
   tau =  powerprop * vtaucand(icut) ;
     %  interpolated value of tau, 
     %  that moves power in the amount of power2shift
-else ;    %  need to do linear interpolation
+else    %  need to do linear interpolation
   powerprop = (power2shift - vpowershifted(itau)) / ...
                   (vpowershifted(itau - 1) - vpowershifted(itau)) ;
     %  proportion of desired power, relative to candidate powers
   tau = vtaucand(itau) + powerprop * (vtaucand(itau - 1) - vtaucand(itau)) ;
     %  interpolated value of tau, 
     %  that moves power in the amount of power2shift
-end ;
+end 
 
 
 

@@ -29,6 +29,11 @@ function  [pval, zscore] = SigClustSM(data,paramstruct)
 %                          these are optional, misspecified values
 %                          revert to defaults
 %
+%                    Version for easy copying and modification:
+%     paramstruct = struct('',, ...
+%                          '',, ...
+%                          '',) ;
+%
 %    fields            values
 %
 %    vclass           Vector of 1s and 2s, which indicates given class labels 
@@ -89,7 +94,7 @@ function  [pval, zscore] = SigClustSM(data,paramstruct)
 %    SimRandseed     Seed of uniform random number generator,
 %                         for Main Simulation
 %                     When empty, or not specified, just use current seed  
-%                         (has no effect, unless twoMtype = 1)
+
 %
 %    datastr          String Descriptive of data set,
 %                       mostly for use in graphical output,
@@ -207,7 +212,7 @@ function  [pval, zscore] = SigClustSM(data,paramstruct)
 %
 %    Graphics in different Figure windows
 %    When ___savestr exists,
-%        Output files saved in '___savestr'.ps
+%        Output files saved in '___savestr' with suffix from savetype
 %
 % Assumes path can find personal functions:
 %    SigClust2meanRepSM.m
@@ -271,113 +276,123 @@ iscreenwrite = 0 ;
 %  Now update parameters as specified,
 %  by parameter structure (if it is used)
 %
-if nargin > 1 ;   %  then paramstruct is an argument
+if nargin > 1    %  then paramstruct is an argument
 
-  if isfield(paramstruct,'vclass') ;    %  then change to input value
-    vclass = getfield(paramstruct,'vclass') ; 
-  end ;
+  if isfield(paramstruct,'vclass')    %  then change to input value
+    vclass = paramstruct.vclass ; 
+  end 
 
-  if isfield(paramstruct,'sigbackg') ;    %  then change to input value
-    sigbackg = getfield(paramstruct,'sigbackg') ; 
-  end ;
+  if isfield(paramstruct,'sigbackg')    %  then change to input value
+    sigbackg = paramstruct.sigbackg ; 
+  end 
 
-  if isfield(paramstruct,'iCovEst') ;    %  then change to input value
-    iCovEst = getfield(paramstruct,'iCovEst') ; 
-  end ;
+  if isfield(paramstruct,'iCovEst')    %  then change to input value
+    iCovEst = paramstruct.iCovEst ; 
+  end 
 
-  if isfield(paramstruct,'ipvaltype') ;    %  then change to input value
-    ipvaltype = getfield(paramstruct,'ipvaltype') ; 
-  end ;
+  if isfield(paramstruct,'ipvaltype')    %  then change to input value
+    ipvaltype = paramstruct.ipvaltype ; 
+  end 
 
-  if isfield(paramstruct,'twoMtype') ;    %  then change to input value
-    twoMtype = getfield(paramstruct,'twoMtype') ; 
-  end ;
+  if isfield(paramstruct,'twoMtype')    %  then change to input value
+    twoMtype = paramstruct.twoMtype ; 
+  end 
 
-  if isfield(paramstruct,'twoMsteps') ;    %  then change to input value
-    twoMsteps = getfield(paramstruct,'twoMsteps') ; 
-  end ;
+  if isfield(paramstruct,'twoMsteps')    %  then change to input value
+    twoMsteps = paramstruct.twoMsteps ; 
+  end 
 
-  if isfield(paramstruct,'nsim') ;    %  then change to input value
-    nsim = getfield(paramstruct,'nsim') ; 
-  end ;
+  if isfield(paramstruct,'nsim')    %  then change to input value
+    nsim = paramstruct.nsim ; 
+    if nsim < 2  
+                    %  then invalid input, so give warning
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+      disp('!!!   Warning from SigClustSM.m:   !!!') ;
+      disp('!!!   Invalid nim,                 !!!') ;
+      disp('!!!   using default of 1000        !!!') ;
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+      nsim = 1000 ;
+    end 
+  end 
 
-  if isfield(paramstruct,'InitRandseed') ;    %  then change to input value
-    InitRandseed = getfield(paramstruct,'InitRandseed') ; 
-  end ;
+  if isfield(paramstruct,'InitRandseed')    %  then change to input value
+    InitRandseed = paramstruct.InitRandseed ; 
+  end 
 
-  if isfield(paramstruct,'SimRandseed') ;    %  then change to input value
-    SimRandseed = getfield(paramstruct,'SimRandseed') ; 
-  end ;
+  if isfield(paramstruct,'SimRandseed')    %  then change to input value
+    SimRandseed = paramstruct.SimRandseed ; 
+  end 
 
-  if isfield(paramstruct,'datastr') ;    %  then change to input value
-    datastr = getfield(paramstruct,'datastr') ; 
-  end ;
+  if isfield(paramstruct,'datastr')    %  then change to input value
+    datastr = paramstruct.datastr ; 
+  end 
 
-  if isfield(paramstruct,'iBGSDdiagplot') ;    %  then change to input value
-    iBGSDdiagplot = getfield(paramstruct,'iBGSDdiagplot') ; 
-  end ;
+  if isfield(paramstruct,'iBGSDdiagplot')    %  then change to input value
+    iBGSDdiagplot = paramstruct.iBGSDdiagplot ; 
+  end 
 
-  if isfield(paramstruct,'BGSDsavestr') ;    %  then change to input value
-    BGSDsavestr = getfield(paramstruct,'BGSDsavestr') ; 
-    if ~(ischar(BGSDsavestr) | isempty(BGSDsavestr)) ;    %  then invalid input, so give warning
+  if isfield(paramstruct,'BGSDsavestr')    %  then change to input value
+    BGSDsavestr = paramstruct.BGSDsavestr ; 
+    if ~(ischar(BGSDsavestr) || isempty(BGSDsavestr))    
+                    %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from SigClustSM.m:   !!!') ;
       disp('!!!   Invalid BGSDsavestr,         !!!') ;
       disp('!!!   using default of no save     !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       BGSDsavestr = [] ;
-    end ;
-  end ;
+    end 
+  end 
 
-  if isfield(paramstruct,'iCovEdiagplot') ;    %  then change to input value
-    iCovEdiagplot = getfield(paramstruct,'iCovEdiagplot') ; 
-  end ;
+  if isfield(paramstruct,'iCovEdiagplot')    %  then change to input value
+    iCovEdiagplot = paramstruct.iCovEdiagplot ; 
+  end 
 
-  if isfield(paramstruct,'CovEsavestr') ;    %  then change to input value
-    CovEsavestr = getfield(paramstruct,'CovEsavestr') ; 
-    if ~(ischar(CovEsavestr) | isempty(CovEsavestr)) ;    %  then invalid input, so give warning
+  if isfield(paramstruct,'CovEsavestr')    %  then change to input value
+    CovEsavestr = paramstruct.CovEsavestr ; 
+    if ~(ischar(CovEsavestr) || isempty(CovEsavestr))    %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from SigClustSM.m:   !!!') ;
       disp('!!!   Invalid CovEsavestr,         !!!') ;
       disp('!!!   using default of no save     !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       CovEsavestr = [] ;
-    end ;
-  end ;
+    end 
+  end 
 
-  if isfield(paramstruct,'ipValplot') ;    %  then change to input value
-    ipValplot = getfield(paramstruct,'ipValplot') ; 
-  end ;
+  if isfield(paramstruct,'ipValplot')    %  then change to input value
+    ipValplot = paramstruct.ipValplot ; 
+  end 
 
-  if isfield(paramstruct,'pValsavestr') ;    %  then change to input value
-    pValsavestr = getfield(paramstruct,'pValsavestr') ; 
-    if ~(ischar(pValsavestr) | isempty(pValsavestr)) ;    %  then invalid input, so give warning
+  if isfield(paramstruct,'pValsavestr')    %  then change to input value
+    pValsavestr = paramstruct.pValsavestr ; 
+    if ~(ischar(pValsavestr) || isempty(pValsavestr))    %  then invalid input, so give warning
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Warning from SigClustSM.m:   !!!') ;
       disp('!!!   Invalid pValsavestr,         !!!') ;
       disp('!!!   using default of no save     !!!') ;
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       pValsavestr = [] ;
-    end ;
-  end ;
+    end 
+  end 
 
   if isfield(paramstruct,'savetype')     %  then use input value
     savetype = paramstruct.savetype ; 
   end 
 
-  if isfield(paramstruct,'legendcellstr') ;    %  then change to input value
-    legendcellstr = getfield(paramstruct,'legendcellstr') ; 
-  end ;
+  if isfield(paramstruct,'legendcellstr')    %  then change to input value
+    legendcellstr = paramstruct.legendcellstr ; 
+  end 
 
-  if isfield(paramstruct,'mlegendcolor') ;    %  then change to input value
-    mlegendcolor = getfield(paramstruct,'mlegendcolor') ; 
-  end ;
+  if isfield(paramstruct,'mlegendcolor')    %  then change to input value
+    mlegendcolor = paramstruct.mlegendcolor ; 
+  end 
 
-  if isfield(paramstruct,'iscreenwrite') ;    %  then change to input value
-    iscreenwrite = getfield(paramstruct,'iscreenwrite') ; 
-  end ;
+  if isfield(paramstruct,'iscreenwrite')    %  then change to input value
+    iscreenwrite = paramstruct.iscreenwrite ; 
+  end 
 
-end ;    %  of resetting of input parameters
+end    %  of resetting of input parameters
 
 
 
@@ -391,30 +406,30 @@ n = size(data,2) ;
 pval = [] ;
 zscore = [] ;
 CurFigNum = 0 ;
-if iscreenwrite == 2 ;
+if iscreenwrite == 2 
   iscreenwritemost = 1 ;
   iscreenwriteall = 0 ;
       %  for use as arguments in other calls
-elseif iscreenwrite == 3 ;
+elseif iscreenwrite == 3 
   iscreenwritemost = 1 ;
   iscreenwriteall = 1 ;
       %  for use as arguments in other calls
-else ;
+else 
   iscreenwritemost = 0 ;
   iscreenwriteall = 0 ;
       %  for use as argument in other calls
-end ;
+end 
 
-if isempty(vclass) ;
+if isempty(vclass) 
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   disp('!!!   Warning from SigClustSM.m:     !!!') ;
   disp('!!!   vclass is empty                !!!') ;
   disp('!!!   Resetting to vclass = 0        !!!') ;
   disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
   vclass = 0 ;
-end ;
-if vclass ~= 0 ;
-  if  (size(vclass,1) ~= 1)  |   (size(vclass,2) ~= n)  ;
+end 
+if vclass ~= 0 
+  if  (size(vclass,1) ~= 1)  ||   (size(vclass,2) ~= n)  
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from SigClustSM.m:          !!!') ;
     disp('!!!   vclass needs to be a row vector   !!!') ;
@@ -422,21 +437,21 @@ if vclass ~= 0 ;
     disp('!!!   Terminating Execution             !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     return ;
-  end ;
+  end 
   flag1 =  (vclass == 1)  ;
   flag2 =  (vclass == 2)  ;
-  if (sum(flag1) + sum(flag2)) ~= n ; 
+  if (sum(flag1) + sum(flag2)) ~= n 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from SigClustSM.m:                !!!') ;
     disp('!!!   vclass needs to contain all 1s and 2s   !!!') ;
     disp('!!!   Terminating Execution                   !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     return ;
-  end ;
-end ;
+  end 
+end 
 
-if  ~isempty(mlegendcolor) ;
-  if ~(size(legendcellstr,2) == size(mlegendcolor,1)) ;
+if  ~isempty(mlegendcolor) 
+  if ~(size(legendcellstr,2) == size(mlegendcolor,1)) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from SigClustSM.m:        !!!') ;
     disp('!!!   legendcellstr &  mlegendcolor     !!!') ;
@@ -450,11 +465,11 @@ if  ~isempty(mlegendcolor) ;
     disp('!!!   Resetting to no legend            !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     legendcellstr = [] ;
-  end ;
-end ;
+  end 
+end 
 
-if  ~isempty(mlegendcolor) ;
-  if ~(size(mlegendcolor,2) == 3) ;
+if  ~isempty(mlegendcolor) 
+  if ~(size(mlegendcolor,2) == 3) 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from SigClustSM.m:    !!!') ;
     disp('!!!   mlegendcolor                  !!!') ;
@@ -462,34 +477,34 @@ if  ~isempty(mlegendcolor) ;
     disp('!!!   Resetting to no legend        !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     legendcellstr = [] ;
-  end ;
-end ;
+  end 
+end 
 
 
 
 %  Compute Initial Cluster Index for Data
 %
-if vclass == 0 ;    %  No initial clustering given, so compute from data
+if vclass == 0    %  No initial clustering given, so compute from data
 
-  if twoMtype == 1 ;    %  Use Random Restarts for computation
+  if twoMtype == 1    %  Use Random Restarts for computation
 
     paramstruct = struct('nrep',twoMsteps,  ...
                          'randseed',InitRandseed, ...
                          'iscreenwrite',iscreenwritemost) ;
-    [temp, vindex] = SigClust2meanRepSM(data,paramstruct) ;
+    [~, vindex] = SigClust2meanRepSM(data,paramstruct) ;
         %  Ignore usual output of BestClass (Cluster Labelling)
     ClustIndData = min(vindex) ;
         %  Since SigClust2meanRepSM returns full vector of Clust Indices
 
-  elseif twoMtype == 2 ;    %  Use PCA starts for computation
+  elseif twoMtype == 2    %  Use PCA starts for computation
 
     paramstruct = struct('maxstep',twoMsteps,  ...
                          'ioutplot',0, ...
                          'iscreenwrite',iscreenwritemost) ;
-    [temp, ClustIndData]= SigClust2meanFastSM(data,paramstruct) ;
+    [~, ClustIndData]= SigClust2meanFastSM(data,paramstruct) ;
         %  Ignore usual output of BestClass (Cluster Labelling)
 
-  else ;    %  Mispecified Computation Type
+  else    %  Mispecified Computation Type
 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from SigClustSM.m:    !!!') ;
@@ -499,13 +514,13 @@ if vclass == 0 ;    %  No initial clustering given, so compute from data
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     return ;
 
-  end ;
+  end 
 
-else ;    %  Were given an initial clustering, so compute ClustInd for that
+else    %  Were given an initial clustering, so compute ClustInd for that
 
   ClustIndData = ClustIndSM(data,(vclass == 1),(vclass == 2)) ;
 
-end ;
+end
 
 
 
@@ -514,9 +529,9 @@ end ;
 %  Start with sample eignevalues
 %
 paramstruct = struct('iscreenwrite',iscreenwritemost, ...
-                     'viout',[1]) ;
+                     'viout',1) ;
 outstruct = pcaSM(data,paramstruct) ;
-veigval = getfield(outstruct,'veigval') ;
+veigval = outstruct.veigval ;
 nev = length(veigval) ;
 veigval = [veigval; zeros(d-nev,1)] ;
      %  Pad out to have length d
@@ -525,7 +540,7 @@ varflag = 0 ;
     %  warning flag about possible bad background estimation
 
 
-if iCovEst ~= 2 ;    %  then need to consider thresholding
+if iCovEst ~= 2    %  then need to consider thresholding
 
   npix = d * n ;
   vdata = reshape(data,npix,1) ;
@@ -534,7 +549,7 @@ if iCovEst ~= 2 ;    %  then need to consider thresholding
   avar = asd^2 ;
 
 
-  if sigbackg == 0 ;    %  Need to estimate background standard deviation
+  if sigbackg == 0    %  Need to estimate background standard deviation
 
 
     amean = mean(vdata) ;
@@ -543,7 +558,7 @@ if iCovEst ~= 2 ;    %  then need to consider thresholding
         %  MAD, but on sd scale
 
 
-    if iBGSDdiagplot ~= 0 ;    %  Then make BackGround Standard Deviation
+    if iBGSDdiagplot ~= 0    %  Then make BackGround Standard Deviation
                                %        DIAGnostic PLOTs
 
       CurFigNum = CurFigNum + 1 ;
@@ -555,24 +570,24 @@ if iCovEst ~= 2 ;    %  then need to consider thresholding
                            'datovlaymin',0.15, ...
                            'iscreenwrite',iscreenwritemost) ;
       kdeSM(vdata,paramstruct) ;
-        if isempty(datastr) ;
+        if isempty(datastr)
           titstr = 'Distribution of All Pixel values combined' ;
-        else ;
+        else 
           titstr = ['Distribution of All Pixel values combined, ' datastr] ;
-        end ;
+        end 
         title(titstr,'FontSize',15) ;
         vax = axis ;
         hold on ;
             xgrid = linspace(vax(1),vax(2),401)' ;
             normden = nmfSM(xgrid,amedian,amad^2,1) ;
           plot(xgrid,normden,'r--') ;
-          if length(vdata) < maxnol ;
+          if length(vdata) < maxnol 
             olstr = ['Overlay of '...
                      num2str(length(vdata)) ' data points'] ;
-          else ;
+          else 
             olstr = ['Overlay of ' num2str(maxnol) ' of '...
                      num2str(length(vdata)) ' data points'] ;
-          end ;
+          end 
           text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
                vax(3) + 0.9 * (vax(4) - vax(3)), ...
                olstr,'FontSize',15) ;
@@ -591,37 +606,42 @@ if iCovEst ~= 2 ;    %  then need to consider thresholding
                ['Gaussian(' num2str(amedian,3) ...
                 ',' num2str(amad,3) ') density'], ...
                'FontSize',15, 'Color','r') ;
-          if amad > asd ;
+          if amad > asd 
             text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
                  vax(3) + 0.45 * (vax(4) - vax(3)), ...
-                 ['Warning: MAD > s.d., non-Gaussian Background'], ...
+                 'Warning: MAD > s.d., non-Gaussian Background', ...
                  'FontSize',18, 'Color','m') ;
-          end ;
+          end 
         hold off ;
 
-        if ~isempty(BGSDsavestr) ;
-            savestr = [BGSDsavestr 'KDE.ps'] ;
+        if ~isempty(BGSDsavestr) 
+            savestr = [BGSDsavestr 'KDE'] ;
           printSM(savestr,savetype) ;
-        end ;
+        end 
 
 
       CurFigNum = CurFigNum + 1 ;
       figure(CurFigNum) ;
       clf ;
-      savestr = [BGSDsavestr 'QQ'] ;
+      if ~isempty(BGSDsavestr) 
+        QQsavestr = [BGSDsavestr 'QQ'] ;
+      else
+        QQsavestr = [] ;
+      end 
 
-      if isempty(datastr) ;
+      if isempty(datastr) 
         titstr = 'Robust Fit Gaussian Q-Q, All Pixel values' ;
-      else ;
+      else 
         titstr = ['Robust Fit Gaussian Q-Q, All Pixel values, ' datastr] ;
-      end ;
+      end 
 
       paramstruct = struct('idist',1, ...
                            'mu',amedian, ...
                            'sigma',amad, ...
                            'nsim',0, ...
                            'nsimplotval',900, ...
-                           'savestr',savestr, ...
+                           'savestr',QQsavestr, ...
+                           'savetype',savetype, ...
                            'titlestr',titstr, ...
                            'titlefontsize',15, ...
                            'labelfontsize',15, ...
@@ -631,15 +651,15 @@ if iCovEst ~= 2 ;    %  then need to consider thresholding
                            'iscreenwrite',iscreenwritemost) ;
       qqLM(vdata,paramstruct) ;
 
-    end ;    %  of iBGSDdiagplot if-block
+    end    %  of iBGSDdiagplot if-block
 
     isigbackg = amad ;
 
-  else ;    %  Use input value of background standard deviation
+  else    %  Use input value of background standard deviation
 
     isigbackg = sigbackg ;
 
-  end ;    %  of sigbackg if-block
+  end    %  of sigbackg if-block
 
 
   simbackvar = isigbackg^2 ;
@@ -648,8 +668,8 @@ if iCovEst ~= 2 ;    %  then need to consider thresholding
 
   %  Check whether background estimate is sensible,
   %  in sense of being smaller than sample variance
-  if simbackvar > avar ;    %  then have surprising background var est,
-                            %      so give warning, and recommendations
+  if simbackvar > avar    %  then have surprising background var est,
+                          %      so give warning, and recommendations
     varflag = 1 ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Warning from SigClustSM.m:                    !!!') ;
@@ -663,41 +683,41 @@ if iCovEst ~= 2 ;    %  then need to consider thresholding
     disp('!!!   Consider re-running SigClust test,            !!!') ;
     disp('!!!       using:   iCovEst = 2                      !!!') ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
-  end ;
+  end 
 
   %  Compute eigenvalues to use in Gaussian Simulation
   %
-  if iCovEst == 3 ;    %  Use Original Background Noise Thresholded Estimate
-                       %     (from Liu, et al, JASA paper)
-                       %     (In Yuan's terminology, this is "Hard Thresholding")
+  if iCovEst == 3    %  Use Original Background Noise Thresholded Estimate
+                     %     (from Liu, et al, JASA paper)
+                     %     (In Yuan's terminology, this is "Hard Thresholding")
 
     vsimeigval = max(veigval,simbackvar) ;
         %  vector of eigenvalues for simulation
 
-  elseif iCovEst == 4 ;    %  Use Ming Yuan's Soft Thresholded, Constrained MLE
+  elseif iCovEst == 4    %  Use Ming Yuan's Soft Thresholded, Constrained MLE
 
     vsimeigval = SigClustCovEstSM(veigval,simbackvar) ;
         %  vector of eigenvalues for simulation
 
-  else ;    %  Use Hanwen Huang's Soft Thresholded, Constrained MLE
+  else    %  Use Hanwen Huang's Soft Thresholded, Constrained MLE
 
     vsimeigval = SigClustCovEstHH(veigval,simbackvar) ;
         %  vector of eigenvalues for simulation
 
-  end ;
+  end 
 
 
-else ;   %  no adjustment to eigenvlues, just use empiricals
+else   %  no adjustment to eigenvlues, just use empiricals
 
   vsimeigval = veigval ;
       %  vector of eigenvalues for simulation
       %  based on raw covariance type model
 
-end ;    %  of (iCovEst ~= 2) if-block
+end    %  of (iCovEst ~= 2) if-block
 
 
 
-if iCovEdiagplot == 1 ;    %  Then make COVariance Estimation DIAGnostic PLOT
+if iCovEdiagplot == 1    %  Then make COVariance Estimation DIAGnostic PLOT
 
   ncut = 100 ;
   CurFigNum = CurFigNum + 1 ;
@@ -709,76 +729,76 @@ if iCovEdiagplot == 1 ;    %  Then make COVariance Estimation DIAGnostic PLOT
 
   subplot(2,2,1) ;
     plot((1:d)',veigval,'ko-') ;
-      if isempty(datastr) ;
+      if isempty(datastr) 
         titstr = 'Eigenvalues' ;
-      else ;
+      else 
         titstr = ['Eigenvalues, ' datastr] ;
-      end ;
+      end 
       title(titstr,'FontSize',12) ;
       xlabel('Component #','FontSize',12) ;
       ylabel('Eigenvalue','FontSize',12) ;
-      if iCovEst == 2 ;
+      if iCovEst == 2 
         vax = axisSM(veigval) ;
-      else ;
+      else 
         vax = axisSM([veigval; simbackvar]) ;
-      end ;
+      end 
       vax = [0 (d+1) vax(1) vax(2)] ;
       axis(vax) ;
       hold on ;
         plot([ncut + 0.5; ncut + 0.5],[vax(3); vax(4)],'g-') ;
         plot((1:d)',vsimeigval,'r--','LineWidth',2) ;
-        if iCovEst ~= 2 ;
+        if iCovEst ~= 2 
           plot([0; d + 1],[simbackvar; simbackvar],'m-') ;
           text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
                vax(3) + 0.9 * (vax(4) - vax(3)), ...
                ['Background variance = ' num2str(simbackvar,3)], ...
                'FontSize',12,'Color','m') ;
-        end ;
+        end 
         text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
              vax(3) + 0.8 * (vax(4) - vax(3)), ...
              'Eigenvalues for Simulation', ...
              'FontSize',12,'Color','r') ;
-        if varflag == 1 ;
+        if varflag == 1 
           text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
                vax(3) + 0.65 * (vax(4) - vax(3)), ...
-               ['Warning: MAD > s.d.'], ...
+               'Warning: MAD > s.d.', ...
                'FontSize',15,'Color','m') ;
-        end ;
+        end 
       hold off ;
   subplot(2,2,2) ;
     plot((1:dpos)',log10(veigvalpos),'ko-') ;
       title('log_{10} Eigenvalues','FontSize',12) ;
       xlabel('Component #','FontSize',12) ;
       ylabel('log_{10}(Eigenvalue)','FontSize',12) ;
-      if iCovEst == 2 ;
+      if iCovEst == 2 
         vax = axisSM(log10(veigvalpos)) ;
-      else ;
+      else 
         vax = axisSM(log10([veigvalpos; simbackvar])) ;
-      end ;
+      end 
       vax = [0 (d+1) vax(1) vax(2)] ;
       axis(vax) ;
       hold on ;
         plot([ncut + 0.5; ncut + 0.5],[vax(3); vax(4)],'g-') ;
         plot((1:d)',log10(vsimeigval),'r--','LineWidth',2) ;
-        if iCovEst ~= 2 ;
+        if iCovEst ~= 2 
           plot([0; d + 1],log10([simbackvar; simbackvar]),'m-') ;
           text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
                vax(3) + 0.9 * (vax(4) - vax(3)), ...
                ['log_{10} Background variance = ' num2str(log10(simbackvar),3)], ...
                'FontSize',12,'Color','m') ;
-        end ;
+        end 
         text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
              vax(3) + 0.8 * (vax(4) - vax(3)), ...
              'Eigenvalues for Simulation', ...
              'FontSize',12,'Color','r') ;
-        if varflag == 1 ;
+        if varflag == 1 
           text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
                vax(3) + 0.65 * (vax(4) - vax(3)), ...
-               ['Non-Gaussian Background'], ...
+               'Non-Gaussian Background', ...
                'FontSize',15,'Color','m') ;
-        end ;
+        end 
       hold off ;
-  if length(veigval) >= ncut ;
+  if length(veigval) >= ncut 
     subplot(2,2,3) ;
       plot((1:ncut)',veigval(1:ncut),'ko-') ;
         title('Zoomed in version of above','FontSize',12) ;
@@ -789,13 +809,13 @@ if iCovEdiagplot == 1 ;    %  Then make COVariance Estimation DIAGnostic PLOT
         axis(vax) ;
         hold on ;
           plot((1:ncut)',vsimeigval(1:ncut),'r--','LineWidth',2) ;
-          if iCovEst ~= 2 ;
+          if iCovEst ~= 2 
             plot([0; ncut + 1],[simbackvar; simbackvar],'m-') ;
             text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
                  vax(3) + 0.9 * (vax(4) - vax(3)), ...
                  ['Background variance = ' num2str(simbackvar,3)], ...
                  'FontSize',12,'Color','m') ;
-          end ;
+          end 
           text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
                vax(3) + 0.8 * (vax(4) - vax(3)), ...
                'Eigenvalues for Simulation', ...
@@ -806,82 +826,82 @@ if iCovEdiagplot == 1 ;    %  Then make COVariance Estimation DIAGnostic PLOT
         title('Zoomed in version of above','FontSize',12) ;
         xlabel('Component #','FontSize',12) ;
         ylabel('log_{10}(Eigenvalue)','FontSize',12) ;
-        if iCovEst == 2 ;
+        if iCovEst == 2 
           vax = axisSM(log10(veigvalpos(1:min(dpos,ncut)))) ;
-        else ;
+        else 
           vax = axisSM(log10([veigvalpos(1:min(dpos,ncut)); simbackvar])) ;
-        end ;
+        end 
         vax = [0 (ncut+1) vax(1) vax(2)] ;
         axis(vax) ;
         hold on ;
           plot((1:ncut)',log10(vsimeigval(1:ncut)),'r--','LineWidth',2) ;
-          if iCovEst ~= 2 ;
+          if iCovEst ~= 2 
             plot([0; d + 1],log10([simbackvar; simbackvar]),'m-') ;
             text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
                  vax(3) + 0.9 * (vax(4) - vax(3)), ...
                  ['log_{10} Background variance = ' num2str(log10(simbackvar),3)], ...
                  'FontSize',12,'Color','m') ;
-            end ;
+          end 
           text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
                vax(3) + 0.8 * (vax(4) - vax(3)), ...
                'Eigenvalues for Simulation', ...
                'FontSize',12,'Color','r') ;
         hold off ;
-  end ;
+  end 
 
-  if ~isempty(CovEsavestr) ;
-      savestr = [CovEsavestr '.ps'] ;
+  if ~isempty(CovEsavestr) 
+      savestr = CovEsavestr ;
     printSM(savestr,savetype) ;
-  end ;
+  end 
 
-end ;    %  of iCovEdiagplot if-block
+end    %  of iCovEdiagplot if-block
 
-if  (iscreenwrite == 1)  |  (iscreenwrite == 2)  |  (iscreenwrite == 3)  ;
-  if isempty(datastr) ;
+if  (iscreenwrite == 1)  ||  (iscreenwrite == 2)  ||  (iscreenwrite == 3) 
+  if isempty(datastr) 
     dispstr = 'SigClustSM:  Finished Estimation of Parameters for Gaussian simulation' ;
-  else ;
+  else 
     dispstr = ['SigClustSM:  Finished Estimation of Parameters for Gaussian simulation, for ' datastr] ;
-  end ;
+  end 
   disp(dispstr) ;
-end ;
+end 
 
 
 
 %  Main Simulation Loop
 %
-if ~isempty(SimRandseed) ;    %  Then set random number generation seed
+if ~isempty(SimRandseed)    %  Then set random number generation seed
   rng(SimRandseed) ;
-end ;
+end 
 
 vscale = sqrt(vsimeigval) ;
 
 vSimIndex = [] ;
-for isim = 1:nsim ;
-  if  iscreenwrite == 2  | (iscreenwrite == 3) ;
+for isim = 1:nsim 
+  if  iscreenwrite == 2  || (iscreenwrite == 3) 
     disp(['      SigClustSM:  Working on sim ' num2str(isim) ' of ' num2str(nsim)]) ;
-  end ;
+  end 
 
   mdatsim = randn(d,n) ;
   mdatsim = mdatsim .* vec2matSM(vscale,n) ;
 
-  if twoMtype == 1 ;    %  Use Random Restarts for computation
+  if twoMtype == 1    %  Use Random Restarts for computation
 
     paramstruct = struct('nrep',twoMsteps,  ...
                          'iscreenwrite',iscreenwriteall) ;
-    [temp, vindex] = SigClust2meanRepSM(mdatsim,paramstruct) ;
+    [~, vindex] = SigClust2meanRepSM(mdatsim,paramstruct) ;
         %  Ignore usual output of BestClass (Cluster Labelling)
     ClustIndSim = min(vindex) ;
         %  Since SigClust2meanRepSM returns full vector of Clust Indices
 
-  elseif twoMtype == 2 ;    %  Use PCA starts for computation
+  elseif twoMtype == 2    %  Use PCA starts for computation
 
     paramstruct = struct('maxstep',twoMsteps,  ...
                          'ioutplot',0, ...
                          'iscreenwrite',iscreenwriteall) ;
-    [temp, ClustIndSim]= SigClust2meanFastSM(mdatsim,paramstruct) ;
+    [~, ClustIndSim]= SigClust2meanFastSM(mdatsim,paramstruct) ;
         %  Ignore usual output of BestClass (Cluster Labelling)
 
-  else ;    %  Mispecified Computation Type
+  else    %  Mispecified Computation Type
 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from SigClustSM.m:    !!!') ;
@@ -891,47 +911,52 @@ for isim = 1:nsim ;
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     return ;
 
-  end ;
+  end
 
-  vSimIndex = [vSimIndex; ClustIndSim] ;
-end ;
+  vSimIndex = [vSimIndex; ClustIndSim] ; %#ok<AGROW>
+end
 
-if  (iscreenwrite == 1)  |  (iscreenwrite == 2)  |  (iscreenwrite == 3)  ;
-  if isempty(datastr) ;
+if  (iscreenwrite == 1)  ||  (iscreenwrite == 2)  ||  (iscreenwrite == 3) 
+  if isempty(datastr) 
     dispstr = 'SigClustSM:  Finished main simulation' ;
-  else ;
+  else 
     dispstr = ['SigClustSM:  Finished main simulation, for ' datastr] ;
-  end ;
+  end 
   disp(dispstr) ;
-end ;
+end 
 
 
 
 
 %  Output Final results
 %
-if ipvaltype ~= 2 ;    %  then compute Empirical Quantile based p-value
+if ipvaltype ~= 2    %  then compute Empirical Quantile based p-value
   pval = cprobSM(vSimIndex,ClustIndData) ;
-end ;
-if ipvaltype ~= 1 ;    %  then compute Z score
+  if pval == 0 
+    pvalstr = ['< ' num2str(1 / nsim)] ;
+  else 
+    pvalstr = ['= ' num2str(pval)] ;
+  end 
+end 
+if ipvaltype ~= 1    %  then compute Z score
   simmean = mean(vSimIndex) ;
   simsd = std(vSimIndex) ;
   zscore = (ClustIndData - simmean) / simsd ;
-end ;
+end 
 
 
-if ipValplot == 1 ;    %  Then make p Value plot
+if ipValplot == 1    %  Then make p Value plot
 
   CurFigNum = CurFigNum + 1 ;
   figure(CurFigNum) ;
   clf ;
 
   vax = axisSM([vSimIndex; ClustIndData]) ;
-  if isempty(datastr) ;
+  if isempty(datastr)
     kdetitstr = [num2str(nsim) ' Gaussian Simulated Cluster Indices'] ;
-  else ;
+  else 
     kdetitstr = [num2str(nsim) ' Gaussian Simulated Cluster Indices, ' datastr] ;
-  end ;
+  end 
 
   kdeparamstruct = struct('vxgrid',vax, ...
                           'linecolor','k', ...
@@ -953,22 +978,22 @@ if ipValplot == 1 ;    %  Then make p Value plot
     text(vax(1) + 0.5 * (vax(2) - vax(1)), ...
          vax(3) + 0.9 * (vax(4) - vax(3)), ...
          ['Data Cluster Index = ' num2str(ClustIndData)],'Color',[0 0.6 0]) ;
-    if ipvaltype ~= 2 ;    %  then write Empirical Quantile based p-value
+    if ipvaltype ~= 2    %  then write Empirical Quantile based p-value
       text(vax(1) + 0.5 * (vax(2) - vax(1)), ...
            vax(3) + 0.8 * (vax(4) - vax(3)), ...
-           ['p-val (Empirical) = ' num2str(pval)],'Color',[0 0.6 0]) ;
-    end;
-    if ipvaltype ~= 1 ;    %  then write Gaussian based p-value
+           ['p-val (Empirical) ' pvalstr],'Color',[0 0.6 0]) ;
+    end
+    if ipvaltype ~= 1    %  then write Gaussian based p-value
       text(vax(1) + 0.5 * (vax(2) - vax(1)), ...
            vax(3) + 0.7 * (vax(4) - vax(3)), ...
            ['Z Score = ' num2str(zscore)],'Color',[0 0.6 0]) ;
       xgrid = linspace(vax(1),vax(2),401)' ;
       plot(xgrid,nmfSM(xgrid,simmean,simsd^2,1),'k') ;
-    end ;
-    if varflag == 1 ;
+    end 
+    if varflag == 1 
       text(vax(1) + 0.5 * (vax(2) - vax(1)), ...
            vax(3) + 0.55 * (vax(4) - vax(3)), ...
-           ['Warning: MAD > s.d.,'], ...
+           'Warning: MAD > s.d.,', ...
            'FontSize',15,'Color','m') ;
       text(vax(1) + 0.5 * (vax(2) - vax(1)), ...
            vax(3) + 0.45 * (vax(4) - vax(3)), ...
@@ -976,59 +1001,58 @@ if ipValplot == 1 ;    %  Then make p Value plot
            'FontSize',15,'Color','m') ;
       text(vax(1) + 0.2 * (vax(2) - vax(1)), ...
            vax(3) + 0.35 * (vax(4) - vax(3)), ...
-           ['Non-Gaussian Background Data'], ...
+           'Non-Gaussian Background Data', ...
            'FontSize',15,'Color','m') ;
-    end ;
+    end 
 
-    if ~isempty(legendcellstr) ;    %  then add legend
+    if ~isempty(legendcellstr)     %  then add legend
       nlegend = length(legendcellstr) ;
-      if isempty(mlegendcolor) ;
+      if isempty(mlegendcolor) 
         mlegendcolor = vec2matSM(zeros(1,3),nlegend) ;
             %  all black when unspecified
-      end ;
+      end 
       tx = vax(1) + 0.1 * (vax(2) - vax(1)) ;
-      for ilegend = 1:nlegend ;
+      for ilegend = 1:nlegend 
         ty = 0 + ((nlegend - ilegend + 1) / ...
                              (nlegend + 1)) * (vax(4) - 0) ;
         text(tx,ty,legendcellstr(ilegend),  ...
                   'Color',mlegendcolor(ilegend,:)) ;
-      end ;
-    end ;
+      end 
+    end 
 
   hold off ;
 
-  if ~isempty(pValsavestr) ;
-      savestr = [pValsavestr '.ps'] ;
-    printSM(savestr,savetype) ;
-  end ;
+  if ~isempty(pValsavestr) 
+    printSM(pValsavestr,savetype) ;
+  end 
 
-end ;    %  of ipValplot if-block
+end    %  of ipValplot if-block
 
 
-if  (iscreenwrite == 1)  |  (iscreenwrite == 2)  |  (iscreenwrite == 3)  ;
-  if isempty(datastr) ;
-    if ipvaltype == 1 ;    %  then write Quantile based p-value
-      dispstr = ['SigClustSM:  Finished with p-value = ' num2str(pval)] ;
-    elseif ipvaltype == 2 ;    %  then write Gaussian based p-value
+if  (iscreenwrite == 1)  ||  (iscreenwrite == 2)  ||  (iscreenwrite == 3) 
+  if isempty(datastr) 
+    if ipvaltype == 1    %  then write Quantile based p-value
+      dispstr = ['SigClustSM:  Finished with p-value ' pvalstr] ;
+    elseif ipvaltype == 2    %  then write Gaussian based p-value
       dispstr = ['SigClustSM:  Finished with Z-Score = ' num2str(zscore)] ;
-    else ;    %  then write both p-values
-      dispstr = ['SigClustSM:  Finished with p-value = ' num2str(pval) ...
+    else    %  then write both p-values
+      dispstr = ['SigClustSM:  Finished with p-value ' pvalstr ...
                                        '   & Z-Score = ' num2str(zscore)] ;
-    end ;
-  else ;
-    if ipvaltype == 1 ;    %  then write Quantile based p-value
+    end 
+  else 
+    if ipvaltype == 1    %  then write Quantile based p-value
       dispstr = ['SigClustSM:  Finished, for ' datastr ...
-                                      ', with p-value = ' num2str(pval)] ;
-    elseif ipvaltype == 2 ;    %  then write Gaussian based p-value
+                                      ', with p-value ' pvalstr] ;
+    elseif ipvaltype == 2    %  then write Gaussian based p-value
       dispstr = ['SigClustSM:  Finished, for ' datastr ...
                                       ', with Z-Score = ' num2str(zscore)] ;
-    else ;    %  then write both p-values
+    else    %  then write both p-values
       dispstr = ['SigClustSM:  Finished, for ' datastr ...
-                                      ', with p-value = ' num2str(pval) ...
+                                      ', with p-value ' pvalstr ...
                                        '   & Z-Score = ' num2str(zscore)] ;
-    end ;
-  end ;
+    end
+  end 
   disp(dispstr) ;
-end ;
+end 
 
 

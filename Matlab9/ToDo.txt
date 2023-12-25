@@ -1,10 +1,13 @@
 Update files:
-SigClust files  (print & rand)
 SWISS files
 
 
 Update directory:
 FRwarping-PNS
+
+
+Create .zip files, and post files (e.g. webpage)
+
 
 
 Further explore parameters in DWDlarge, especially using Matlab9/Tests/DWDLargetest.m

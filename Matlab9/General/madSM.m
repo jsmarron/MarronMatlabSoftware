@@ -17,7 +17,7 @@ function mad = madSM(data,iscale)
 % Assumes path can find personal function:
 %    vec2matSM.m
 
-%    Copyright (c) J. S. Marron 1998, 2001
+%    Copyright (c) J. S. Marron 1998, 2001, 2023
 
 
 %  Set parameters according to number of input arguments

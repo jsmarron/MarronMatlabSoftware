@@ -1,0 +1,23 @@
+Derek Tucker Software Key:
+
+Only need to call time_warping.m
+
+Inputs: 
+f - matrix of curves as columns (d x n)
+t - vector of common time points (d x 1)?
+lambda, tuning parameter (default = 0)
+option (see Derek's function)
+
+Outputs:
+
+fn - aligned functions (d x n), uses t as horizontal coords
+qn - aligned vertical SRVF functions (d x n), uses t as horizontal coords
+q0 - unaligned vertical SRVF functions (d x n), uses t as horizontal coords
+fmean - Karcher mean (d x 1), uses t as horizontal coords
+mqn - ???
+gam - warping functions (d x n), nice plot is as a function of [1:d]'/(d+1)?
+                or is it a function of (t - min(t)) / (max(t) - mint(t)?
+                     (doesn't matter when t is equally spaced)
+psi - horizontal SRVF functions (d x n), or is it ((d - 1) x n)?
+            Should we list a way of plotting these?
+stats - ???

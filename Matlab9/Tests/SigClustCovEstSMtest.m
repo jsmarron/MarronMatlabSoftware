@@ -4,7 +4,7 @@ disp('Running MATLAB script file SigClustCovEstSMtest.m') ;
 %     Does soft thresholded COVariance ESTimate 
 
 
-itest = 37 ;     %  1,  2,3,4,5,6,7    very simple tests
+itest = 37 ;     %  1,2,3,4,5,6,7    very simple tests
                  %  11,12,13,14,15            various ties and special cases
                  %  21,22,23,24,25,26,27,28       bigger examples, with graphics
                  %  31   Standard normal simulated data
@@ -237,28 +237,28 @@ elseif   itest == 31  | ...
   n = 40 ;
   nsim = 20 ;
   if itest == 31 ;
-    seedn = 49384597835 ;
-    randn('state',seedn) ;
+    seedn = 49384597 ;
     titstr = 'Standard Normal' ;
   elseif itest == 32 ;
-    seed = 7943872550 ;
+    seed = 79438725 ;
     titstr = 'Spiked Normal' ;
   elseif itest == 33 ;
-    seed = 723098475 ;
+    seed = 72309847 ;
     titstr = 'Sloped Normal' ;
   elseif itest == 34 ;
-    seed = 3794750875 ;
+    seed = 37947508 ;
     titstr = 'Slope Drop Normal' ;
   elseif itest == 35 ;
-    seed = 4384350583 ;
+    seed = 43843505 ;
     titstr = 'Flat & Drop Normal' ;
   elseif itest == 36 ;
-    seed = 2938475752 ;
+    seed = 29384757 ;
     titstr = '2 Cluster (45 deg)' ;
   elseif itest == 37 ;
-    seed = 9375432875 ;
+    seed = 93754328 ;
     titstr = '2 Cluster (1 entry)' ;
   end ;
+  rng(seedn) ;
 
 
   vsig2b = [] ;

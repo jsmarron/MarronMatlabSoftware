@@ -1,10 +1,10 @@
-disp('Running MATLAB script file SigClustCovEstHHtest.m') ;
+disp('Running MATLAB script file SigClustCovEstSMtest.m') ;
 %
-%    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION SigClustCovEstHH
+%    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION SigClustCovEstSM
 %     Does soft thresholded COVariance ESTimate 
 
 
-itest = 37 ;     %  1,2,3,4,5,6,7    very simple tests
+itest = 36 ;     %  1,2,3,4,5,6,7    very simple tests
                  %  11,12,13,14,15            various ties and special cases
                  %  21,22,23,24,25,26,27,28       bigger examples, with graphics
                  %  31   Standard normal simulated data
@@ -21,7 +21,7 @@ if itest == 1 ;    %  Simple toy data, just for construction purposes
   vsampeigv = [7; 6; 4; 2; 1; 1] 
   sig2b = 3 
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
    %  this is a really easy clear example, 
    %  where one can easily see what all the answers 
@@ -34,7 +34,7 @@ elseif itest == 2 ;     %  Simple Test Data, all too big
   vsampeigv = [7; 6; 5] 
   sig2b = 3 
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  Look for warning message
 
@@ -45,7 +45,7 @@ elseif itest == 3 ;     %  Simple Test Data, sum too small
   vsampeigv = [5; 4; 3; 2; 1] 
   sig2b = 4
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  Look for warning message
 
@@ -56,7 +56,7 @@ elseif itest == 4 ;     %  Simple Test Data, nondecreasing eigenvalues
   vsampeigv = [5; 4; 2; 3; 1] 
   sig2b = 2
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  Look for error message
   %  and empty returns
@@ -68,7 +68,7 @@ elseif itest == 5 ;     %  Simple Test Data, with a negative eigenvalue
   vsampeigv = [5; 4; 2; 0; -1] 
   sig2b = 2
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  Look for error message
   %  and empty returns
@@ -80,7 +80,7 @@ elseif itest == 6 ;     %  Simple Test Data, matrix argument
   vsampeigv = rand(6,2)
   sig2b = 0
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  Look for error message
   %  and empty returns
@@ -92,7 +92,7 @@ elseif itest == 7 ;     %  Simple Test Data, row vector argument
   vsampeigv = rand(1,5)
   sig2b = 0
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  Look for error message
   %  and empty returns
@@ -104,7 +104,7 @@ elseif itest == 11 ;     %  Simple ties data set
   vsampeigv = [5; 3; 3; 3; 2]
   sig2b = 3
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  From pencil and paper calculations, expect:
   %    Power moved = 1
@@ -118,7 +118,7 @@ elseif itest == 12 ;     %  Another ties data set
   vsampeigv = [7; 6; 3; 3; 3; 1; 1]
   sig2b = 3
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  From pencil and paper calculations, expect:
   %    Power moved = 4
@@ -133,7 +133,7 @@ elseif itest == 13 ;     %  A big spike, low sig2b example
   vsampeigv = [10; 3; 2; 0]
   sig2b = 2
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  From pencil and paper calculations, expect:
   %    Power moved = 2
@@ -147,7 +147,7 @@ elseif itest == 14 ;     %  Single big spike example
   vsampeigv = [12; 3; 2; 1]
   sig2b = 4
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  From pencil and paper calculations, expect:
   %    Power moved = 6
@@ -161,7 +161,7 @@ elseif itest == 15 ;     %  all but one above sig2b
   vsampeigv = [6; 5; 4; 0]
   sig2b = 3
 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) 
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) 
 
   %  From pencil and paper calculations, expect:
   %    Power moved = 3
@@ -209,10 +209,10 @@ elseif   itest == 21  | ...
   %
   figure(1) ;
   clf ; 
-  [veigvest, tau] = SigClustCovEstHH(vsampeigv,sig2b) ;
+  [veigvest, tau] = SigClustCovEstSM(vsampeigv,sig2b) ;
   vi = (1:length(vsampeigv))' ;
   plot(vi,vsampeigv,'ko','MarkerSize',8,'LineWidth',2) ;
-    title(['Test Graphic for SigClustCovEstHH,   itest = ' num2str(itest)],'FontSize',15) ;
+    title(['Test Graphic for SigClustCovEstSM,   itest = ' num2str(itest)],'FontSize',15) ;
     axisSM(vi,vsampeigv) ;
     vax = axis ;
     hold on ;
@@ -315,7 +315,7 @@ elseif   itest == 31  | ...
 
     %  Run Soft Thresholding
     %
-    [veigvest, tau] = SigClustCovEstHH(veigval,sig2b) ;
+    [veigvest, tau] = SigClustCovEstSM(veigval,sig2b) ;
     vtau = [vtau; tau] ;
     mveigvest = [mveigvest veigvest] ;
 

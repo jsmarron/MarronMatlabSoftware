@@ -4,7 +4,7 @@ disp('Running MATLAB script file SigClustCovEstHHtest.m') ;
 %     Does soft thresholded COVariance ESTimate 
 
 
-itest = 37 ;     %  1,2,3,4,5,6,7    very simple tests
+itest = 35 ;     %  1,2,3,4,5,6,7    very simple tests
                  %  11,12,13,14,15            various ties and special cases
                  %  21,22,23,24,25,26,27,28       bigger examples, with graphics
                  %  31   Standard normal simulated data

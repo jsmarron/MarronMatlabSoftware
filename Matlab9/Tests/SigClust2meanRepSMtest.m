@@ -8,7 +8,7 @@ itest = 14 ;     %  1,2,3,4,5,11,12,13,14
 
 if itest == 1 ;    %  Simple strongly clustered data, all defaults
 
-  randn('state',70374372402) ;
+  rng(70374372) ;
   data = randn(2,5) ;
   data = [data (10 * ones(2,5) + randn(2,5))] ; 
 
@@ -17,7 +17,7 @@ if itest == 1 ;    %  Simple strongly clustered data, all defaults
 
 elseif itest == 2 ;    %  Simple Gaussian data, all defaults
 
-  randn('state',2398344375) ;
+  rng(23983443) ;
   data = randn(10,10) ;
 
   [bestclass, vindex, midx] = SigClust2meanRepSM(data) 
@@ -25,7 +25,7 @@ elseif itest == 2 ;    %  Simple Gaussian data, all defaults
 
 elseif itest == 3 ;    %  Data on the surface of the sphere, all defaults
 
-  randn('state',424856325) ;
+  rng(42485632) ;
   data = randn(10,12) ;
   vlengths = sqrt(diag(data' * data)) ; 
   data = data ./ vec2matSM(vlengths',10) ;
@@ -35,7 +35,7 @@ elseif itest == 3 ;    %  Data on the surface of the sphere, all defaults
 
 elseif itest == 4 ;    %  Data in 4 balanced clusters, all defaults
 
-  randn('state',9834757345) ;
+  rng(98347573) ;
   data = randn(2,5) ;
   data = [data (100 * ones(2,5) + randn(2,5))] ; 
   data = [data ([(100 * ones(1,5)); zeros(1,5)] + randn(2,5))] ; 
@@ -46,7 +46,7 @@ elseif itest == 4 ;    %  Data in 4 balanced clusters, all defaults
 
 elseif itest == 5 ;    %  Data in 4 unbalanced clusters, all defaults
 
-  randn('state',9834757345) ;
+  rng(98347573) ;
   data = randn(2,5) ;
   data = [data (100 * ones(2,8) + randn(2,8))] ; 
   data = [data ([(100 * ones(1,7)); zeros(1,7)] + randn(2,7))] ; 
@@ -57,7 +57,7 @@ elseif itest == 5 ;    %  Data in 4 unbalanced clusters, all defaults
 
 else ;    %  Do parameter tests, use Data on the surface of the sphere
 
-  randn('state',424856325) ;
+  rng(42485632) ;
   data = randn(10,12) ;
   vlengths = sqrt(diag(data' * data)) ; 
   data = data ./ vec2matSM(vlengths',10) ;
@@ -80,18 +80,16 @@ else ;    %  Do parameter tests, use Data on the surface of the sphere
 
     [bestclass, vindex, midx] = SigClust2meanRepSM(data,paramstruct) 
 
-  elseif itest == 13 ;    %  paramstruct, fiddle randstate and randnstate
+  elseif itest == 13 ;    %  paramstruct, fiddle randseed
 
     close all ;
 
-    paramstruct = struct('randstate',[],...
-                         'randnstate',[],...
+    paramstruct = struct('randseed',[],...
                          'iscreenwrite',1) ;
 
     [bestclass1, vindex1, midx1] = SigClust2meanRepSM(data,paramstruct) 
 
-    paramstruct = struct('randstate',[],...
-                         'randnstate',[],...
+    paramstruct = struct('randseed',[],...
                          'iscreenwrite',1) ;
 
     [bestclass2, vindex2, midx2] = SigClust2meanRepSM(data,paramstruct) 
@@ -101,18 +99,16 @@ else ;    %  Do parameter tests, use Data on the surface of the sphere
      midxdiff = max(max(abs(midx1 - midx2)))
 
 
-  elseif itest == 14 ;    %  paramstruct, fiddle randstate and randnstate
+  elseif itest == 14 ;    %  paramstruct, fiddle randseed
 
     close all ;
 
-    paramstruct = struct('randstate',7402873450,...
-                         'randnstate',2394753757,...
+    paramstruct = struct('randseed',74028734,...
                          'iscreenwrite',1) ;
 
     [bestclass1, vindex1, midx1] = SigClust2meanRepSM(data,paramstruct) 
 
-    paramstruct = struct('randstate',7402873450,...
-                         'randnstate',2394753757,...
+    paramstruct = struct('randseed',74028734,...
                          'iscreenwrite',1) ;
 
     [bestclass2, vindex2, midx2] = SigClust2meanRepSM(data,paramstruct) 

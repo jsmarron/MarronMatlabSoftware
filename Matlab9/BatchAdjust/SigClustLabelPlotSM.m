@@ -342,6 +342,21 @@ if (length(legendcellstr) == 2) && isempty(mlegendcolor)
 end 
 
 
+%  Set up markrstr
+%
+if vflag1(1) 
+  markerstrin = markerstr(1,:) ;
+else 
+  markerstrin = markerstr(2,:) ;
+end 
+for i = 2:n 
+  if vflag1(i) 
+    markerstrin = char(markerstrin,markerstr(1,:)) ;
+  else 
+    markerstrin = char(markerstrin,markerstr(2,:)) ;
+  end 
+end 
+
 
 if d == 1    %  then use projplot1SM.m 
 
@@ -352,15 +367,6 @@ if d == 1    %  then use projplot1SM.m
     mlegendcolor = [] ;
   else 
     icolorin = vflag1' * icolor(1,:) + vflag2' * icolor(2,:) ;
-  end 
-
-  markerstrin = [] ;
-  for i = 1:n 
-    if vflag1(i) 
-      markerstrin = char(markerstrin,markerstr(1,:)) ;
-    else 
-      markerstrin = char(markerstrin,markerstr(2,:)) ;
-    end 
   end 
 
   paramstruct = struct('icolor',icolorin, ...
@@ -437,14 +443,6 @@ else    %  then use scatplotSM.m
     icolorin = vflag1' * icolor(1,:) + vflag2' * icolor(2,:) ;
   end 
 
-  markerstrin = [] ;
-  for i = 1:n 
-    if vflag1(i) 
-      markerstrin = char(markerstrin,markerstr(1,:)) ;
-    else 
-      markerstrin = char(markerstrin,markerstr(2,:)) ;
-    end 
-  end 
 
   paramstruct = struct('icolor',icolorin, ...
                        'npcadiradd',npcadiradd, ...
@@ -472,7 +470,7 @@ else    %  then use scatplotSM.m
   if ~(isempty(labelcellstr)) 
     paramstruct.labelcellstr = labelcellstr ;
   elseif iMDdir ~= 0 
-    paramstruct.labelcellstr = 'Mean Diff Direction' ;
+    paramstruct.labelcellstr = {{'Mean Diff Direction'}} ;
   end 
 
   scatplotSM(data,mdir,paramstruct) ;

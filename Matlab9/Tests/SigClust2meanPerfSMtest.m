@@ -8,7 +8,7 @@ itest = 23 ;     %  1,2,3,4,5,11,12,13,14,15,16,17,18,19,20,21,22,23
 
 if itest == 1 ;    %  Simple strongly clustered data, all defaults
 
-  randn('state',70374372402) ;
+  rng(70374372) ;
   data = randn(2,5) ;
   data = [data (10 * ones(2,5) + randn(2,5))] ; 
 
@@ -17,7 +17,7 @@ if itest == 1 ;    %  Simple strongly clustered data, all defaults
 
 elseif itest == 2 ;    %  Simple Gaussian data, all defaults
 
-  randn('state',2398344375) ;
+  rng(23983443) ;
   data = randn(10,10) ;
 
   SigClust2meanPerfSM(data) ;
@@ -25,7 +25,7 @@ elseif itest == 2 ;    %  Simple Gaussian data, all defaults
 
 elseif itest == 3 ;    %  Data on the surface of the sphere, all defaults
 
-  randn('state',424856325) ;
+  rng(42485632) ;
   data = randn(10,12) ;
   vlengths = sqrt(diag(data' * data)) ; 
   data = data ./ vec2matSM(vlengths',10) ;
@@ -35,7 +35,7 @@ elseif itest == 3 ;    %  Data on the surface of the sphere, all defaults
 
 elseif itest == 4 ;    %  Data in 4 balanced clusters, all defaults
 
-  randn('state',9834757345) ;
+  rng(98347573) ;
   data = randn(2,5) ;
   data = [data (100 * ones(2,5) + randn(2,5))] ; 
   data = [data ([(100 * ones(1,5)); zeros(1,5)] + randn(2,5))] ; 
@@ -46,7 +46,7 @@ elseif itest == 4 ;    %  Data in 4 balanced clusters, all defaults
 
 elseif itest == 5 ;    %  Data in 4 unbalanced clusters, all defaults
 
-  randn('state',9834757345) ;
+  rng(98347573) ;
   data = randn(2,5) ;
   data = [data (100 * ones(2,8) + randn(2,8))] ; 
   data = [data ([(100 * ones(1,7)); zeros(1,7)] + randn(2,7))] ; 
@@ -57,7 +57,7 @@ elseif itest == 5 ;    %  Data in 4 unbalanced clusters, all defaults
 
 else ;    %  Do parameter tests, use Data on the surface of the sphere
 
-  randn('state',424856325) ;
+  rng(42485632) ;
   data = randn(10,12) ;
   vlengths = sqrt(diag(data' * data)) ; 
   data = data ./ vec2matSM(vlengths',10) ;
@@ -114,13 +114,12 @@ else ;    %  Do parameter tests, use Data on the surface of the sphere
     SigClust2meanPerfSM(data,paramstruct) ;
 
 
-  elseif itest == 16 ;    %  paramstruct, fiddle randstate and randnstate
+  elseif itest == 16 ;    %  paramstruct, fiddle randseed
 
     close all ;
 
     paramstruct = struct('viplot',[0 0 0 0 0 0 1],...
-                         'randstate',[],...
-                         'randnstate',[],...
+                         'randseed',[],...
                          'titlestr','No Seeds, Round 1,    ',...
                          'iscreenwrite',1) ;
 
@@ -129,8 +128,7 @@ else ;    %  Do parameter tests, use Data on the surface of the sphere
     pauseSM ;
 
     paramstruct = struct('viplot',[0 0 0 0 0 0 1],...
-                         'randstate',[],...
-                         'randnstate',[],...
+                         'randseed',[],...
                          'titlestr','No Seeds, Round 2,   ',...
                          'iscreenwrite',1) ;
 
@@ -142,8 +140,7 @@ else ;    %  Do parameter tests, use Data on the surface of the sphere
     close all ;
 
     paramstruct = struct('viplot',[0 0 0 0 0 0 1],...
-                         'randstate',7402873450,...
-                         'randnstate',2394753757,...
+                         'randseed',74028734,...
                          'titlestr','Using Same Seeds, Round 1,    ',...
                          'iscreenwrite',1) ;
 
@@ -152,8 +149,7 @@ else ;    %  Do parameter tests, use Data on the surface of the sphere
     pauseSM ;
 
     paramstruct = struct('viplot',[0 0 0 0 0 0 1],...
-                         'randstate',7402873450,...
-                         'randnstate',2394753757,...
+                         'randseed',74028734,...
                          'titlestr','Using Same Seeds, Round 2,   ',...
                          'iscreenwrite',1) ;
 

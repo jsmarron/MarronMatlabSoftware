@@ -4,7 +4,7 @@ disp('Running MATLAB script file SigClustSMtest.m') ;
 %    SCATterplot MATrix view of data
 
 
-itest = 1 ;    %  1,...,42     Simple parameter tests
+itest = 42 ;    %  1,...,42     Simple parameter tests
                 %  101          Illustrative examples (not implemented yet)
 
 

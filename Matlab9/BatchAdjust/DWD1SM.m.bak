@@ -1,5 +1,5 @@
 function dirvec = DWD1SM(trainp,trainn,DWDpar)
-% DWD1SM, Distance Weighted Discrimination DIRection vector
+% DWD1SM, Distance Weighted Discrimination DIResction vector
 %   Steve Marron's matlab function
 %     Essentially pared down version of hdd1SM.m
 %

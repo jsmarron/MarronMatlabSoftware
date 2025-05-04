@@ -51,6 +51,9 @@ function HeatMapSM(mdata,paramstruct)
 %                           last bin  (icolor = 1)
 %                           larger of first and last bin (icolor = 2)
 %                              (default = 0.05)
+%                      For manually set range (not based on quantiles 
+%                            as above), make this a 2 x 1 vector:
+%                                  [lovalue; hivalue]
 %
 %    ncolor            Number of color bins to use, (default = 64)
 %
@@ -107,7 +110,7 @@ function HeatMapSM(mdata,paramstruct)
 %    RainbowColorsQY.m
 %    HeatColorsSM.m
 
-%    Copyright (c) J. S. Marron 2019, 2023
+%    Copyright (c) J. S. Marron 2019, 2023, 2025
 
 
 
@@ -217,11 +220,29 @@ nrow = size(mdata,1) ;
 ncolumn = size(mdata,2) ;
 vdata = reshape(mdata,nrow*ncolumn,1) ;
     %  vector version of data matrix
-vq = cquantSM(vdata,[alpha (1-alpha)]) ;
-qlo = vq(1) ;
-    %  lower data quantile
-qhi = vq(2) ;
-    %  upper data quantile
+if length(alpha) == 1    %  scalar entry, use quantiles
+  vq = cquantSM(vdata,[alpha (1-alpha)]) ;
+  qlo = vq(1) ;
+      %  lower data quantile
+  qhi = vq(2) ;
+      %  upper data quantile
+elseif  (size(alpha,1) == 2)  &  (size(alpha,2) == 1)
+                                     %  2 x 1 vector, use input values
+  qlo = alpha(1) ;
+  qhi = alpha(2) ;
+else
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  disp('!!!   Warning from HeatMapSM.m:    !!!') ;
+  disp('!!!   Invalid alpha,               !!!') ;
+  disp('!!!   using default quantile       !!!') ;
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  vq = cquantSM(vdata,[0.05 0.95]) ;
+  qlo = vq(1) ;
+      %  lower data quantile
+  qhi = vq(2) ;
+      %  upper data quantile
+end ;
+
 
 if max(size(icolor)) == 1    %  have scalar icolor 
 
@@ -369,8 +390,8 @@ if icolordist ~= 0    %  Consider adding a histogram of color distribution
     xlabel('Color Values') ;
     ylabel('Counts') ;
 
-    if ~isempty(savestr)    %  then create postscript file
-      printSM(savestr,savetype) ;    
+    if ~isempty(savestr)    %  then print to file
+      printSM([savestr 'ColorDist'],savetype) ;    
     end
 
   else    %  Bad parameter input, indicate error

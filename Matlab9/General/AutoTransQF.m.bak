@@ -130,7 +130,6 @@ parfor i = 1 : size(mdata,1)
         
         transformed_data(i, :) = final_vari;
         transformation{i, 1} = [ FeatureNames(i, :) ': ' text_k] ;
-        vbeta(i) = 0 ;
         
         continue;
     elseif abs(std(vari)) < 1e-6    %if number of unique values is greater then 2    
@@ -144,7 +143,6 @@ parfor i = 1 : size(mdata,1)
         
         transformed_data(i, :) = final_vari;
         transformation{i, 1} = [ FeatureNames(i, :) ': ' text_k] ;
-        vbeta(i) = 0 ;
 
         continue;
         
@@ -159,7 +157,6 @@ parfor i = 1 : size(mdata,1)
         
         transformed_data(i, :) = final_vari;
         transformation{i, 1} = [ FeatureNames(i, :) ': ' text_k] ;
-        vbeta(i) = 0 ;
 
         continue;
         
@@ -182,7 +179,6 @@ parfor i = 1 : size(mdata,1)
         
         transformed_data(i, :) = final_vari;
         transformation{i, 1} = [ FeatureNames(i, :) ': ' text_k] ;
-        vbeta(i) = beta ;
      
     
     end

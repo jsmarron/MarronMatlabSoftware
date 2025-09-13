@@ -12,7 +12,7 @@ disp('Running MATLAB script file DWDLargetest.m') ;
 %     Also seem to need much deeper exploration of DWD parameter
 
 
-itest = 14 ;     %  1 - simple test
+itest = 60 ;     %  1 - simple test
                 %  2 - Xi Yang no signal example, n = d = 100
                 %  3 - No signal, n = d = 100, compare with DWD2 
                 %           and explore DWD parameter
@@ -42,7 +42,22 @@ itest = 14 ;     %  1 - simple test
                 %  26 - Like 17, but n1 = 200, n2 = 50, d = 100
                 %  27 - Like 17, but n1 = 400, n2 = 25, d = 100
                 %  28 - Like 17, but n1 = 100, n2 = 100, d = 100
-
+%
+%  Parts added in 2024, to try to find common parametrization
+%      between DWD2 and DWDlarge
+%
+                %  51 - Match DWD2 & large, n = d = 100, Medium Signal
+                %  52 - Match DWD2 & large, n = 50, d = 200, Medium Signal
+                %  53 - Match DWD2 & large, n = 200, d = 50, Medium Signal
+                %  54 - Match DWD2 & large, n = d = 100, Small Signal
+                %  55 - Match DWD2 & large, n = 50, d = 200, Small Signal
+                %  55 - Match DWD2 & large, n = 200, d = 50, Small Signal
+                %  57 - Match DWD2 & large, n = d = 100, Large Signal
+                %  58 - Match DWD2 & large, n = 50, d = 200, Large Signal
+                %  59 - Match DWD2 & large, n = 200, d = 50, Large Signal
+                %  60 - Match DWD2 & large, n = d = 100, No Signal
+                %  61 - Match DWD2 & large, n = 50, d = 200, No Signal
+                %  62 - Match DWD2 & large, n = 200, d = 50, No Signal
 
 
 
@@ -81,12 +96,12 @@ if itest == 1 ;    % simple test
   paramstruct = struct('icolor',mcolor, ...
                        'markerstr',vmarkerstr, ...
                        'isubpopkde1',1, ...
-                       'titlestr','DWDLarge, simple call', ...
+                       'titlestr','DWDLarge, simple call, strong signal', ...
                        'iscreenwrite',1) ;
   projplot1SM(DWDLarge_X,vdir,paramstruct) ;
 
   disp(' ') ;
-  disp(['Value of DWD parameter C = ' num2str(C)]) ;
+  disp(['Value of DWD Large parameter C = ' num2str(C)]) ;
 
 
 elseif itest == 2 ;    % simple test, Xi Yang no signal example 
@@ -94,8 +109,9 @@ elseif itest == 2 ;    % simple test, Xi Yang no signal example
   rng(66430983) ;
   n1 = 100 ;
   n2 = 100 ;
-  mdata1 = randn(100,n1) ;
-  mdata2 = randn(100,n2) ;
+  d = 100 ;
+  mdata1 = randn(d,n1) ;
+  mdata2 = randn(d,n2) ;
 
   %  Call version from DiProPermXY.m
   %
@@ -121,15 +137,17 @@ elseif itest == 2 ;    % simple test, Xi Yang no signal example
   for i = 1:n2 ;
     vmarkerstr = strvcat(vmarkerstr,'o') ;
   end ;
+  titlestr = ['DWDLarge, simple call no signal example, d = ' ...
+                                                num2str(d)]  ;
   paramstruct = struct('icolor',mcolor, ...
                        'markerstr',vmarkerstr, ...
                        'isubpopkde',1, ...
-                       'titlestr','DWDLarge, simple call, Xi Yang example', ...
+                       'titlestr',titlestr, ...
                        'iscreenwrite',1) ;
   projplot1SM(DWDLarge_X,vdir,paramstruct) ;
 
   disp(' ') ;
-  disp(['Value of DWD parameter C = ' num2str(C)]) ;
+  disp(['Value of DWD Large parameter C = ' num2str(C)]) ;
 
 
 elseif itest == 3 ;    %  Xi Yang no signal example, compare with DWD2 
@@ -137,8 +155,9 @@ elseif itest == 3 ;    %  Xi Yang no signal example, compare with DWD2
   rng(66430983) ;
   n1 = 100 ;
   n2 = 100 ;
-  mdata1 = randn(100,n1) ;
-  mdata2 = randn(100,n2) ;
+  d = 100 ;
+  mdata1 = randn(d,n1) ;
+  mdata2 = randn(d,n2) ;
 
   %  Call version from DiProPermXY.m
   %
@@ -164,15 +183,17 @@ elseif itest == 3 ;    %  Xi Yang no signal example, compare with DWD2
   for i = 1:n2 ;
     vmarkerstr = strvcat(vmarkerstr,'o') ;
   end ;
+  titlestr = ['DWDLarge, simple call, no signal, d = ' ...
+                                     num2str(d)] ;
   paramstruct = struct('icolor',mcolor, ...
                        'markerstr',vmarkerstr, ...
                        'isubpopkde',1, ...
-                       'titlestr','DWDLarge, simple call, Xi Yang example', ...
+                       'titlestr',titlestr, ...
                        'iscreenwrite',1) ;
   projplot1SM(DWDLarge_X,vdir,paramstruct) ;
 
   disp(' ') ;
-  disp(['Value of DWD parameter C = ' num2str(C)]) ;
+  disp(['Value of DWD Large parameter C = ' num2str(C)]) ;
 
 
   %  Make corresponding default DWD2 graphic
@@ -182,42 +203,63 @@ elseif itest == 3 ;    %  Xi Yang no signal example, compare with DWD2
 
   figure(2) ;
   clf ;
+  titlestr = ['DWD2, simple call, no signal, d = ' ...
+                                     num2str(d)] ;
   paramstruct = struct('icolor',mcolor, ...
                        'markerstr',vmarkerstr, ...
                        'isubpopkde',1, ...
-                       'titlestr','DWD2, simple call, Xi Yang example', ...
+                       'titlestr',titlestr, ...
                        'iscreenwrite',1) ;
   projplot1SM(DWDLarge_X,vdirDWD2,paramstruct) ;
 
 
   %  Experiment with DWDLarge parameter
   %
-  Ca = C / median(ddist)^2 ;
+%  Ca = C / median(ddist)^2 ;
+%  Ca = 100 / median(ddist)^2 ;
+      %  This makes DWD large mod give same answer as MD
+%  Ca = 100 ;
+      %  This seems to give same answer as default,
+      %  because of max(1,part with med2) in formula
+%  Ca = 100 * median(ddist)^2 ;
+      %  This givs completely separable, ugly version
+  Ca = 100 / median(ddist) ;
+      %  This makes DWD large mod give same answer as MD
   vdira = genDWDweighted(DWDLarge_X,DWDLarge_y,Ca,1,options);
   vdira = vdira./norm(vdira);
 
   figure(3) ;
   clf ;
+%  titlestr = ['DWDLarge, input parameter, Ca = C / med2 = ' ...
+%                                     num2str(Ca)] ;
+  titlestr = ['DWDLarge, input parameter, Ca = ' num2str(Ca)] ;
   paramstruct = struct('icolor',mcolor, ...
                        'markerstr',vmarkerstr, ...
                        'isubpopkde',1, ...
-                       'titlestr','DWDLarge, input parameter', ...
+                       'titlestr',titlestr, ...
                        'iscreenwrite',1) ;
   projplot1SM(DWDLarge_X,vdira,paramstruct) ;
 
 
   %  Experiment with DWD2 parameter
   %
-  DWDpar = 100 * median(ddist)^2 ;
+%  DWDpar = 100 * median(ddist)^2 ;
+%  DWDpar = 100 / median(ddist)^2 ;
+  DWDpar = 100 ;
+      %  This give same answer as DWD default
   vdirDWD2a = DWD2XQ(mdata1,mdata2,2,[],DWDpar) ;
   vdirDWD2a = vdirDWD2a ./ norm(vdirDWD2a);
 
   figure(4) ;
   clf ;
+%  titlestr = ['DWDLarge, input parameter, DWDpar = 100 * med2 = ' ...
+%                                     num2str(DWDpar)] ;
+  titlestr = ['DWDLarge, input parameter, DWDpar = 100 / med2 = ' ...
+                                     num2str(DWDpar)] ;
   paramstruct = struct('icolor',mcolor, ...
                        'markerstr',vmarkerstr, ...
                        'isubpopkde',1, ...
-                       'titlestr','DWD2, input parameter', ...
+                       'titlestr',titlestr, ...
                        'iscreenwrite',1) ;
   projplot1SM(DWDLarge_X,vdirDWD2a,paramstruct) ;
 
@@ -226,6 +268,15 @@ elseif itest == 3 ;    %  Xi Yang no signal example, compare with DWD2
   %
   vdirMD = mean(mdata1,2) - mean(mdata2,2) ;
   vdirMD = vdirMD ./ norm(vdirMD) ;
+
+  figure(5) ;
+  clf ;
+  paramstruct = struct('icolor',mcolor, ...
+                       'markerstr',vmarkerstr, ...
+                       'isubpopkde',1, ...
+                       'titlestr','MD', ...
+                       'iscreenwrite',1) ;
+  projplot1SM(DWDLarge_X,vdirMD,paramstruct) ;
 
 
   disp(['Angle DWDLarge & DWDLarge (mod) dirns = ' ...
@@ -240,7 +291,7 @@ elseif itest == 3 ;    %  Xi Yang no signal example, compare with DWD2
                      num2str(180 * acos(abs(vdira' * vdirMD)) / pi)]) ;
   disp(['Angle DWDLarge (mod) & DWD2 (mod) dirns = ' ...
                      num2str(180 * acos(abs(vdira' * vdirDWD2a)) / pi)]) ;
-  disp(['Angle DWD2& DWD2 (mod) dirns = ' ...
+  disp(['Angle DWD2 & DWD2 (mod) dirns = ' ...
                      num2str(180 * acos(abs(vdirDWD2' * vdirDWD2a)) / pi)]) ;
 
 
@@ -856,6 +907,8 @@ elseif  itest == 8  | ...
     d = 50 ;
   end ;
 
+  rng(47027319) ;
+
   if  itest == 8  | ...
       itest == 9  | ...
       itest == 10  ;    %  Compare DiProPerms, Medium Signal
@@ -876,63 +929,129 @@ elseif  itest == 8  | ...
     mdata2 = 0.5 + randn(d,n2) ;
   end ;
 
+
   tic ;
   figure(1) ;    %  Mean Difference
   clf ;
-  titlestr = [sigstr ' Signal, n = ' num2str(n1) ', d = ' num2str(d)] ;
+  titlestr = [sigstr ', n' num2str(n1) ', d' num2str(d) ', MD'] ;
+  savestr = ['DWDlargeTest' sigstr 'n' num2str(n1) ...
+                      'd' num2str(d) 'MD'] ;
   paramstruct = struct('idir',2, ...
                        'iper',2, ...
                        'ishowperm',2, ...
                        'title1str',titlestr, ...
                        'nreport',50, ...
+                       'savestr',savestr, ...
                        'iscreenwrite',1) ;
-  DiProPermXY(mdata1,mdata2,paramstruct) ;
+  [stat,pval,PDCMD] = DiProPermXY(mdata1,mdata2,paramstruct) ;
   MDsec = toc ;
 
   tic ;
   figure(2) ;    %  DWD2
   clf ;
-  titlestr = [sigstr ' Signal, n = ' num2str(n1) ', d = ' num2str(d)] ;
+  titlestr = [sigstr ', n' num2str(n1) ', d' num2str(d) ', DWD2'] ;
+  savestr = ['DWDlargeTest' sigstr 'n' num2str(n1) ...
+                      'd' num2str(d) 'DWD2'] ;
   paramstruct = struct('idir',1, ...
                        'iper',2, ...
                        'ishowperm',2, ...
                        'title1str',titlestr, ...
                        'nreport',50, ...
+                       'savestr',savestr, ...
                        'iscreenwrite',1) ;
-  DiProPermXY(mdata1,mdata2,paramstruct) ;
+  [stat,pval,PDCDWD2] = DiProPermXY(mdata1,mdata2,paramstruct) ;
   DWD2sec = toc ;
 
   tic ;
   figure(3) ;    %  DWDlarge
   clf ;
-  titlestr = [sigstr ' Signal, n = ' num2str(n1) ', d = ' num2str(d)] ;
+  titlestr = [sigstr ', n' num2str(n1) ', d' num2str(d) ', DWDlarge'] ;
+  savestr = ['DWDlargeTest' sigstr 'n' num2str(n1) ...
+                      'd' num2str(d) 'DWDlarge'] ;
   paramstruct = struct('idir',6, ...
                        'iper',2, ...
                        'ishowperm',2, ...
                        'title1str',titlestr, ...
                        'nreport',50, ...
+                       'savestr',savestr, ...
                        'iscreenwrite',1) ;
-  DiProPermXY(mdata1,mdata2,paramstruct) ;
+  [stat,pval,PDCDWDlarge] = DiProPermXY(mdata1,mdata2,paramstruct) ;
   DWDLargesec = toc ;
 
   tic ;
-  figure(4) ;    %  SVM
+  figure(4) ;    %  DWDlarge-mod
   clf ;
-  titlestr = [sigstr ' Signal, n = ' num2str(n1) ', d = ' num2str(d)] ;
+  titlestr = [sigstr ', n' num2str(n1) ', d' num2str(d) ', DWDlarge-mod'] ;
+  savestr = ['DWDlargeTest' sigstr 'n' num2str(n1) ...
+                      'd' num2str(d) 'DWDlarge-mod'] ;
+  paramstruct = struct('idir',7, ...
+                       'iper',2, ...
+                       'ishowperm',2, ...
+                       'title1str',titlestr, ...
+                       'nreport',50, ...
+                       'savestr',savestr, ...
+                       'iscreenwrite',1) ;
+  [stat,pval,PDCDWDlargeMod] = DiProPermXY(mdata1,mdata2,paramstruct) ;
+  DWDLargeModsec = toc ;
+
+  tic ;
+  figure(5) ;    %  SVM
+  clf ;
+  titlestr = [sigstr ', n' num2str(n1) ', d' num2str(d) ', SVM'] ;
+  savestr = ['DWDlargeTest' sigstr 'n' num2str(n1) ...
+                      'd' num2str(d) 'SVM'] ;
   paramstruct = struct('idir',5, ...
                        'iper',2, ...
                        'ishowperm',2, ...
                        'title1str',titlestr, ...
                        'nreport',50, ...
+                       'savestr',savestr, ...
                        'iscreenwrite',1) ;
-  DiProPermXY(mdata1,mdata2,paramstruct) ;
+  [stat,pval,PDCSVM] = DiProPermXY(mdata1,mdata2,paramstruct) ;
   SVMsec = toc ;
 
   disp(' ') ;
   disp(['Time for MD = ' num2str(MDsec) ' secs']) ;
   disp(['Time for DWD2 = ' num2str(DWD2sec) ' secs']) ;
   disp(['Time for DWD Large = ' num2str(DWDLargesec) ' secs']) ;
+  disp(['Time for DWD Large Mod = ' num2str(DWDLargeModsec) ' secs']) ;
   disp(['Time for SVM = ' num2str(SVMsec) ' secs']) ;
+
+
+  %  Add to Excel spreadsheet of results
+  %
+  XLfilename = 'DWDLargeTestDiProPermSummary' ;
+    titletext = ['Output From DWDLargeTest.m, ' ...
+                 'Summarizing DiProPerm Comparisons'] ;
+  XLSWriteStatus = xlswrite(XLfilename,{char(titletext)},'Sheet1','A1')
+  XLSWriteStatus = xlswrite(XLfilename,{char('Signal')},'Sheet1','A3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('n')},'Sheet1','B3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('d')},'Sheet1','C3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('MD-Z')},'Sheet1','E3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('DWD2-Z')},'Sheet1','F3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('DWDL-Z')},'Sheet1','G3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('DWDLM-Z')},'Sheet1','H3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('SVM-Z')},'Sheet1','I3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('MDtime')},'Sheet1','K3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('DWD2time')},'Sheet1','L3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('DWDLtime')},'Sheet1','M3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('DWDLMtime')},'Sheet1','N3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('SVMtime')},'Sheet1','O3')
+    irow = itest - 3 ;
+  XLSWriteStatus = xlswrite(XLfilename,{char(sigstr)},'Sheet1',['A' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,n1,'Sheet1',['B' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,d,'Sheet1',['C' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,PDCMD,'Sheet1',['E' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,PDCDWD2,'Sheet1',['F' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,PDCDWDlarge,'Sheet1',['G' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,PDCDWDlargeMod,'Sheet1',['H' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,PDCSVM,'Sheet1',['I' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,MDsec,'Sheet1',['K' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,DWD2sec,'Sheet1',['L' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,DWDLargesec,'Sheet1',['M' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,DWDLargeModsec,'Sheet1',['N' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,SVMsec,'Sheet1',['O' num2str(irow)])
+
 
 
 elseif  itest == 17  | ...
@@ -1255,6 +1374,227 @@ elseif  itest == 17  | ...
   hold off ;
 
 
+elseif  itest == 51  | ...
+        itest == 52  | ...
+        itest == 53 | ...
+        itest == 54 | ...
+        itest == 55 | ...
+        itest == 56 | ...
+        itest == 57 | ...
+        itest == 58 | ...
+        itest == 59 | ...
+        itest == 60 | ...
+        itest == 61 | ...
+        itest == 62  ;    %  Do DiProPerm Comparisons
+
+  if  itest == 51  | ...
+      itest == 54  | ...
+      itest == 57  | ...
+      itest == 60  ;    %  Compare DiProPerms, n = d = 100
+    n1 = 100 ;
+    n2 = 100 ;
+    d = 100 ;
+  elseif  itest == 52  | ...
+          itest == 55  | ...
+          itest == 58  | ...
+          itest == 61  ;    %  Compare DiProPerms, n = 50, d = 200
+    n1 = 50 ;
+    n2 = 50 ;
+    d = 200 ;
+  elseif itest == 53  | ...
+         itest == 56  | ...
+         itest == 59  | ...
+         itest == 62  ;    %  Compare DiProPerms, n = 200, d = 50
+    n1 = 200 ;
+    n2 = 200 ;
+    d = 50 ;
+  end ;
+
+  rng(26834756) ;
+
+  if  itest == 51  | ...
+      itest == 52  | ...
+      itest == 53  ;    %  Compare DiProPerms, Medium Signal
+    sigstr = 'Medium' ;
+    mdata1 = randn(d,n1) ;
+    mdata2 = 0.2 + randn(d,n2) ;
+  elseif  itest == 54  | ...
+          itest == 55  | ...
+          itest == 56  ;    %  Compare DiProPerms, Small Signal
+    sigstr = 'Small' ;
+    mdata1 = randn(d,n1) ;
+    mdata2 = 0.1 + randn(d,n2) ;
+  elseif  itest == 57  | ...
+          itest == 58  | ...
+          itest == 59  ;    %  Compare DiProPerms, Large Signal
+    sigstr = 'Large' ;
+    mdata1 = randn(d,n1) ;
+    mdata2 = 0.5 + randn(d,n2) ;
+  elseif  itest == 60  | ...
+          itest == 61  | ...
+          itest == 62  ;    %  Compare DiProPerms, No Signal
+    sigstr = 'NoSig' ;
+    mdata1 = randn(d,n1) ;
+    mdata2 = randn(d,n2) ;
+  end ;
+
+  %  Optimal Direction
+  %
+  vdirOPT = ones(d,1) ;
+  vdirOPT = vdirOPT ./ norm(vdirOPT);
+
+  %  Calculate DWD2 direction
+  %
+  vdirDWD2 = DWD2XQ(mdata1,mdata2) ;
+  vdirDWD2 = vdirDWD2 ./ norm(vdirDWD2);
+
+  %  Calculate Mean Difference direction
+  %
+  vdirMD = mean(mdata1,2) - mean(mdata2,2) ;
+  vdirMD = vdirMD ./ norm(vdirMD) ;
+
+  %  Calculate SVM direction
+  %
+  vdirSVM = SVM1SM(mdata1,mdata2) ;
+  vdirSVM = vdirSVM ./ norm(vdirSVM);
+
+  %  Calculate grid of DWDlarge directions
+  %
+  %  Notes from above
+  %  Ca = 100 / median(ddist)^2 ;
+        %  This makes DWD large mod give same answer as MD
+  %  Ca = 100 ;
+        %  This seems to give same answer as default,
+        %  because of max(1,part with med2) in formula
+  %  Ca = 100 * median(ddist)^2 ;
+        %  This givs completely separable, ugly version
+  %
+  DWDLarge_X = [mdata1 mdata2];
+  DWDLarge_y = [ones(1, size(mdata1, 2)) -ones(1, size(mdata2, 2))]';
+  options.method = 1; 
+  options.printlevel = 0 ;
+  [C,ddist] = penaltyParameter(DWDLarge_X,DWDLarge_y,1);
+  nC = 61 ;
+  vlogCa = linspace(-4,2,nC)' ;
+  vCa = (10 .^ vlogCa) / median(ddist)^2 ;
+
+  %  Loop through Ca values
+  %
+  vDWD2angle = [] ;
+  vMDangle = [] ;
+  vSVMangle = [] ;
+  vOPTangle = [] ;
+  for iC = 1:nC
+    disp(['    Computing DWDlarge ' num2str(iC) ' of ' num2str(nC)]) ;
+    vdira = genDWDweighted(DWDLarge_X,DWDLarge_y,vCa(iC),1,options) ;
+    vdira = vdira ./ norm(vdira) ;
+    vDWD2angle = [vDWD2angle; 180 * acos(abs(vdirDWD2' * vdira)) / pi] ;
+    vMDangle = [vMDangle; 180 * real(acos(abs(vdirMD' * vdira))) / pi] ;
+        %  needed "real", since roundoff error creaes imag part
+    vSVMangle = [vSVMangle; 180 * acos(abs(vdirSVM' * vdira)) / pi] ;
+    vOPTangle = [vOPTangle; 180 * acos(abs(vdirOPT' * vdira)) / pi] ;
+  end
+  DWD2OptAngle = 180 * acos(abs(vdirOPT' * vdirDWD2)) / pi ;
+  MDOptAngle = 180 * acos(abs(vdirOPT' * vdirMD)) / pi ;
+  SVMOptAngle = 180 * acos(abs(vdirOPT' * vdirSVM)) / pi ;
+  [~,iminDWD2ang] = min(vDWD2angle) ;
+  [~,iminMDang] = min(vMDangle) ;
+      %  indices of minimizers
+  logCaDWD2min = vlogCa(iminDWD2ang) ;
+  logCaMDmin = vlogCa(iminMDang) ;
+isreal(vDWD2angle)
+isreal(vMDangle)
+isreal(vSVMangle)
+isreal(vOPTangle)
+
+  %  Make graphics comparing angles
+  %
+  figure(1) ;
+  clf ;
+  plot(vlogCa,vDWD2angle,'r-','LineWidth',3) ;
+  axisSM(vlogCa,[vDWD2angle; vMDangle; vSVMangle; ]) ;
+  vax = axis ;
+  xlabel('log10(C)   (coeff of 1/med^2)') ;
+  ylabel('Angle (deg)') ;
+  title(['Angles with DWDlarge, n = ' num2str(n1) ...
+            ', d = ' num2str(d) ', ' sigstr]) ;
+  hold on ;
+    plot(vlogCa,vMDangle,'b-','LineWidth',3) ;
+    plot(vlogCa,vSVMangle,'g-','LineWidth',3) ;
+    plot(vlogCa,vOPTangle,'m-','LineWidth',3) ;
+    text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
+         vax(3) + 0.7 * (vax(4) - vax(3)), ...
+         ['Angle(DWD2,Opt) = ' num2str(DWD2OptAngle)], ...
+         'Color','r') ;
+    text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
+         vax(3) + 0.6 * (vax(4) - vax(3)), ...
+         ['Angle(MD,Opt) = ' num2str(MDOptAngle)], ...
+         'Color','b') ;
+    text(vax(1) + 0.1 * (vax(2) - vax(1)), ...
+         vax(3) + 0.5 * (vax(4) - vax(3)), ...
+         ['Angle(SVM,Opt) = ' num2str(SVMOptAngle)], ...
+         'Color','g') ;
+    plot([logCaDWD2min; logCaDWD2min], ...
+         [vax(3) vax(4)],'r--','LineWidth',1) ;
+    text(logCaDWD2min + 0.02 * (vax(2) - vax(1)), ...
+         vax(3) + 0.3 * (vax(4) - vax(3)), ...
+         'min of DWD2 - DWDlarge angle','Color','r') ;
+    plot([logCaMDmin; logCaMDmin], ...
+         [vax(3) vax(4)],'b--','LineWidth',1) ;
+    text(logCaMDmin - 0.41 * (vax(2) - vax(1)), ...
+         vax(3) + 0.2 * (vax(4) - vax(3)), ...
+         'min of MD - DWDlarge angle','Color','b') ;
+    legend('DWDlarge-DWD2 angle','DWDlarge-MD angle', ...
+           'DWDlarge-SVM angle','DWDlarge-OPT angle', ...
+           'Location','East') ;
+  hold off ;
+  savestr = ['DWDlargetestit' num2str(itest) ...
+                  'n' num2str(n1) 'd' num2str(d) sigstr] ;
+  printSM(savestr) ;
+
+  %  Vertically Adjust Angles
+  %
+  meanDWD2 = mean(vDWD2angle) ;
+  meanMD = mean(vMDangle) ;
+  meanSVM = mean(vSVMangle) ;
+  vDWD2angleA = vDWD2angle - meanDWD2 + meanMD ;
+  vSVMangleA = vSVMangle - meanSVM + meanMD ;
+  figure(2) ;
+  clf ;
+  plot(vlogCa,vDWD2angleA,'r-','LineWidth',3) ;
+  axisSM(vlogCa,[vDWD2angleA; vMDangle; vSVMangleA]) ;
+  xlabel('log10(C)   (coeff of 1/med^2)') ;
+  ylabel('Vertically Shifted Angle (deg)') ;
+  title('Vertically Shifted Angles between DWDlarge and Others') ;
+  hold on ;
+    plot(vlogCa,vMDangle,'b-','LineWidth',3) ;
+    plot(vlogCa,vSVMangleA,'g-','LineWidth',3) ;
+    legend('DWDlarge-DWD2 angle','DWDlarge-MD angle', ...
+           'DWDlarge-SVM angle','Location','NorthEast') ;
+  hold off ;
+
+
+  %  Add to Excel spreadsheet of results
+  %
+  XLfilename = 'DWDLargeTestCRangeSummary' ;
+    titletext = ['Output From DWDLargeTest.m, ' ...
+                 'Summarizing CRange Minimizers'] ;
+  XLSWriteStatus = xlswrite(XLfilename,{char(titletext)},'Sheet1','A1')
+  XLSWriteStatus = xlswrite(XLfilename,{char('Signal')},'Sheet1','A3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('n')},'Sheet1','B3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('d')},'Sheet1','C3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('DWD2-DWDlarge Angle, min logCa')},'Sheet1','E3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('MD-DWDlarge Angle, min logCa')},'Sheet1','F3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('DWD2-DWDlarge Angle, min Ca')},'Sheet1','H3')
+  XLSWriteStatus = xlswrite(XLfilename,{char('MD-DWDlarge Angle, min Ca')},'Sheet1','I3')
+    irow = itest - 46 ;
+  XLSWriteStatus = xlswrite(XLfilename,{char(sigstr)},'Sheet1',['A' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,n1,'Sheet1',['B' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,d,'Sheet1',['C' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,logCaDWD2min,'Sheet1',['E' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,logCaMDmin,'Sheet1',['F' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,10^logCaDWD2min,'Sheet1',['H' num2str(irow)])
+  XLSWriteStatus = xlswrite(XLfilename,10^logCaMDmin,'Sheet1',['I' num2str(irow)])
 
 
 end ;

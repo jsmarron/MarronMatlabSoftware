@@ -1,4 +1,4 @@
-function [transformed_data, transformation] = AutoTransQF(mdata, paramstruct)
+function [transformed_data, transformation, vbeta] = AutoTransQF(mdata, paramstruct)
 % This program will automatically transform each row of inputt data set
 % to make the distribution of each row vector closer to the standard normal
 % distribution
@@ -33,28 +33,41 @@ function [transformed_data, transformation] = AutoTransQF(mdata, paramstruct)
 %                         '',) ;
 %
 %    fields             Values
+%
 %    istat               Criterion for selecting the parameter of
 %                           transformation funtion 
 %                           1: Anderson-Darling Test Statistics (default)
 %                           2: Skewness                            
 %
-%   iscreenwrite       0 for no screenwrites (default)
-%                      1 to write progress to screen
+%    iscreenwrite       0 for no screenwrites (default)
+%                       1 to write progress to screen
 %
-%   FeatureNames       Feature names of each data vector
-%                                     default setting: 'Feature1' 
-%                                     use strvcat to write each feature
-%                                     name into each row 
-%                                     Note: Matlab does tex interpretation,
-%                                           which turns '_' into subscripts.
-%                                           To turn this off, use:
-%                                     set(gcf,'defaulttextinterpreter','none')
+%    FeatureNames       Feature names of each data vector
+%                                      default setting: 'Feature1' 
+%                                      use strvcat to write each feature
+%                                      name into each row 
+%                                      Note: Matlab does tex interpretation,
+%                                            which turns '_' into subscripts.
+%                                            To turn this off, use:
+%                                      set(gcf,'defaulttextinterpreter','none')
+%
+% Outputs:
+%    transformed_data   Shifted Log Tranformed Version of the data
+%                           with Winsorization to limit size of large values
+%                           and Normalization to zero mean and unit variance
+%
+%    transformation     Cell Array of Output text, summarizing transformation
+%                           Each line appears as output when iscreenwrite = 1
+%
+%    vbeta              d x 1 column vector of original beta paramters of
+%                           shifted log transformation in form developed in:
+%                           Feng, Hannig, Marron (2016) Stat, 5(1), 82-87.
 %
 % Assumes path can find personal functions:
 % autotransfuncQF.m
 % ADStatQF.m
 
-%    Copyright (c) Qing Feng & J. S. Marron 2014-2023
+%    Copyright (c) Qing Feng & J. S. Marron 2014-2024
 
 
 [d, n] = size(mdata) ;
@@ -109,14 +122,15 @@ parfor i = 1 : size(mdata,1)
     if sum(isnan(vari))
         disp ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         disp ('!!!   Warning from AutoTransQF.m:   !!!') ;
-        disp (['!!! ' FeatureNames(i, :) ' Contain Missing Value !!!']) ;
-        disp ('!!!       Returning Orignial Data          !!!') ;
+        disp (['!!! ' FeatureNames(i, :) ' Contains a Missing Value !!!']) ;
+        disp ('!!!       Returning Original Data          !!!') ;
         disp ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
         final_vari = vari;
         text_k =  'Return original vector';
         
         transformed_data(i, :) = final_vari;
         transformation{i, 1} = [ FeatureNames(i, :) ': ' text_k] ;
+        vbeta(i) = 0 ;
         
         continue;
     elseif abs(std(vari)) < 1e-6    %if number of unique values is greater then 2    
@@ -130,6 +144,7 @@ parfor i = 1 : size(mdata,1)
         
         transformed_data(i, :) = final_vari;
         transformation{i, 1} = [ FeatureNames(i, :) ': ' text_k] ;
+        vbeta(i) = 0 ;
 
         continue;
         
@@ -144,6 +159,7 @@ parfor i = 1 : size(mdata,1)
         
         transformed_data(i, :) = final_vari;
         transformation{i, 1} = [ FeatureNames(i, :) ': ' text_k] ;
+        vbeta(i) = 0 ;
 
         continue;
         
@@ -166,6 +182,7 @@ parfor i = 1 : size(mdata,1)
         
         transformed_data(i, :) = final_vari;
         transformation{i, 1} = [ FeatureNames(i, :) ': ' text_k] ;
+        vbeta(i) = beta ;
      
     
     end

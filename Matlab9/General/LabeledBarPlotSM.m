@@ -26,6 +26,11 @@ function LabeledBarPlotSM(vheights,Labels,paramstruct)
 %                            'field2',values2, ...
 %                            'field3',values3) ;
 %
+%                    Version for easy copying and modification:
+%     paramstruct = struct('',, ...
+%                          '',, ...
+%                          '',) ;
+%
 %                          where any of the following can be used,
 %                          these are optional, unspecified values
 %                          revert to defaults

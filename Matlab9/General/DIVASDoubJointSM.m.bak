@@ -1,0 +1,136 @@
+function outstruct = DIVASDoubJointSM(mX,mY,paramstruct) 
+% DIVAS Doubly Joint version
+%     For matrices with both rows (scores) and columns (loadings) 
+%     that correspond, does doubly joint (then other) decompositions
+%
+%
+% Inputs:
+%   mX          - d x n matrix of X data
+%                     Recommend both row and column recentering first
+%
+%   mY          - d x n matrix of Y data
+%                     with corresponding rows and columns
+%                     Recommend both row and column recentering first
+%
+%   paramstruct - a Matlab structure of input parameters
+%                    Use: "help struct" and "help datatypes" to
+%                         learn about these.
+%                    Create one, using commands of the form:
+%
+%       paramstruct = struct('field1',values1, ...
+%                            'field2',values2, ...
+%                            'field3',values3) ;
+%
+%                          where any of the following can be used,
+%                          these are optional, misspecified values
+%                          revert to defaults
+%
+%                    Version for easy copying and modification:
+%     paramstruct = struct('',, ...
+%                          '',, ...
+%                          '',) ;
+%
+%    fields            values
+%
+%    imptype          implementation type:
+%                          1 - original greedy implementation
+%                                  from DoublyJointToy8.m
+%                          2 - QZ based implementation
+%                                  from DoublyJointToy9.m
+%    
+%
+%
+%    iscreenwrite     0  (default)  no screen writes
+%                     1  write to screen to show progress
+%
+%
+% Outputs:
+%     Graphics in current Figure
+%     When savestr exists, generate output files, 
+%        as indicated by savetype
+%
+%
+% Assumes path can find personal functions:
+%    modeDfitSM
+%    modeSUfitSM
+%    modeSVfitSM
+%    modeIfitSM
+%
+
+%    Copyright (c) J. S. Marron 2026
+
+
+%  First set all parameters to defaults
+%
+imptype = 1 ;
+iscreenwrite = 0 ;
+
+%  Now update parameters as specified,
+%  by parameter structure (if it is used)
+%
+if nargin > 2   %  then paramstruct is an argument
+
+  if isfield(paramstruct,'imptype')    %  then change to input value
+    imptype = paramstruct.imptype ;
+  end
+
+
+  if isfield(paramstruct,'iscreenwrite')    %  then change to input value
+    iscreenwrite = paramstruct.iscreenwrite ;
+  end
+
+end    %  of resetting of input parameters
+
+
+if iscreenwrite == 1 
+  disp('Running DIVASDoubJointSM.m') ;
+  disp(' ') ;
+end
+
+
+%  Check input data
+%
+d = size(mX,1) ;
+         %  number of rows of input mX
+n = size(mX,2) ;
+         %  number of columns of input mX
+if  (size(mY,1) ~= d)  |  (size(mY,2) ~= n)
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  disp('!!!   Error from DIVASDoubJointSM.m:   !!!') ;
+  disp('!!!   Inputs mX and mY must have       !!!') ;
+  disp('!!!   the same dimensions              !!!') ;
+  disp('!!!   Terminating execution            !!!') ;
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  return ;
+end
+
+
+%  Estimate noise levels for each input and normalize
+%
+
+
+
+
+
+if imptype == 1     %  Original greedy implementation
+                    %      from DoublyJointToy8.m
+
+
+
+
+elseif imptype == 2     %  QZ based implementation
+                        %      from DoublyJointToy9.m
+
+
+
+
+else ;
+
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+  disp('!!!   Error from DIVASDoubJointSM   !!!') ;
+  disp('!!!   Invalid value of imptype      !!!') ;
+  disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+
+end     %  of imptype if-block
+
+

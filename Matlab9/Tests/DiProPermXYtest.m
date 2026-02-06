@@ -10,7 +10,7 @@ disp('Running MATLAB script file DiProPermXYtest.m') ;
 %            Confidence Intervals for the Z score
 
 
-itest = 237 ;     %  1,...,75  Simple parameter tests from DiProPermSMtest.m
+itest = 1 ;     %  1,...,75  Simple parameter tests from DiProPermSMtest.m
                   %  101,... First round of simulations
                   %  101 - single simple Gaussian example (each of DWD,MD,MDP,SVM)
                   %  102 - single balanced Gaussian mixture (each of DWD,MD,MDP,SVM)

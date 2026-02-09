@@ -1,0 +1,99 @@
+disp('Running MATLAB script file TriMEtest.m') ;
+%
+%    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION TriME.m,
+%    Emma Mitchell's Background noise estimation function
+%    Described in here PhD dissertation:
+%        "STATISTICAL METHODS FOR GENOMIC DATA ANALYSIS"
+%https://search.proquest.com/openview/963f384000242540e239e1e5c282afa1/1?pq-origsite=gscholar&cbl=18750&diss=y&casa_token=YT_Gk66O7vIAAAAA:3GemEeh_BQQsp0e-uwna6dLBSNlNqvRxkBa6Z_PHujnmtYXiHUqNRiFbiXyl01wyiZ2_MOIbdg
+%    Parameter choices are default from dissertation
+
+
+itest = 8 ;   %  1  -  60 x 80  iid N(0,1)
+              %  2  -  80 x 60  iid N(0,1)
+              %  3  -  10 x 1000  iid N(0,1)
+              %  4  -  1000 x 10  iid N(0,1)
+              %  5  -  60 x 80  Unif(0,1)
+              %  6  -  80 x 60  Unif(0,1)
+              %  7  -  60 x 80  Bernoulli(0.5)
+              %  8  -  80 x 60  Bernoulli(0.5)
+
+
+disp(' ') ;
+rng(92387423) ;
+    %  Set seed
+
+if itest == 1 
+
+  disp('  60 x 80  iid N(0,1)') ;
+  mX = randn(60,80) ;
+
+elseif itest == 2
+
+  disp('  80 x 60  iid N(0,1)') ;
+  mX = randn(80,60) ;
+
+elseif itest == 3
+
+  disp('  10 x 1000  iid N(0,1)') ;
+  mX = randn(10,1000) ;
+
+elseif itest == 4
+
+  disp('  1000 x 10  iid N(0,1)') ;
+  mX = randn(1000,10) ;
+
+elseif itest == 5
+
+  disp('  60 x 80  Unif(0,1)') ;
+  mX = rand(60,80) ;
+  disp(['Compare with ' num2str(1 / sqrt(12))]) ;
+
+elseif itest == 6
+
+  disp('  80 x 60  Unif(0,1)') ;
+  mX = rand(80,60) ;
+  disp(['Compare with ' num2str(1 / sqrt(12))]) ;
+
+elseif itest == 7
+
+  disp('  60 x 80  Bernoulli(0.5)') ;
+  mX = double(rand(60,80) > 0.5) ;
+  disp('Compare with 0.5') ;
+
+elseif itest == 8
+
+  disp('  80 x 60  Bernoulli(0.5)') ;
+  mX = double(rand(80,60) > 0.5) ;
+  disp('Compare with 0.5') ;
+
+end ;
+
+
+d = size(mX,1) ;
+n = size(mX,2) ;
+
+%  Compute SVD
+%
+vsX = svd(mX,"vector") ;
+
+%vs'
+SingValVecSize = size(vsX) 
+
+
+%  Call TriME.m
+%
+c = min(d,n) / max(d,n) 
+vsY = vsX / sqrt(max(d,n)) ;
+SigEst = TriME(c,vsY,1,'/temp',0.01,0,0.25,false) ;
+    %  1 and '/temp' not relevant, since don't make graphics
+    %  Other parameters are defaults suggested in dissertation:
+    %      alpha1 = 0.01 
+    %      alpha2 = 0
+    %      omega = 0.25
+    %  sve = false turns off graphics
+    
+disp(' ') ;
+disp(['    Estimated SD = ' num2str(SigEst)]) ;
+
+
+

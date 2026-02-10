@@ -3,7 +3,7 @@ disp('Running MATLAB script file DIVASDoubJointSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION DIVASDoubJointSM,
 %    Doubly Joint DIVAS
 
-itest = 6 ;     %  1,...,6        Simple paramegter tests
+itest = 1 ;     %  1,...,6        Simple paramegter tests
                 %  101,...,116    Toy examples from DoublyJointToy8.m
 
 
@@ -23,9 +23,11 @@ if itest < 100      %  Simple paramegter tests
   mX1 = u2 * v2' ;
   mX2 = 0.9 * u3 * v3' ;
   mX = mX1 + mX2 + sig * randn(d,n) ;
+%  mX = mX1 + mX2 ;
   mY1 = u2 * v2' ;
   mY2 = 0.8 * u3 * v3' ;
   mY = mY1 + mY2 + sig * randn(d,n) ;
+%  mY = mY1 + mY2 ;
   disp(' ') ;
 
   if itest == 1 

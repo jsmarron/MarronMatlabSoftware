@@ -108,7 +108,7 @@ function [sigHatEJC, Rho, sigma] = TriME(c, singVals, number, folderName, alpha1
         sigHatEJC = crossSigmaGreater(1); %first element
     else 
         disp('Error from TriME, returning median singular value based sig estimate') ;
-        sigHatEJC = median(singVals)/QuantMarcenkoPastur(c,0.5) ;
+        sigHatEJC = median(singVals)/QuantMarcenkoPastur(c,o.5) ;
 %  Original Lines
 %{
         disp(['error largest cardinality is ', num2str(max(sizeSet)), "when it should be", num2str(length(singVals)*omega)]);

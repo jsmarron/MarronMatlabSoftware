@@ -45,10 +45,10 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 %                                  In this case, each data block should have
 %                                  overall noise standard deviation 1
 %                          1 - (default) Estimate overall standard 
-%                                  deviation for each block and
-%                                  rescale each
+%                                  deviation for each block using 
+%                                  TriME, and rescale each
 %
-%    nThreshSim       number of simulations to find thresholdse
+%    nThreshSim       number of simulations to find thresholds
 %                          0 - No simulation, use crude Marcenko-Pastur bounds
 %                                  (these tend to be too permissive)
 %                          n - Number of simulations to compute thresholds,
@@ -78,16 +78,21 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 %
 %
 % Outputs:
-%     Graphics in current Figure
-%     When savestr exists, generate output files, 
-%        as indicated by savetype
 %
+%   outstruct   - a Matlab structure of results
+%               
 %
-% Assumes path can find personal functions:
+%   Graphics in new figures when iDiagPlot = 1
+%   When DiagPlotStr exists, generate output files, 
+%       as indicated by savetype
+%
+% 
+% Assumes path can find functions:
 %    modeDfitSM
 %    modeSUfitSM
 %    modeSVfitSM
 %    modeIfitSM
+%    TriME
 %
 
 %    Copyright (c) J. S. Marron 2026
@@ -186,7 +191,7 @@ beta = min(d,n) / max(d,n) ;
 vlam_X = diag(dmlam_X) ;
 vlam_Y = diag(dmlam_Y) ;
     %  vectors of singular values
-if iScaleStand == 1     %  Need to standardize
+if iScaleStand == 1     %  Use TriME standardization 
 
   %  Calculate Emma Mitchell's estimate of noise standard deviation
   %  Described in her PhD dissertation:
@@ -201,6 +206,9 @@ if iScaleStand == 1     %  Need to standardize
       %      alpha2 = 0
       %      omega = 0.25
       %  sve = false turns off graphics
+
+SigEstX
+SigEstY
 
   mXs = mX / SigEstX ;
   mYs = mY / SigEstY ;
@@ -227,7 +235,7 @@ if imptype == 1     %  Original greedy implementation
     threshV = sqrt(2 * d) * (1 + sqrt(n / (2 * d))) ;
 
     if iscreenwrite == 1 
-      disp('Running function DIVASDoubJointSM.m') ;
+      disp('Using naive thresholds') ;
       disp(' ') ;
     end
 
@@ -237,14 +245,15 @@ threshXnY = sqrt(min(d,n)) * (1 + sqrt(max(d,n) / min(d,n))) ;
 threshU = sqrt(2 * n) * (1 + sqrt(d / (2 * n))) ;
 threshV = sqrt(2 * d) * (1 + sqrt(n / (2 * d))) ;
 disp('Simulated thresholds not yet implemented') ;
+disp('Using naive thresholds instead') ;
 
   end     %  of threshold sim if-block
 
 
   %  Initialize running matrices and cell arrays
   %
-  mE_X = mX ;
-  mE_Y = mY ;
+  mE_X = mXs ;
+  mE_Y = mYs ;
       %  Matrices of remaining variation 
       %      (starting with everything as "noise"
       %       and iteratively extracting signal modes)
@@ -301,9 +310,9 @@ disp('Simulated thresholds not yet implemented') ;
   if iDiagPlot == 1 
     %  Start rank diagnostic plot
     %
-    fh = figure('WindowStyle','normal') ;
+    fh1 = figure('WindowStyle','normal') ;
     clf ;
-    set(1,'Position',[100 100 1000 600]) ;
+    set(fh1,'Position',[100 100 1000 600]) ;
     lam_max = max([vlam_X; vlam_Y; threshV]) ;
     vax = [0 (n + 1) 0 (1.05 * lam_max)] ;
         %  biggest of singular values
@@ -333,7 +342,7 @@ disp('Simulated thresholds not yet implemented') ;
              vax(3) + 0.9 * (vax(4) - vax(3)), ...
              ['r_Y = ' num2str(r_Y)]) ;
       hold off ;
-  end 
+  end     %  of iDiagPlot if-block
 
 
   %  Main loop stepping through components
@@ -386,34 +395,38 @@ disp('Simulated thresholds not yet implemented') ;
 
     if istep == 1     %  Update SVD diagnostic plot
 
-      lam_max = max([lam_max; vlam_U; vlam_V; threshU; threshV]) ;
-      vax = [0 (n + 1) 0 (1.05 * lam_max)] ;
+      if iDiagPlot == 1 
 
-      subplot(2,3,2) ;    %  Horizontal Stack
-        plot((1:length(vlam_U))',vlam_U,'ko-') ;
-        xlabel('k') ;
-        ylabel('lambda U') ;
-        title('Horizontal Stack Singular Values') ;
-        axis(vax) ;
-        hold on ;
-          plot([0; (n+1)],[threshU; threshU],'r-') ;
-          text(vax(1) + 0.6 * (vax(2) - vax(1)), ...
-               vax(3) + 0.9 * (vax(4) - vax(3)), ...
-               ['r_U = ' num2str(r_U)]) ;
-        hold off ;
+        lam_max = max([lam_max; vlam_U; vlam_V; threshU; threshV]) ;
+        vax = [0 (n + 1) 0 (1.05 * lam_max)] ;
 
-      subplot(2,3,5) ;    %  Vertical Stack
-        plot((1:length(vlam_V))',vlam_V,'ko-') ;
-        xlabel('k') ;
-        ylabel('lambda V') ;
-        title('Vertical Stack Singular Values') ;
-        axis(vax) ;
-        hold on ;
-          plot([0; (n+1)],[threshV; threshV],'r-') ;
-          text(vax(1) + 0.6 * (vax(2) - vax(1)), ...
-               vax(3) + 0.9 * (vax(4) - vax(3)), ...
-               ['r_V = ' num2str(r_V)]) ;
-        hold off ;
+        subplot(2,3,2) ;    %  Horizontal Stack
+          plot((1:length(vlam_U))',vlam_U,'ko-') ;
+          xlabel('k') ;
+          ylabel('lambda U') ;
+          title('Horizontal Stack Singular Values') ;
+          axis(vax) ;
+          hold on ;
+            plot([0; (n+1)],[threshU; threshU],'r-') ;
+            text(vax(1) + 0.6 * (vax(2) - vax(1)), ...
+                 vax(3) + 0.9 * (vax(4) - vax(3)), ...
+                 ['r_U = ' num2str(r_U)]) ;
+          hold off ;
+
+        subplot(2,3,5) ;    %  Vertical Stack
+          plot((1:length(vlam_V))',vlam_V,'ko-') ;
+          xlabel('k') ;
+          ylabel('lambda V') ;
+          title('Vertical Stack Singular Values') ;
+          axis(vax) ;
+          hold on ;
+            plot([0; (n+1)],[threshV; threshV],'r-') ;
+            text(vax(1) + 0.6 * (vax(2) - vax(1)), ...
+                 vax(3) + 0.9 * (vax(4) - vax(3)), ...
+                 ['r_V = ' num2str(r_V)]) ;
+          hold off ;
+
+      end    %  of iDiagPlot if-block
 
     end    %  of istep 1 if-block
 
@@ -526,11 +539,13 @@ disp('Simulated thresholds not yet implemented') ;
 
       if istep == 1     %  Add to SVD diagnostic plots
 
+%{
         if iscreenwrite == 1
           disp(['  Rank of Projection of X on U space, r_UX = ' num2str(r_BUX)]) ;
           disp(['  Rank of Projection of Y on U space, r_UY = ' num2str(r_BUY)]) ;
           disp(['  U space Joint rank = ' num2str(r_UJ)]) ;
         end
+%}
 
         if iDiagPlot == 1 
           %  Add to diagnostic graphic
@@ -548,7 +563,7 @@ disp('Simulated thresholds not yet implemented') ;
                    vaxU(3) + 0.9 * (vaxU(4) - vax(3)), ...
                    ['r_{UJ} = ' num2str(r_UJ)]) ;
             hold off ;
-        end
+        end     %  of iDiagPlot if-block
 
       end    %  of istep 1 if-block
 
@@ -670,11 +685,13 @@ disp('Simulated thresholds not yet implemented') ;
 
       if istep == 1     %  Add to SVD diagnostic plots
 
+%{
         if iscreenwrite == 1
           disp(['  Rank of Projection of X on V space, r_VX = ' num2str(r_BVX)]) ;
           disp(['  Rank of Projection of Y on V space, r_VY = ' num2str(r_BVY)]) ;
           disp(['  V space Joint rank = ' num2str(r_VJ)]) ;
         end
+%}
 
         if iDiagPlot == 1 
           %  Add to diagnostic graphic
@@ -692,7 +709,7 @@ disp('Simulated thresholds not yet implemented') ;
                    vaxV(3) + 0.9 * (vaxV(4) - vax(3)), ...
                    ['r_{VJ} = ' num2str(r_VJ)]) ;
             hold off ;
-        end
+        end     %  of iDiagPlot if-block
 
       end    %  of istep 1 if-block
 
@@ -768,7 +785,7 @@ disp('Simulated thresholds not yet implemented') ;
         flagDJsig = (abs(c_X) >= threshXnY) & (abs(c_Y) >= threshXnY) ;
             %  Have significant signal in both X and Y DJ components.
         if flagDJsig 
-          iplottype = 1 ;    %  Make Doubly Joint Output plot
+          imodetype = 1 ;    %  Make Doubly Joint Output plot
           if iscreenwrite == 1
             disp('  Found Doubly Joint Mode') ;
           end
@@ -792,12 +809,12 @@ disp('Simulated thresholds not yet implemented') ;
         if vlam_UJ(1) >= vlam_VJ(1)    %  Then use U driven Singly joint mode
 
           vu_SUJ = mU_UJ(:,1) ;
-          iplottype = 2 ;    %  Make U Singly Joint Output plot
+          imodetype = 2 ;    %  Make U Singly Joint Output plot
 
         else    %  Then use V driven Singly joint mode
 
           vv_SVJ = mV_VJ(:,1) ;
-          iplottype = 3 ;    %  Make V Singly Joint Output plot
+          imodetype = 3 ;    %  Make V Singly Joint Output plot
 
         end     %  of if-block choosing which singly joint mode to pursue
 
@@ -813,12 +830,12 @@ disp('Simulated thresholds not yet implemented') ;
       if  r_UJ > 0     %  Have only U Joint Space
 
         vu_SUJ = mU_UJ(:,1) ;
-        iplottype = 2 ;    %  Make U Singly Joint Output plot
+        imodetype = 2 ;    %  Make U Singly Joint Output plot
 
       elseif  r_VJ > 0     %  Have only V Joint Space
 
         vv_SVJ = mV_VJ(:,1) ;
-        iplottype = 3 ;    %  Make V Singly Joint Output plot
+        imodetype = 3 ;    %  Make V Singly Joint Output plot
 
       else     %  Have no joint space, try for individual modes
 
@@ -833,13 +850,13 @@ disp('Simulated thresholds not yet implemented') ;
 
             mImode_X = vlam_X(1) * mU_X(:,1) * mV_X(:,1)' ;
                 %  Individual X mode of variation
-            iplottype = 4 ;    %  Make X Individual Output plot
+            imodetype = 4 ;    %  Make X Individual Output plot
 
           else    %  Then use y individal mode
 
             mImode_Y = vlam_Y(1) * mU_Y(:,1) * mV_Y(:,1)' ;
                 %  Individual Y mode of variation
-            iplottype = 5 ;    %  Make Y Individual Output plot
+            imodetype = 5 ;    %  Make Y Individual Output plot
 
           end
 
@@ -849,7 +866,7 @@ disp('Simulated thresholds not yet implemented') ;
           if iscreenwrite == 1
             disp('  Did not find any Individual mode of variation') ;
           end
-          iplottype = 0 ;
+          imodetype = 0 ;
 
         end 
 
@@ -861,41 +878,40 @@ disp('Simulated thresholds not yet implemented') ;
              %       (if  r_UJ > 0  &  r_VJ > 0)
 
 
-    if iDiagPlot == 1 
+    %  Construct this mode, save in outstruct, and update data matrices
+    %
+    if imodetype == 1     %  Found Doubly Joint Mode
 
-      %  Make Output plot
+      if iscreenwrite == 1
+        disp('Found Doubly Joint Mode of Variation') ;
+      end
+
+      mDJmode_X = c_X * vu_DJ * vv_DJ' ;
+      mDJmode_Y = c_Y * vu_DJ * vv_DJ' ;
+          %  Doubly Joint modes of variation
+
+      %  Update running quantities
       %
-      if iplottype == 1     %  Make Doubly Joint Output plot
+      mE_X = mE_X - mDJmode_X ;
+      mE_Y = mE_Y - mDJmode_Y ;
+      mA_X = mA_X + mDJmode_X ;
+      mA_Y = mA_Y + mDJmode_Y ;
+          %  Running matrices
+      nmodes = nmodes + 1 ;
+          %  number of modes of variation found so far
+      caXmodes(nmodes,1) = {'D'} ;
+      caXmodes(nmodes,2) = {c_X} ;
+      caXmodes(nmodes,3) = {vu_DJ} ;
+      caXmodes(nmodes,4) = {vv_DJ} ;
+      caYmodes(nmodes,1) = {'D'} ;
+      caYmodes(nmodes,2) = {c_Y} ;
+      caYmodes(nmodes,3) = {vu_DJ} ;
+      caYmodes(nmodes,4) = {vv_DJ} ;
+          %  cell arrays of significant modes of variation
 
-        if iscreenwrite == 1
-          disp('Plotting Doubly Joint Mode of Variation') ;
-        end
 
-        mDJmode_X = c_X * vu_DJ * vv_DJ' ;
-        mDJmode_Y = c_Y * vu_DJ * vv_DJ' ;
-            %  Doubly Joint modes of variation
-
-        %  Update running quantities
-        %
-        mE_X = mE_X - mDJmode_X ;
-        mE_Y = mE_Y - mDJmode_Y ;
-        mA_X = mA_X + mDJmode_X ;
-        mA_Y = mA_Y + mDJmode_Y ;
-            %  Running matrices
-        nmodes = nmodes + 1 ;
-            %  number of modes of variation found so far
-        caXmodes(nmodes,1) = {'D'} ;
-        caXmodes(nmodes,2) = {c_X} ;
-        caXmodes(nmodes,3) = {vu_DJ} ;
-        caXmodes(nmodes,4) = {vv_DJ} ;
-        caYmodes(nmodes,1) = {'D'} ;
-        caYmodes(nmodes,2) = {c_Y} ;
-        caYmodes(nmodes,3) = {vu_DJ} ;
-        caYmodes(nmodes,4) = {vv_DJ} ;
-            %  cell arrays of significant modes of variation
-
-        %  Plot Doubly Joint Mode of variation
-        %  
+      if iDiagPlot == 1     %  Plot Doubly Joint Mode of variation
+        
         iDJmodefig = iDJmodefig + 1 ;
         fh2 = figure('WindowStyle','normal') ;
         clf ;
@@ -922,43 +938,44 @@ disp('Simulated thresholds not yet implemented') ;
           printSM(savestr,savetype) ;
         end 
 
-
-      elseif iplottype == 2     %  Make U Singly Joint Output plot
-
-        if iscreenwrite == 1
-          disp('Plotting U Singly Mode of Variation') ;
-        end ;
-
-        [c_X,vv_SUJX] = modeSUfitSM(mE_X,vu_SUJ) ;
-        [c_Y,vv_SUJY] = modeSUfitSM(mE_Y,vu_SUJ) ;
-            %  Coefficients of modes of variation
-
-        mSUJmode_X = c_X * vu_SUJ * vv_SUJX' ;
-        mSUJmode_Y = c_Y * vu_SUJ * vv_SUJY' ;
-            %  U Singly Joint modes of variation
-
-        %  Update running quantities
-        %
-        mE_X = mE_X - mSUJmode_X ;
-        mE_Y = mE_Y - mSUJmode_Y ;
-        mA_X = mA_X + mSUJmode_X ;
-        mA_Y = mA_Y + mSUJmode_Y ;
-            %  Running matrices
-        nmodes = nmodes + 1 ;
-            %  number of modes of variation found so far
-        caXmodes(nmodes,1) = {'SU'} ;
-        caXmodes(nmodes,2) = {c_X} ;
-        caXmodes(nmodes,3) = {vu_SUJ} ;
-        caXmodes(nmodes,4) = {vv_SUJX} ;
-        caYmodes(nmodes,1) = {'SU'} ;
-        caYmodes(nmodes,2) = {c_Y} ;
-        caYmodes(nmodes,3) = {vu_SUJ} ;
-        caYmodes(nmodes,4) = {vv_SUJY} ;
-            %  cell arrays of significant modes of variation
+      end     %  of iDiagPlot == 1  if-block
 
 
-        %  Plot U Singly Joint Mode of  variation
-        %  
+    elseif imodetype == 2     %  Found U Singly Joint Mode
+
+      if iscreenwrite == 1
+        disp('Found U Singly Mode of Variation') ;
+      end ;
+
+      [c_X,vv_SUJX] = modeSUfitSM(mE_X,vu_SUJ) ;
+      [c_Y,vv_SUJY] = modeSUfitSM(mE_Y,vu_SUJ) ;
+          %  Coefficients of modes of variation
+
+      mSUJmode_X = c_X * vu_SUJ * vv_SUJX' ;
+      mSUJmode_Y = c_Y * vu_SUJ * vv_SUJY' ;
+          %  U Singly Joint modes of variation
+
+      %  Update running quantities
+      %
+      mE_X = mE_X - mSUJmode_X ;
+      mE_Y = mE_Y - mSUJmode_Y ;
+      mA_X = mA_X + mSUJmode_X ;
+      mA_Y = mA_Y + mSUJmode_Y ;
+          %  Running matrices
+      nmodes = nmodes + 1 ;
+          %  number of modes of variation found so far
+      caXmodes(nmodes,1) = {'SU'} ;
+      caXmodes(nmodes,2) = {c_X} ;
+      caXmodes(nmodes,3) = {vu_SUJ} ;
+      caXmodes(nmodes,4) = {vv_SUJX} ;
+      caYmodes(nmodes,1) = {'SU'} ;
+      caYmodes(nmodes,2) = {c_Y} ;
+      caYmodes(nmodes,3) = {vu_SUJ} ;
+      caYmodes(nmodes,4) = {vv_SUJY} ;
+          %  cell arrays of significant modes of variation
+
+      if iDiagPlot == 1     %  Plot U Singly Joint Mode of  variation
+
         iSUJmodefig = iSUJmodefig + 1 ;
         fh3 = figure('WindowStyle','normal') ;
         clf ;
@@ -985,43 +1002,45 @@ disp('Simulated thresholds not yet implemented') ;
           printSM(savestr,savetype) ;
         end
 
-
-      elseif iplottype == 3     %  Make V Singly Joint Output plot
-
-        if iscreenwrite == 1
-          disp('Plotting V Singly Mode of Variation') ;
-        end
-
-        [c_X,vu_SVJX] = modeSVfitSM(mE_X,vv_SVJ) ;
-        [c_Y,vu_SVJY] = modeSVfitSM(mE_Y,vv_SVJ) ;
-            %  Coefficients of modes of variation
-
-        mSVJmode_X = c_X * vu_SVJX * vv_SVJ' ;
-        mSVJmode_Y = c_Y * vu_SVJY * vv_SVJ' ;
-            %  V Singly Joint modes of variation
-
-        %  Update running quantities
-        %
-        mE_X = mE_X - mSVJmode_X ;
-        mE_Y = mE_Y - mSVJmode_Y ;
-        mA_X = mA_X + mSVJmode_X ;
-        mA_Y = mA_Y + mSVJmode_Y ;
-            %  Running matrices
-        nmodes = nmodes + 1 ;
-            %  number of modes of variation found so far
-        caXmodes(nmodes,1) = {'SV'} ;
-        caXmodes(nmodes,2) = {c_X} ;
-        caXmodes(nmodes,3) = {vu_SVJX} ;
-        caXmodes(nmodes,4) = {vv_SVJ} ;
-        caYmodes(nmodes,1) = {'SV'} ;
-        caYmodes(nmodes,2) = {c_Y} ;
-        caYmodes(nmodes,3) = {vu_SVJY} ;
-        caYmodes(nmodes,4) = {vv_SVJ} ;
-            %  cell arrays of significant modes of variation
+      end     %  of iDiagPlot == 1  if-block
 
 
-        %  Plot V Singly Joint Mode of variation
-        %  
+    elseif imodetype == 3     %  Found V Singly Joint Mode
+
+      if iscreenwrite == 1
+        disp('Found V Singly Mode of Variation') ;
+      end
+
+      [c_X,vu_SVJX] = modeSVfitSM(mE_X,vv_SVJ) ;
+      [c_Y,vu_SVJY] = modeSVfitSM(mE_Y,vv_SVJ) ;
+          %  Coefficients of modes of variation
+
+      mSVJmode_X = c_X * vu_SVJX * vv_SVJ' ;
+      mSVJmode_Y = c_Y * vu_SVJY * vv_SVJ' ;
+          %  V Singly Joint modes of variation
+
+      %  Update running quantities
+      %
+      mE_X = mE_X - mSVJmode_X ;
+      mE_Y = mE_Y - mSVJmode_Y ;
+      mA_X = mA_X + mSVJmode_X ;
+      mA_Y = mA_Y + mSVJmode_Y ;
+          %  Running matrices
+      nmodes = nmodes + 1 ;
+          %  number of modes of variation found so far
+      caXmodes(nmodes,1) = {'SV'} ;
+      caXmodes(nmodes,2) = {c_X} ;
+      caXmodes(nmodes,3) = {vu_SVJX} ;
+      caXmodes(nmodes,4) = {vv_SVJ} ;
+      caYmodes(nmodes,1) = {'SV'} ;
+      caYmodes(nmodes,2) = {c_Y} ;
+      caYmodes(nmodes,3) = {vu_SVJY} ;
+      caYmodes(nmodes,4) = {vv_SVJ} ;
+          %  cell arrays of significant modes of variation
+
+
+      if iDiagPlot == 1     %  Plot V Singly Joint Mode of variation
+
         iSVJmodefig = iSVJmodefig + 1 ;
         fh4 = figure('WindowStyle','normal') ;
         clf ;
@@ -1048,29 +1067,31 @@ disp('Simulated thresholds not yet implemented') ;
           printSM(savestr,savetype) ;
         end
 
-
-      elseif iplottype == 4     %  Make X Individual Output plot
-
-        if iscreenwrite == 1
-          disp('Plotting X Individual Mode of Variation') ;
-        end
-
-        %  Update running quantities
-        %
-        mE_X = mE_X - mImode_X ;
-        mA_X = mA_X + mImode_X ;
-            %  Running matrices
-        nmodes = nmodes + 1 ;
-            %  number of modes of variation found so far
-        caXmodes(nmodes,1) = {'I'} ;
-        caXmodes(nmodes,2) = {vlam_X(1)} ;
-        caXmodes(nmodes,3) = {mU_X(:,1)} ;
-        caXmodes(nmodes,4) = {mV_X(:,1)} ;
-            %  cell arrays of significant modes of variation
+      end     %  of iDiagPlot == 1  if-block
 
 
-        %  Plot X Individual Mode of variation
-        %  
+    elseif imodetype == 4     %  Found X Individual Mode
+
+      if iscreenwrite == 1
+        disp('Found X Individual Mode of Variation') ;
+      end
+
+      %  Update running quantities
+      %
+      mE_X = mE_X - mImode_X ;
+      mA_X = mA_X + mImode_X ;
+          %  Running matrices
+      nmodes = nmodes + 1 ;
+          %  number of modes of variation found so far
+      caXmodes(nmodes,1) = {'I'} ;
+      caXmodes(nmodes,2) = {vlam_X(1)} ;
+      caXmodes(nmodes,3) = {mU_X(:,1)} ;
+      caXmodes(nmodes,4) = {mV_X(:,1)} ;
+          %  cell arrays of significant modes of variation
+
+
+      if iDiagPlot == 1     %  Plot X Individual Mode of variation
+
         iImodefig = iImodefig + 1 ;
         fh5 = figure('WindowStyle','normal') ;
         clf ;
@@ -1093,29 +1114,31 @@ disp('Simulated thresholds not yet implemented') ;
           printSM(savestr,savetype) ;
         end
 
-
-      elseif iplottype == 5     %  Make Y Individual Output plot
-
-        if iscreenwrite == 1
-          disp('Plotting Y Individual Mode of Variation') ;
-        end
-
-        %  Update running quantities
-        %
-        mE_Y = mE_Y - mImode_Y ;
-        mA_Y = mA_Y + mImode_Y ;
-            %  Running matrices
-        nmodes = nmodes + 1 ;
-            %  number of modes of variation found so far
-        caYmodes(nmodes,5) = {'I'} ;
-        caYmodes(nmodes,6) = {vlam_Y(1)} ;
-        caYmodes(nmodes,7) = {mU_Y(:,1)} ;
-        caYmodes(nmodes,8) = {mV_Y(:,1)} ;
-            %  cell arrays of significant modes of variation
+      end     %  of iDiagPlot == 1  if-block
 
 
-        %  Plot Y Individual Mode of variation
-        %  
+    elseif imodetype == 5     %  Found Y Individual Mode
+
+      if iscreenwrite == 1
+        disp('Found Y Individual Mode of Variation') ;
+      end
+
+      %  Update running quantities
+      %
+      mE_Y = mE_Y - mImode_Y ;
+      mA_Y = mA_Y + mImode_Y ;
+          %  Running matrices
+      nmodes = nmodes + 1 ;
+          %  number of modes of variation found so far
+      caYmodes(nmodes,5) = {'I'} ;
+      caYmodes(nmodes,6) = {vlam_Y(1)} ;
+      caYmodes(nmodes,7) = {mU_Y(:,1)} ;
+      caYmodes(nmodes,8) = {mV_Y(:,1)} ;
+          %  cell arrays of significant modes of variation
+
+
+      if iDiagPlot == 1     %  Plot Y Individual Mode of variation
+
         iImodefig = iImodefig + 1 ;
         fh6 = figure('WindowStyle','normal') ;
         clf ;
@@ -1138,10 +1161,10 @@ disp('Simulated thresholds not yet implemented') ;
           printSM(savestr,savetype) ;
         end
 
+      end     %  of iDiagPlot == 1  if-block
 
-      end     %  of output plot if-block
 
-    end     %  of iDiagPlot == 1  if-block
+    end     %  of imodetype if-block
 
 
   end     %  of main loop, stepping through components
@@ -1151,14 +1174,16 @@ disp('Simulated thresholds not yet implemented') ;
   outstruct.caYmodes = caYmodes ;
 
   if iDiagPlot == 1
-    if ~isempty(DiagPlotStr) ;
+    if ~isempty(DiagPlotStr)
       %  Print diagnostic plots
       %
-      figure(fh) ;
-      savestr = ['DJT8id' num2str(idata) ssave 'SingularValueDiagnostic'] ;
+      figure(fh1) ;
+      disp('Somehow need this pause to print proper diagnostic plot') ;
+      pauseSM
+      savestr = [DiagPlotStr 'SVdiagnostic'] ;
       printSM(savestr,savetype) ;
     end
-  end 
+  end      %  of iDiagPlot i f-block
 
   if iscreenwrite == 1
     disp(' ') ;

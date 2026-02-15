@@ -3,11 +3,11 @@ disp('Running MATLAB script file DIVASDoubJointSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION DIVASDoubJointSM,
 %    Doubly Joint DIVAS
 
-itest = 6 ;     %  1,...,6        Simple paramegter tests
+itest = 1 ;     %  1,...,15        Simple paramegter tests
                 %  101,...,116    Toy examples from DoublyJointToy8.m
 
 
-if itest < 100      %  Simple paramegter tests
+if itest < 100      %  Simple parameter tests
 
   %  Use very simple noiseless data from DoublyCrossJointSim
   %  Called "unballanced Doubly Joint"
@@ -29,7 +29,7 @@ if itest < 100      %  Simple paramegter tests
   disp(' ') ;
 
   if itest == 1 
-    disp('Defauts only') ;
+    disp('Defaults only') ;
     outstruct = DIVASDoubJointSM(mX,mY)
 
   elseif itest == 2
@@ -53,7 +53,83 @@ if itest < 100      %  Simple paramegter tests
     outstruct = DIVASDoubJointSM(mX(:,1:5),mY,paramstruct)
 
   elseif itest == 6
+    disp('test no diagnostic plots') ;
+    paramstruct = struct('iDiagPlot',0, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 
+  elseif itest == 7
+    disp('test save figures as output Matlab files') ;
+    paramstruct = struct('DiagPlotStr','DIVASDoubJointSMtest', ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+
+  elseif itest == 8
+    disp('test explicitly saving figures as output Matlab files') ;
+    paramstruct = struct('DiagPlotStr','DIVASDoubJointSMtest', ...
+                         'savetype',1, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+
+  elseif itest == 9
+    disp('test save figures as output .png files') ;
+    paramstruct = struct('DiagPlotStr','DIVASDoubJointSMtest', ...
+                         'savetype',2, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+
+  elseif itest == 10
+    disp('test save figures as output .pdf files') ;
+    paramstruct = struct('DiagPlotStr','DIVASDoubJointSMtest', ...
+                         'savetype',3, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+
+  elseif itest == 11
+    disp('test iScaleStand = 0, graphics off') ;
+    paramstruct = struct('iDiagPlot',0, ...
+                         'iScaleStand',0, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+
+  elseif itest == 12
+    disp('test iScaleStand = 0, magnified mX, shrunken mY, graphics off') ;
+    paramstruct = struct('iDiagPlot',0, ...
+                         'iScaleStand',0, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(100 * mX,mY / 100,paramstruct)
+
+  elseif itest == 13
+    disp('test iScaleStand = 0, shrunken mX, graphics off') ;
+    paramstruct = struct('iDiagPlot',0, ...
+                         'iScaleStand',0, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX/100,mY,paramstruct)
+
+  elseif itest == 14
+    disp('test iScaleStand = 0, shrunken mX and mY, graphics off') ;
+    paramstruct = struct('iDiagPlot',0, ...
+                         'iScaleStand',0, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX / 100,mY / 100,paramstruct)
+
+  elseif itest == 15
+    disp('test iScaleStand = 1, shrunken mX and mY, graphics off') ;
+    paramstruct = struct('iDiagPlot',0, ...
+                         'iScaleStand',1, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX / 100,mY / 100,paramstruct)
+
+
+
+%{
+  elseif itest == 
+    disp('test ') ;
+    paramstruct = struct('',, ...
+                         '',, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+%}
 
 
   end ;    %  of inner itest if-block

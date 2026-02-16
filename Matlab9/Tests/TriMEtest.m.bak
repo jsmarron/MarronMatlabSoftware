@@ -8,7 +8,7 @@ disp('Running MATLAB script file TriMEtest.m') ;
 %    Parameter choices are default from dissertation
 
 
-itest = 11 ;   %  1  -  60 x 80  iid N(0,1)
+itest = 9 ;   %  1  -  60 x 80  iid N(0,1)
               %  2  -  80 x 60  iid N(0,1)
               %  3  -  10 x 1000  iid N(0,1)
               %  4  -  1000 x 10  iid N(0,1)
@@ -19,6 +19,7 @@ itest = 11 ;   %  1  -  60 x 80  iid N(0,1)
               %  9  -  16 x 12 toy from DIVASDoubJointSMtest.m
               %  10  -  16 x 12 noiseless toy from DIVASDoubJointSMtest.m
               %  11  -  16 x 12 0.1 noise from DIVASDoubJointSMtest.m
+              %  12  -  60 x 80 version of part 9
 
 
 disp(' ') ;
@@ -99,13 +100,28 @@ elseif itest == 10
   mX2 = 0.9 * u3 * v3' ;
   mX = mX1 + mX2 ;
 
-elseif itest == 10
+elseif itest == 11
 
   disp('  16 x 12, 0.1 noise toy from DIVASDoubJointSMtest.m') ;
   d = 16 ;
   n = 12 ;
   rng(12387632) ;
   sig = 0.1 ;
+  u2 = [ones(d / 2,1); -ones(d / 2,1)] ;
+  u3 = [ones(d / 4,1); -ones(d / 2,1); ones(d / 4,1)] ;
+  v2 = [ones(n / 2,1); -ones(n / 2,1)] ;
+  v3 = [ones(n / 4,1); -ones(n / 2,1); ones(n / 4,1)] ;
+  mX1 = u2 * v2' ;
+  mX2 = 0.9 * u3 * v3' ;
+  mX = mX1 + mX2 + sig * randn(d,n) ;
+
+elseif itest == 12
+
+  disp('  16 x 12 toy from DIVASDoubJointSMtest.m') ;
+  d = 60 ;
+  n = 80 ;
+  rng(12387632) ;
+  sig = 10^(-2) ;
   u2 = [ones(d / 2,1); -ones(d / 2,1)] ;
   u3 = [ones(d / 4,1); -ones(d / 2,1); ones(d / 4,1)] ;
   v2 = [ones(n / 2,1); -ones(n / 2,1)] ;

@@ -8,7 +8,7 @@ disp('Running MATLAB script file TriMEtest.m') ;
 %    Parameter choices are default from dissertation
 
 
-itest = 12 ;   %  1  -  60 x 80  iid N(0,1)
+itest = 13 ;   %  1  -  60 x 80  iid N(0,1)
               %  2  -  80 x 60  iid N(0,1)
               %  3  -  10 x 1000  iid N(0,1)
               %  4  -  1000 x 10  iid N(0,1)
@@ -20,6 +20,7 @@ itest = 12 ;   %  1  -  60 x 80  iid N(0,1)
               %  10  -  16 x 12 noiseless toy from DIVASDoubJointSMtest.m
               %  11  -  16 x 12 0.1 noise from DIVASDoubJointSMtest.m
               %  12  -  60 x 80 version of part 9
+              %  13  -  Experiment with seed for better part 9
 
 
 disp(' ') ;
@@ -121,6 +122,28 @@ elseif itest == 12
   d = 60 ;
   n = 80 ;
   rng(12387632) ;
+  sig = 10^(-2) ;
+  u2 = [ones(d / 2,1); -ones(d / 2,1)] ;
+  u3 = [ones(d / 4,1); -ones(d / 2,1); ones(d / 4,1)] ;
+  v2 = [ones(n / 2,1); -ones(n / 2,1)] ;
+  v3 = [ones(n / 4,1); -ones(n / 2,1); ones(n / 4,1)] ;
+  mX1 = u2 * v2' ;
+  mX2 = 0.9 * u3 * v3' ;
+  mX = mX1 + mX2 + sig * randn(d,n) ;
+
+elseif itest == 13
+
+  disp('  16 x 12 toy from DIVASDoubJointSMtest.m') ;
+  d = 16 ;
+  n = 12 ;
+%  rng(12387632) ;
+      %  Original seed
+  rng(79022873) ;    %  gave Estimated SD = 0.010283
+  rng(23986486) ;    %  gave Estimated SD = 0.011422
+  rng(99237447) ;    %  gave Estimated SD = 0.011651
+  rng(23623051) ;    %  gave Estimated SD = 0.0077723
+  rng(56002635) ;    %  gave Estimated SD = 0.0094648
+  rng(82337269) ;    %  gave Estimated SD = 0.010377
   sig = 10^(-2) ;
   u2 = [ones(d / 2,1); -ones(d / 2,1)] ;
   u3 = [ones(d / 4,1); -ones(d / 2,1); ones(d / 4,1)] ;

@@ -3,11 +3,7 @@ disp('Running MATLAB script file DIVASDoubJointSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION DIVASDoubJointSM,
 %    Doubly Joint DIVAS
 
-<<<<<<< HEAD
-itest = 1 ;     %  1,...,15        Simple paramegter tests
-=======
-itest = 1 ;     %  1,...,6        Simple paramegter tests
->>>>>>> 75ab38acb023544b959704ceefd7f53a7720e46e
+itest = 116 ;     %  1,...,15        Simple paramegter tests
                 %  101,...,116    Toy examples from DoublyJointToy8.m
 
 
@@ -18,7 +14,10 @@ if itest < 100      %  Simple parameter tests
   %
   d = 16 ;
   n = 12 ;
-  rng(12387632) ;
+%  rng(12387632) ;    %  Original seed, with too many modes
+  rng(99237447) ;    %  Improved seed from TriMEtest.m
+  rng(23986486) ;
+  rng(82337269) ;
   sig = 10^(-2) ;
   u2 = [ones(d / 2,1); -ones(d / 2,1)] ;
   u3 = [ones(d / 4,1); -ones(d / 2,1); ones(d / 4,1)] ;
@@ -27,11 +26,9 @@ if itest < 100      %  Simple parameter tests
   mX1 = u2 * v2' ;
   mX2 = 0.9 * u3 * v3' ;
   mX = mX1 + mX2 + sig * randn(d,n) ;
-%  mX = mX1 + mX2 ;
   mY1 = u2 * v2' ;
   mY2 = 0.8 * u3 * v3' ;
   mY = mY1 + mY2 + sig * randn(d,n) ;
-%  mY = mY1 + mY2 ;
   disp(' ') ;
 
   if itest == 1 
@@ -144,9 +141,213 @@ if itest < 100      %  Simple parameter tests
 
 else      %  Toy examples from DoublyJointToy8.m
 
+  %  Set common quantities
+  %
+  d = 80 ;
+  n = 60 ;
+  seed = 56829741 ;
+  rng(seed) ;
+  sig = 1 ;
+  cS = 15 ;
+  cM = 30 ;
+  cL = 60 ;
+  u1 = ones(d,1) ;
+  u2 = [ones(d / 2,1); -ones(d / 2,1)] ;
+  u3 = [ones(d / 4,1); -ones(d / 2,1); ones(d / 4,1)] ;
+  u4 = [ones(d / 4,1); -ones(d / 4,1); ones(d / 4,1); -ones(d / 4,1)] ;
+  u5 = [ones(d / 8,1); -ones(d / 4,1); ones(d / 4,1); ...
+        -ones(d / 4,1); ones(d / 8,1)] ;
+  u8 = [ones(d / 8,1); -ones(d / 8,1); ones(d / 8,1); -ones(d / 8,1); ...
+        ones(d / 8,1); -ones(d / 8,1); ones(d / 8,1); -ones(d / 8,1)] ;
+  v1 = ones(n,1) ;
+  v2 = [ones(n / 2,1); -ones(n / 2,1)] ;
+  v3 = [ones(n / 4,1); -ones(n / 2,1); ones(n / 4,1)] ;
+  v4 =  [ones(n / 4,1); -ones(n / 4,1); ones(n / 4,1); -ones(n / 4,1)] ;
+  u1 = u1 / norm(u1) ;
+  u2 = u2 / norm(u2) ;
+  u3 = u3 / norm(u3) ;
+  u4 = u4 / norm(u4) ;
+  u5 = u5 / norm(u5) ;
+  u8 = u8 / norm(u8) ;
+  v1 = v1 / norm(v1) ;
+  v2 = v2 / norm(v2) ;
+  v3 = v3 / norm(v3) ;
+  v4 = v4 / norm(v4) ;
 
+  %  Generate Signal Matrices
+  %
+  if itest == 101    %  IxO+IyO, Pure Noise
 
+    stitle = '1 Pure Noise' ;
+    ssave = 'IxO+IyO' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = zeros(d,n) ;
+    mYtrue = zeros(d,n) ;
 
+  elseif itest == 102    %  IxS+IyS, Ind XS Ind YS
+
+    stitle = '2 Ind XS Ind YS' ;
+    ssave = 'IxS+IyS' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cS * u4 * v3' ;
+    mYtrue = cS * u2 * v1' ;
+
+  elseif itest == 103    %  IxM+IyM, Ind XM Ind YM
+
+    stitle = '3 Ind XM Ind YM' ;
+    ssave = 'IxM+IyM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cM * u4 * v3' ;
+    mYtrue = cM * u1 * v2' ;
+
+  elseif itest == 104    %  JuMM, Singly J UMM
+
+    stitle = '4 Singly J UMM' ;
+    ssave = 'JuMM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cM * u3 * v1' ;
+    mYtrue = cM * u3 * v2' ;
+
+  elseif itest == 105    %  JuSS, Singly J USS
+
+    stitle = '5 Singly J USS' ;
+    ssave = 'JuSS' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cS * u3 * v1' ;
+    mYtrue = cS * u3 * v2' ;
+
+  elseif itest == 106    %  JvML, Singly J VML
+
+    stitle = '6 Singly J VML' ;
+    ssave = 'JvML' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cM * u2 * v3' ;
+    mYtrue = cL * u1 * v3' ;
+
+  elseif itest == 107    %  JvSS, Singly J VSS
+
+    stitle = '7 Singly J VSS' ;
+    ssave = 'JvSS' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cS * u2 * v3' ;
+    mYtrue = cS * u1 * v3' ;
+
+  elseif itest == 108    %  DLM, Doubly J LM
+
+    stitle = '8 Doubly J LM' ;
+    ssave = 'DLM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cL * u4 * v3' ;
+    mYtrue = cM * u4 * v3' ;
+
+  elseif itest == 109    %  DSS, Doubly J SS
+
+    stitle = '9 Doubly J SS' ;
+    ssave = 'DSS' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cS * u4 * v3' ;
+    mYtrue = cS * u4 * v3' ;
+
+  elseif itest == 110    %  DMM+IXM+IYM, DoubJ & 2Ind
+
+    stitle = '10 DoubJ & 2Ind' ;
+    ssave = 'DMM+IXM+IYM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cM * u4 * v3' + cM * u8 * v1' ;
+    mYtrue = cM * u4 * v3' + cM * u5 * v2' ;
+
+  elseif itest == 111    %  JuMM+JvMM, SingJ U & V
+
+    stitle = '11 SingJ U & V' ;
+    ssave = 'JuMM+JvMM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cM * u3 * v1' + cM * u8 * v4' ;
+    mYtrue = cM * u3 * v2' + cM * u5 * v4' ;
+
+  elseif itest == 112    %  IxS+Iy0, Ind XS only
+
+    stitle = '12 Ind XS only' ;
+    ssave = 'IxS+Iy0' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cS * u4 * v3' ;
+    mYtrue = zeros(d,n) ;
+
+  elseif itest == 113    %  Ix0+IyM, Ind YM only
+
+    stitle = '13 Ind YM only' ;
+    ssave = 'Ix0+IyM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = zeros(d,n) ;
+    mYtrue = cM * u2 * v1' ;
+
+  elseif itest == 114     %  DMM+DMM, Cross DJ Even
+
+    stitle = '14 Cross DJ, Even' ;
+    ssave = 'DMM+DMM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cM * u3 * v3' + cM * u2 * v2' ;
+    mYtrue = cM * u3 * v2' + cM * u2 * v3' ;
+
+  elseif itest == 115     %  DSM+DLM, Cross DJ, Unb.
+
+    stitle = '15 Cross DJ, Unb.' ;
+    ssave = 'DSM+DLM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cS * u3 * v3' + cM * u2 * v2' ;
+    mYtrue = cL * u3 * v2' + cM * u2 * v3' ;
+
+  elseif itest == 16     %  DMM+DMM+DMM, Cross DJ 3
+
+    stitle = '16 Cross DJ 3' ;
+    ssave = 'DMM+DMM+DMM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cM * u3 * v3' + cM * u2 * v4' + cM * u4 * v2' ;
+    mYtrue = cM * u3 * v2' + cM * u4 * v4' + cM * u2 * v3' ;
+
+  end
+
+  %  Add Noise Matrices
+  %
+  mX = mXtrue + sig * randn(d,n) ;
+  mY = mYtrue + sig * randn(d,n) ;
+
+  paramstruct = struct('iscreenwrite',1) ;
+  outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+
+  disp(' ') ;
+  disp(['Above results for ' stitle ', ' ssave]) ;
 
 
 end ;    %  of itest < 0r > 100 if-block

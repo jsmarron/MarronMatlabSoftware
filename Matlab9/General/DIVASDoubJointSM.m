@@ -182,11 +182,11 @@ end
 %  Estimate noise levels for each input and normalize
 %
 beta = min(d,n) / max(d,n) ;
-    %  Marcenko Pasturnparameter
+    %  Marcenko Pasturn parameter
 [mU_X,dmlam_X,mV_X] = svd(mX,'econ') ;
 [mU_Y,dmlam_Y,mV_Y] = svd(mY,'econ') ;
     %  minimal rank versions of svd
-    %  Organized as o. n. Basis matrices 
+    %  Organized as o. n. Basis matrices, and 
     %  diagonal matrix of singular values
 vlam_X = diag(dmlam_X) ;
 vlam_Y = diag(dmlam_Y) ;
@@ -198,8 +198,8 @@ if iScaleStand == 1     %  Use TriME standardization
   %      "STATISTICAL METHODS FOR GENOMIC DATA ANALYSIS"
   %
   c = min(d,n) / max(d,n) ;
-  SigEstX = TriME(c,vlam_X/max(d,n),1,'/temp',0.01,0,0.25,false) ;
-  SigEstY = TriME(c,vlam_Y/max(d,n),1,'/temp',0.01,0,0.25,false) ;
+  SigEstX = TriME(c,vlam_X/sqrt(max(d,n)),1,'/temp',0.01,0,0.25,false) ;
+  SigEstY = TriME(c,vlam_Y/sqrt(max(d,n)),1,'/temp',0.01,0,0.25,false) ;
       %  1 and '/temp' not relevant, since don't make graphics
       %  Other parameters are defaults suggested in dissertation:
       %      alpha1 = 0.01 
@@ -210,9 +210,30 @@ if iScaleStand == 1     %  Use TriME standardization
 SigEstX
 SigEstY
 
-  mXs = mX / SigEstX ;
-  mYs = mY / SigEstY ;
-      %  Normalize so noise part of each block has overall SD 1
+  if SigEstX == 0
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    disp('!!!   Error from DIVASDoubJointSM.m                !!!') ;
+    disp('!!!   Unable to estimate X background noise level  !!!') ;
+    disp('!!!   Basic assumption seems violated              !!!') ;
+    disp('!!!   Terminating with empty return                !!!') ;
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    outstruct = [] ;
+    return 
+  elseif SigEstY == 0
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    disp('!!!   Error from DIVASDoubJointSM.m                !!!') ;
+    disp('!!!   Unable to estimate Y background noise level  !!!') ;
+    disp('!!!   Basic assumption seems violated              !!!') ;
+    disp('!!!   Terminating with empty return                !!!') ;
+    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+    outstruct = [] ;
+    return 
+  else
+    mXs = mX / SigEstX ;
+    mYs = mY / SigEstY ;
+        %  Normalize so noise part of each block has overall SD 1
+  end
+
 
 else     %  Proceed with original data
 
@@ -382,6 +403,8 @@ disp('Using naive thresholds instead') ;
     %  Find Stacked Initial Ranks
     %
     vflag_U = (vlam_U > threshU) ;
+vlam_U'
+threshU
     [~,r_U] = min(vflag_U) ;    %  index of first 0
     r_U = r_U - 1 ;    %  index of last 1 (0 if none)
     vflag_V = (vlam_V > threshV) ;

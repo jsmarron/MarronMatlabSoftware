@@ -8,7 +8,7 @@ disp('Running MATLAB script file TriMEtest.m') ;
 %    Parameter choices are default from dissertation
 
 
-itest = 15 ;   %  1  -  60 x 80  iid N(0,1)
+itest = 14 ;   %  1  -  60 x 80  iid N(0,1)
               %  2  -  80 x 60  iid N(0,1)
               %  3  -  10 x 1000  iid N(0,1)
               %  4  -  1000 x 10  iid N(0,1)

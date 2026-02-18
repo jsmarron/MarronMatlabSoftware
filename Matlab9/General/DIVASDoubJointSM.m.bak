@@ -54,6 +54,13 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 %                          n - Number of simulations to compute thresholds,
 %                                  (default 1000)
 %
+%    vthresh          vector of thresholds for singular values, 
+%                          assuming N(0,1) scaling  (empty default)
+%                          Suggest getting these as 
+%                              outstruct.vthresh
+%                          from previous run of DIVASDoubJointSM
+%                          Only has effect for nThreshSim = 0 
+%
 %    nmaxstep         maximum number of steps (default of 10)
 %
 %    iDiagPlot        0  Make no diagnostic plots (just compute output)
@@ -103,6 +110,7 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 imptype = 1 ;
 iScaleStand = 1 ;
 nThreshSim = 1000 ;
+vthresh = [] ;
 nmaxstep = 10 ;
 iDiagPlot = 1 ;
 DiagPlotStr = [] ;
@@ -124,6 +132,10 @@ if nargin > 2   %  then paramstruct is an argument
 
   if isfield(paramstruct,'nThreshSim')    %  then change to input value
     nThreshSim = paramstruct.nThreshSim ;
+  end
+
+  if isfield(paramstruct,'vthresh')    %  then change to input value
+    vthresh = paramstruct.vthresh ;
   end
 
   if isfield(paramstruct,'nmaxstep')    %  then change to input value
@@ -326,6 +338,15 @@ disp('Using naive thresholds instead') ;
     disp(' ') ;
     disp(['Number of steps to consider (max filtered rank) = ' ...
                num2str(nstep)]) ;
+    if nstep > nmaxstep
+      disp(['But will only calculate input maxnstep = ' ...
+               num2str(nmaxstep) ' steps']) ;
+      nstep = nmaxstep ;
+    end
+  else
+    if nstep > nmaxstep
+      nstep = nmaxstep ;
+    end
   end
 
   if iDiagPlot == 1 
@@ -368,7 +389,7 @@ disp('Using naive thresholds instead') ;
 
   %  Main loop stepping through components
   %
-  for istep = 1:min(nstep,nmaxstep)
+  for istep = 1:nstep
 
     if iscreenwrite == 1
       disp(' ') ;
@@ -403,6 +424,8 @@ disp('Using naive thresholds instead') ;
     %  Find Stacked Initial Ranks
     %
     vflag_U = (vlam_U > threshU) ;
+%vlam_U'
+%threshU
     [~,r_U] = min(vflag_U) ;    %  index of first 0
     r_U = r_U - 1 ;    %  index of last 1 (0 if none)
     vflag_V = (vlam_V > threshV) ;

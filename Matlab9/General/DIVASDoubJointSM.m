@@ -55,11 +55,22 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 %                                  (default 1000)
 %
 %    vthresh          vector of thresholds for singular values, 
-%                          assuming N(0,1) scaling  (empty default)
-%                          Suggest getting these as 
-%                              outstruct.vthresh
+%                          assuming N(0,1) scaling  (empty default):
+%                                  vthresh(1) = threshXnY
+%                                  vthresh(2) = threshU
+%                                  vthresh(3) = threshV
+%                     Suggest getting these as 
+%                                  outstruct.vthresh
 %                          from previous run of DIVASDoubJointSM
-%                          Only has effect for nThreshSim = 0 
+%                     Only has effect for nThreshSim = 0 
+%
+%    prob             cutoff probability,  for thresholds whose quantile
+%                          is desired
+%                     default is 0.99
+%
+%    simseed          seed for simulation computation (used as "rng(simseed)")
+%                     should be <= 8 digit integer,
+%                     default is Matlab default of 0
 %
 %    nmaxstep         maximum number of steps (default of 10)
 %
@@ -111,6 +122,8 @@ imptype = 1 ;
 iScaleStand = 1 ;
 nThreshSim = 1000 ;
 vthresh = [] ;
+prob = 0.99 ;
+simseed = 0 ;
 nmaxstep = 10 ;
 iDiagPlot = 1 ;
 DiagPlotStr = [] ;
@@ -136,6 +149,14 @@ if nargin > 2   %  then paramstruct is an argument
 
   if isfield(paramstruct,'vthresh')    %  then change to input value
     vthresh = paramstruct.vthresh ;
+  end
+
+  if isfield(paramstruct,'prob')    %  then change to input value
+    prob = paramstruct.prob ;
+  end
+
+  if isfield(paramstruct,'simseed')    %  then change to input value
+    simseed = paramstruct.simseed ;
   end
 
   if isfield(paramstruct,'nmaxstep')    %  then change to input value
@@ -219,8 +240,10 @@ if iScaleStand == 1     %  Use TriME standardization
       %      omega = 0.25
       %  sve = false turns off graphics
 
-SigEstX
-SigEstY
+  if iscreenwrite == 1 
+    disp(['    Estimated mX standard deviation = ' num2str(SigEstX)]) ;
+    disp(['    Estimated mY standard deviation = ' num2str(SigEstY)]) ;
+  end
 
   if SigEstX == 0
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -265,31 +288,76 @@ if imptype == 1     %  Original greedy implementation
 
     if isempty(vthresh) 
 
+      if iscreenwrite == 1 
+        disp('Using naive thresholds') ;
+        disp(' ') ;
+      end
+
       threshXnY = sqrt(min(d,n)) * (1 + sqrt(max(d,n) / min(d,n))) ;
       threshU = sqrt(2 * n) * (1 + sqrt(d / (2 * n))) ;
       threshV = sqrt(2 * d) * (1 + sqrt(n / (2 * d))) ;
 
+      vthresh = [] ;
+
     else
 
-      threshXnY = vthresh(1) ;
+      if iscreenwrite == 1 
+        disp('Using input thresholds') ;
+        disp(' ') ;
+      end
 
+      threshXnY = vthresh(1) ;
+      threshU = vthresh(2) ;
+      threshV = vthresh(3) ;
 
     end
 
+
+  else    %  Compute simulated thresholds, from DoublyJointSim1.m
+
     if iscreenwrite == 1 
-      disp('Using naive thresholds') ;
+      disp('Computing N(0,1) simulated thresholds') ;
       disp(' ') ;
     end
 
-  else    %  Compute simulated thresholds
+    rng(simseed) ;
 
-threshXnY = sqrt(min(d,n)) * (1 + sqrt(max(d,n) / min(d,n))) ;
-threshU = sqrt(2 * n) * (1 + sqrt(d / (2 * n))) ;
-threshV = sqrt(2 * d) * (1 + sqrt(n / (2 * d))) ;
-disp('Simulated thresholds not yet implemented') ;
-disp('Using naive thresholds instead') ;
+    %  Main Simulation Loop
+    %
+    vSingLam1 = [] ;
+    vHorizLam1 = [] ;
+    vVertLam1 = [] ;
+    for isim = 1:nThreshSim
 
-  end     %  of threshold sim if-block
+      if  (isim / 100) == floor(isim / 100)  &  iscreenwrite == 1 
+        disp(['    Working on sim ' num2str(isim) ' of ' num2str(nThreshSim)]) ;
+      end
+
+      %  Generate Pure Noise N(0,1) data sets
+      %
+      mSing = randn(d,n) ;
+      mHoriz = randn(d,2 * n) ;
+      mVert = randn(2 * d,n) ;
+
+      %  Compute and save first singular values
+      %
+      SingLam1 = svds(mSing,1) ;
+      HorizLam1 = svds(mHoriz,1) ;
+      VertLam1 = svds(mVert,1) ;
+      vSingLam1 = [vSingLam1; SingLam1] ;
+      vHorizLam1 = [vHorizLam1; HorizLam1] ;
+      vVertLam1 = [vVertLam1; VertLam1] ;
+
+    end    %  of main simulation Loop
+
+    threshXnY = cquantSM(vSingLam1,prob) ;
+    threshU = cquantSM(vHorizLam1,prob) ;
+    threshV = cquantSM(vVertLam1,prob) ;
+
+    vthresh = [threshXnY; threshU; threshV] ;
+    outstruct.vthresh = vthresh ;
+
+  end     %  of threshold if-block
 
 
   %  Initialize running matrices and cell arrays

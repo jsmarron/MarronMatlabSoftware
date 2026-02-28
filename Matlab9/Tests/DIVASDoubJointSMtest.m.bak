@@ -3,7 +3,7 @@ disp('Running MATLAB script file DIVASDoubJointSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION DIVASDoubJointSM,
 %    Doubly Joint DIVAS
 
-itest = 26 ;     %  1,...,26        Simple parameter tests
+itest = 25 ;     %  1,...,25        Simple parameter tests
                 %  101,...,118    Toy examples from DoublyJointToy8.m
 
 
@@ -238,15 +238,6 @@ if itest < 100      %  Simple parameter tests
         %  to see baseline of crude Marcenko-Pastur
     paramstruct = struct('nThreshSim',0, ...
                          'vthresh',[200 1200 1200], ...
-                         'iscreenwrite',1) ;
-    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
-
-  elseif itest == 26
-    disp('test nThreshSim = 0, manual vthresh [2000, 200, 200]') ;
-        %  recommend running this right after itest = 24
-        %  to see baseline of crude Marcenko-Pastur
-    paramstruct = struct('nThreshSim',0, ...
-                         'vthresh',[2000 200 200], ...
                          'iscreenwrite',1) ;
     outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 

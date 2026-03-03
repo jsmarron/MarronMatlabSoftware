@@ -3,7 +3,7 @@ disp('Running MATLAB script file DIVASDoubJointSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION DIVASDoubJointSM,
 %    Doubly Joint DIVAS
 
-itest = 26 ;     %  1,...,26        Simple parameter tests
+itest = 30 ;     %  1,...,30        Simple parameter tests
                 %  101,...,118    Toy examples from DoublyJointToy8.m
 
 
@@ -249,6 +249,38 @@ if itest < 100      %  Simple parameter tests
                          'vthresh',[2000 200 200], ...
                          'iscreenwrite',1) ;
     outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+
+  elseif itest == 27
+    disp('test manually set alpha = 0.05') ;
+    paramstruct = struct('nThreshSim',0, ...
+                         'alpha',0.05, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+    disp('test manually set alpha = 0.05') ;
+
+  elseif itest == 28
+    disp('test alpha = [-100; 100]') ;
+    paramstruct = struct('nThreshSim',0, ...
+                         'alpha',[-100; 100], ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+    disp('test manually set alpha = [-100; 100]') ;
+
+  elseif itest == 29
+    disp('test too big alpha = [-300; 300]') ;
+    paramstruct = struct('nThreshSim',0, ...
+                         'alpha',[-300; 300], ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+    disp('test too big alpha = [-300; 300]') ;
+
+  elseif itest == 30
+    disp('test too small alpha = [-20; 20]') ;
+    paramstruct = struct('nThreshSim',0, ...
+                         'alpha',[-20; 20], ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+    disp('test too small alpha = [-20; 20]') ;
 
 
 

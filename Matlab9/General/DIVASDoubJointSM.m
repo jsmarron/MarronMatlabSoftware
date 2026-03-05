@@ -677,16 +677,21 @@ if imptype == 1     %  Original greedy implementation
             V_UJY = [] ;
           end
 
-          %  Find U driven candidate for Doubly Joint mode
-          %      using Principal Angle Analysis
-          [mc_UPAX,dmlam_UPA,mc_UPAY] = svd(V_UJX' * V_UJY,'econ') ;
-          vlam_UPA = diag(dmlam_UPA) ;
-          vc_UPAX = mc_UPAX(:,1) ;
-          vc_UPAY = mc_UPAY(:,1) ;
-          if iscreenwrite == 1
-            disp(['    U driven Principal Angles = ' num2str(acosd(vlam_UPA'))]) ;
-          end 
-          angU = acosd(vlam_UPA(1)) ;
+          if  r_UJX > 0  &  r_UJY
+            %  Find U driven candidate for Doubly Joint mode
+            %      using Principal Angle Analysis
+            [mc_UPAX,dmlam_UPA,mc_UPAY] = svd(V_UJX' * V_UJY,'econ') ;
+            vlam_UPA = diag(dmlam_UPA) ;
+            vc_UPAX = mc_UPAX(:,1) ;
+            vc_UPAY = mc_UPAY(:,1) ;
+            if iscreenwrite == 1
+              disp(['    U driven Principal Angles = ' num2str(acosd(vlam_UPA'))]) ;
+            end 
+            angU = acosd(vlam_UPA(1)) ;
+          else
+            r_UJ = 0 ;
+          end
+
 
         end     %  of have UJ subspace if-block
                 %      (if r_UJ > 0)
@@ -852,20 +857,23 @@ if imptype == 1     %  Original greedy implementation
 
 %r_VJY
 
-          %  Find V driven candidate for Doubly Joint mode
-          %      using Principal Angle Analysis
-          [mc_VPAX,dmlam_VPA,mc_VPAY] = svd(U_VJX' * U_VJY,'econ') ;
-          vlam_VPA = diag(dmlam_VPA) ;
-          vc_VPAX = mc_VPAX(:,1) ;
-          vc_VPAY = mc_VPAY(:,1) ;
-          if iscreenwrite == 1
-            disp(['    V driven Principal Angles = ' num2str(acosd(vlam_VPA'))]) ;
+          if  r_VJX > 0  &  r_VJY
+            %  Find V driven candidate for Doubly Joint mode
+            %      using Principal Angle Analysis
+            [mc_VPAX,dmlam_VPA,mc_VPAY] = svd(U_VJX' * U_VJY,'econ') ;
+            vlam_VPA = diag(dmlam_VPA) ;
+            vc_VPAX = mc_VPAX(:,1) ;
+            vc_VPAY = mc_VPAY(:,1) ;
+            if iscreenwrite == 1
+              disp(['    V driven Principal Angles = ' num2str(acosd(vlam_VPA'))]) ;
+            end
+            angV = acosd(vlam_VPA(1)) ;
+          else
+            r_VJ = 0 ;
           end
-          angV = acosd(vlam_VPA(1)) ;
 
         end     %  of have UJ subspace if-block
                 %      (if r_VJ > 0)
-
 
 
       else ;

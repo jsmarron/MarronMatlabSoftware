@@ -5,6 +5,7 @@ disp('Running MATLAB script file DIVASDoubJointSMtest.m') ;
 
 itest = 30 ;     %  1,...,30        Simple parameter tests
                 %  101,...,118    Toy examples from DoublyJointToy8.m
+                
 
 
 if itest < 100      %  Simple parameter tests
@@ -14,7 +15,7 @@ if itest < 100      %  Simple parameter tests
   %
   d = 16 ;
   n = 12 ;
-%  rng(12387632) ;    %  Original seed, with too many modes
+%  rng(12387632) ;    %  Original seed, with too many modes30
   rng(99237447) ;    %  Improved seed from TriMEtest.m
   rng(23986486) ;
   rng(82337269) ;    %  Final nicest choice
@@ -524,6 +525,12 @@ else      %  Toy examples from DoublyJointToy8.m
 
   paramstruct = struct('iscreenwrite',1) ;
   outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+
+  disp(' ') ;
+  disp('Check caXmodes Output:') ;
+  outstruct.caXmodes
+  disp('Check caYmodes Output:') ;
+  outstruct.caYmodes
 
   disp(' ') ;
   disp(['Above results for ' stitle ', ' ssave]) ;

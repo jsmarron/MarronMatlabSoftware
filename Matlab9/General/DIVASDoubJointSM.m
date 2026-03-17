@@ -104,8 +104,24 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 %
 % Outputs:
 %
-%   outstruct   - a Matlab structure of results
-%               
+%   outstruct   - a Matlab structure of results, with fields:
+%                      outstruct.vthresh:    3 x 1 vector of thresholds
+%                          1.  threshold for normalized X and Y matrices
+%                          2.  threshold for U (horizontally concatenated) matrix
+%                          3.  threshold for V (vertically concatenated) matrix 
+%                      outstruct.caXmodes:  Cell Array of X modes of variation
+%                      outstruct.caYmodes:  Cell Array of Y modes of variation
+%                          Rows are corresponding modes
+%                          Columns are:
+%                              1.  Symbol for mode type,  
+%                                       'D' - Doubly Joint
+%                                       'SU' - U Singly Joint
+%                                       'SV' - V Singly Joint
+%                                       'I' - Individual
+%                                       'N' = Other block individual, so leave blank
+%                              2.  Coefficient for node  (empty for 'N')
+%                              3.  d x 1 u vector of mode  (empty for 'N')
+%                              4.  n x 1 v vector of mode  (empty for 'N')
 %
 %   Graphics in new figures when iDiagPlot = 1
 %   When DiagPlotStr exists, generate output files, 
@@ -1295,6 +1311,10 @@ if imptype == 1     %  Original greedy implementation
       caXmodes(nmodes,2) = {vlam_X(1)} ;
       caXmodes(nmodes,3) = {mU_X(:,1)} ;
       caXmodes(nmodes,4) = {mV_X(:,1)} ;
+      caYmodes(nmodes,1) = {'N'} ;
+      caYmodes(nmodes,2) = {{}} ;
+      caYmodes(nmodes,3) = {{}} ;
+      caYmodes(nmodes,4) = {{}} ;
           %  cell arrays of significant modes of variation
 
 
@@ -1339,10 +1359,14 @@ if imptype == 1     %  Original greedy implementation
           %  Running matrices
       nmodes = nmodes + 1 ;
           %  number of modes of variation found so far
-      caYmodes(nmodes,5) = {'I'} ;
-      caYmodes(nmodes,6) = {vlam_Y(1)} ;
-      caYmodes(nmodes,7) = {mU_Y(:,1)} ;
-      caYmodes(nmodes,8) = {mV_Y(:,1)} ;
+      caXmodes(nmodes,1) = {'N'} ;
+      caXmodes(nmodes,2) = {{}} ;
+      caXmodes(nmodes,3) = {{}} ;
+      caXmodes(nmodes,4) = {{}} ;
+      caYmodes(nmodes,1) = {'I'} ;
+      caYmodes(nmodes,2) = {vlam_Y(1)} ;
+      caYmodes(nmodes,3) = {mU_Y(:,1)} ;
+      caYmodes(nmodes,4) = {mV_Y(:,1)} ;
           %  cell arrays of significant modes of variation
 
 

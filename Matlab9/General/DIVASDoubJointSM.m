@@ -35,10 +35,10 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 %    fields            values
 %
 %    imptype          implementation type:
-%                          1 - original greedy implementation
+%                          1 - original greedy angle based implementation
 %                                  from DoublyJointToy8.m
-%                          2 - QZ based implementation
-%                                  from DoublyJointToy9.m
+%                          2 - subspace partition based implementation adn QZ
+%                                  from DoublyJointToy9.m  (current default)
 %    
 %    iScaleStand      indicator for Scale Standardization 
 %                          0 - Do not Scale Standardize
@@ -141,7 +141,7 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 
 %  First set all parameters to defaults
 %
-imptype = 1 ;
+imptype = 2 ;
 iScaleStand = 1 ;
 nThreshSim = 1000 ;
 vthresh = [] ;
@@ -306,87 +306,89 @@ else     %  Proceed with original data
 end 
 
 
-if imptype == 1     %  Original greedy implementation
-                    %      from DoublyJointToy8.m
+%  Get thresholds
+%
+if nThreshSim == 0     %  Use crude Marcenko-Pastur bounds
+                       %      from DoublyJointToy7
 
-  %  Get thresholds
-  %
-  if nThreshSim == 0     %  Use crude Marcenko-Pastur bounds
-                         %      from DoublyJointToy7
-
-    if isempty(vthresh) 
-
-      if iscreenwrite == 1 
-        disp('Using naive thresholds') ;
-        disp(' ') ;
-      end
-
-      threshXnY = sqrt(min(d,n)) * (1 + sqrt(max(d,n) / min(d,n))) ;
-      threshU = sqrt(2 * n) * (1 + sqrt(d / (2 * n))) ;
-      threshV = sqrt(2 * d) * (1 + sqrt(n / (2 * d))) ;
-
-      vthresh = [] ;
-
-    else
-
-      if iscreenwrite == 1 
-        disp('Using input thresholds') ;
-        disp(' ') ;
-      end
-
-      threshXnY = vthresh(1) ;
-      threshU = vthresh(2) ;
-      threshV = vthresh(3) ;
-
-    end
-
-
-  else    %  Compute simulated thresholds, from DoublyJointSim1.m
+  if isempty(vthresh) 
 
     if iscreenwrite == 1 
-      disp('Computing N(0,1) simulated thresholds') ;
+      disp('Using naive thresholds') ;
       disp(' ') ;
     end
 
-    rng(simseed) ;
+    threshXnY = sqrt(min(d,n)) * (1 + sqrt(max(d,n) / min(d,n))) ;
+    threshU = sqrt(2 * n) * (1 + sqrt(d / (2 * n))) ;
+    threshV = sqrt(2 * d) * (1 + sqrt(n / (2 * d))) ;
 
-    %  Main Simulation Loop
+    vthresh = [] ;
+
+  else
+
+    if iscreenwrite == 1 
+      disp('Using input thresholds') ;
+      disp(' ') ;
+    end
+
+    threshXnY = vthresh(1) ;
+    threshU = vthresh(2) ;
+    threshV = vthresh(3) ;
+
+  end
+
+
+else    %  Compute simulated thresholds, from DoublyJointSim1.m
+
+  if iscreenwrite == 1 
+    disp('Computing N(0,1) simulated thresholds') ;
+    disp(' ') ;
+  end
+
+  rng(simseed) ;
+
+  %  Main Simulation Loop
+  %
+  vSingLam1 = [] ;
+  vHorizLam1 = [] ;
+  vVertLam1 = [] ;
+  for isim = 1:nThreshSim
+
+    if  (isim / 100) == floor(isim / 100)  &  iscreenwrite == 1 
+      disp(['    Working on sim ' num2str(isim) ' of ' num2str(nThreshSim)]) ;
+    end
+
+    %  Generate Pure Noise N(0,1) data sets
     %
-    vSingLam1 = [] ;
-    vHorizLam1 = [] ;
-    vVertLam1 = [] ;
-    for isim = 1:nThreshSim
+    mSing = randn(d,n) ;
+    mHoriz = randn(d,2 * n) ;
+    mVert = randn(2 * d,n) ;
 
-      if  (isim / 100) == floor(isim / 100)  &  iscreenwrite == 1 
-        disp(['    Working on sim ' num2str(isim) ' of ' num2str(nThreshSim)]) ;
-      end
+    %  Compute and save first singular values
+    %
+    SingLam1 = svds(mSing,1) ;
+    HorizLam1 = svds(mHoriz,1) ;
+    VertLam1 = svds(mVert,1) ;
+    vSingLam1 = [vSingLam1; SingLam1] ;
+    vHorizLam1 = [vHorizLam1; HorizLam1] ;
+    vVertLam1 = [vVertLam1; VertLam1] ;
 
-      %  Generate Pure Noise N(0,1) data sets
-      %
-      mSing = randn(d,n) ;
-      mHoriz = randn(d,2 * n) ;
-      mVert = randn(2 * d,n) ;
+  end    %  of main simulation Loop
 
-      %  Compute and save first singular values
-      %
-      SingLam1 = svds(mSing,1) ;
-      HorizLam1 = svds(mHoriz,1) ;
-      VertLam1 = svds(mVert,1) ;
-      vSingLam1 = [vSingLam1; SingLam1] ;
-      vHorizLam1 = [vHorizLam1; HorizLam1] ;
-      vVertLam1 = [vVertLam1; VertLam1] ;
+  threshXnY = cquantSM(vSingLam1,prob) ;
+  threshU = cquantSM(vHorizLam1,prob) ;
+  threshV = cquantSM(vVertLam1,prob) ;
 
-    end    %  of main simulation Loop
+  vthresh = [threshXnY; threshU; threshV] ;
+  outstruct.vthresh = vthresh ;
 
-    threshXnY = cquantSM(vSingLam1,prob) ;
-    threshU = cquantSM(vHorizLam1,prob) ;
-    threshV = cquantSM(vVertLam1,prob) ;
+end     %  of threshold if-block
 
-    vthresh = [threshXnY; threshU; threshV] ;
-    outstruct.vthresh = vthresh ;
 
-  end     %  of threshold if-block
 
+
+if  imptype == 1  ;     %  1 - Original greedy implementation
+                        %          from DoublyJointToy8.m
 
   %  Initialize running matrices and cell arrays
   %
@@ -1425,11 +1427,355 @@ if imptype == 1     %  Original greedy implementation
   end 
 
 
-elseif imptype == 2     %  QZ based implementation
-                        %      from DoublyJointToy9.m
+elseif imptype == 2     %  subspace partition based implementation, with QZ
+                        %          from DoublyJointToy9.m  (current default)
+
+  %  Compute X and Y SVDs
+  %
+  [mU_X,dmlam_X,mV_X] = svd(mX,'econ') ;
+  [mU_Y,dmlam_Y,mV_Y] = svd(mY,'econ') ;
+      %  minimal rank versions of svd
+      %  Organized as o. n. Basis matrices 
+      %  diagonal matrix of singular values
+  vlam_X = diag(dmlam_X) ;
+  vlam_Y = diag(dmlam_Y) ;
+      %  vectors of singular values
+
+  %  Find Separate Blocks Initial Ranks
+  %
+  vflag_X = (vlam_X > threshXnY) ;
+  [~,r_X] = min(vflag_X) ;    %  index of first 0
+  r_X = r_X - 1 ;    %  index of last 1 (0 if none)
+      %  Estimated rank of X signal A
+  vflag_Y = (vlam_Y > threshXnY) ;
+  [~,r_Y] = min(vflag_Y) ;    %  index of first 0
+  r_Y = r_Y - 1 ;    %  index of last 1 (0 if none)
+      %  Estimated rank of Y signal A
+  if iscreenwrite == 1
+    disp(' ') ;
+    disp(['Initial estimated rank of X signal (= A_X) is ' num2str(r_X)]) ;
+    disp(['Initial estimated rank of Y signal (= A_Y) is ' num2str(r_Y)]) ;
+  end
+
+  if iDiagPlot == 1 
+    %  Start rank diagnostic plot
+    %
+    fh1 = figure('WindowStyle','normal') ;
+    clf ;
+    set(fh1,'Position',[100 100 1000 600]) ;
+    lam_max = max([vlam_X; vlam_Y; threshV]) ;
+    vax = [0 (n + 1) 0 (1.05 * lam_max)] ;
+        %  biggest of singular values
+
+    subplot(2,3,1) ;    %  X only
+      plot((1:length(vlam_X))',vlam_X,'ko-') ;
+      xlabel('k') ;
+      ylabel('lambda X') ;
+      title(['X Singular Values']) ;
+      axis(vax) ;
+      hold on ;
+        plot([0; (n+1)],[threshXnY; threshXnY],'r-') ;
+        text(vax(1) + 0.6 * (vax(2) - vax(1)), ...
+             vax(3) + 0.9 * (vax(4) - vax(3)), ...
+             ['r_X = ' num2str(r_X)]) ;
+      hold off ;
+
+    subplot(2,3,4) ;    %  Y only
+      plot((1:length(vlam_Y))',vlam_Y,'ko-') ;
+      xlabel('k') ;
+      ylabel('lambda Y') ;
+      title(['Y Singular Values']) ;
+      axis(vax) ;
+      hold on ;
+        plot([0; (n+1)],[threshXnY; threshXnY],'r-') ;
+        text(vax(1) + 0.6 * (vax(2) - vax(1)), ...
+             vax(3) + 0.9 * (vax(4) - vax(3)), ...
+             ['r_Y = ' num2str(r_Y)]) ;
+      hold off ;
+  end     %  of iDiagPlot if-block
 
 
-  outstruct = 'Not defined yet' ;
+  %  Compute stacked SVDs
+  %
+  [mU_U,dmlam_U,mV_U] = svd([mX mY],'econ') ;
+  [mU_V,dmlam_V,mV_V] = svd([mX; mY],'econ') ;
+      %  minimal rank versions of svd
+  vlam_U = diag(dmlam_U) ;
+  vlam_V = diag(dmlam_V) ;
+
+  %  Find Stacked Initial Ranks
+  %
+  vflag_U = (vlam_U > threshU) ;
+  [~,r_U] = min(vflag_U) ;    %  index of first 0
+  r_U = r_U - 1 ;    %  index of last 1 (0 if none)
+      %  Estimated rank of Uunion,col at this step
+  vflag_V = (vlam_V > threshV) ;
+  [~,r_V] = min(vflag_V) ;    %  index of first 0
+  r_V = r_V - 1 ;    %  index of last 1 (0 if none)
+      %  Estimated rank of Vunion,col at this step
+  if iscreenwrite == 1
+    disp(' ') ;
+    disp(['  Horizontally Stacked rank of Uunion,col is ' num2str(r_U)]) ;
+    disp(['  Vertically Stacked rank of Vunion,row is ' num2str(r_V)]) ;
+  end
+
+
+  if iDiagPlot == 1      %  then add to diagnostic plot
+
+    lam_max = max([lam_max; vlam_U; vlam_V; threshU; threshV]) ;
+    vax = [0 (n + 1) 0 (1.05 * lam_max)] ;
+
+    subplot(2,3,2) ;    %  Horizontal Stack
+      plot((1:length(vlam_U))',vlam_U,'ko-') ;
+      xlabel('k') ;
+      ylabel('lambda U') ;
+      title('Horizontal Stack Singular Values') ;
+      axis(vax) ;
+      hold on ;
+        plot([0; (n+1)],[threshU; threshU],'r-') ;
+        text(vax(1) + 0.6 * (vax(2) - vax(1)), ...
+             vax(3) + 0.9 * (vax(4) - vax(3)), ...
+             ['r_U = ' num2str(r_U)]) ;
+      hold off ;
+
+    subplot(2,3,5) ;    %  Vertical Stack
+      plot((1:length(vlam_V))',vlam_V,'ko-') ;
+      xlabel('k') ;
+      ylabel('lambda V') ;
+      title('Vertical Stack Singular Values') ;
+      axis(vax) ;
+      hold on ;
+        plot([0; (n+1)],[threshV; threshV],'r-') ;
+        text(vax(1) + 0.6 * (vax(2) - vax(1)), ...
+             vax(3) + 0.9 * (vax(4) - vax(3)), ...
+             ['r_V = ' num2str(r_V)]) ;
+      hold off ;
+
+  end    %  of iDiagPlot if-block
+
+
+  if r_U > 0     %  Then have U Union directions to work with
+
+    %  Project each of X and Y onto U_union space
+    %
+    S_UX = mU_U(:,1:r_U)' * mX ;
+    S_UY = mU_U(:,1:r_U)' * mY ;
+        %  r_U x n Inner products (hence scores)
+        %  of X & Y with basis matrix of Uunion,col space
+    Xcup_UX = mU_U(:,1:r_U) * S_UX ;
+    Ycup_UY = mU_U(:,1:r_U) * S_UY ;
+        %  d x n representations of generated subspaces`
+
+    [B_UX,dmlam_UX,~] = svd(Xcup_UX,'econ') ;
+    vlam_UX = diag(dmlam_UX) ;
+    vflag_BUX = (vlam_UX > threshXnY) ;
+    [~,r_BUX] = min(vflag_BUX) ;    %  index of first 0
+    r_BUX = r_BUX - 1 ;    %  index of last 1 (0 if none)
+        %  Estimated rank of projection of X 
+        %      on Uunion,col at this step
+    if r_BUX > 0
+      B_UX = B_UX(:,1:r_BUX) ;
+          %  Basis matrix of subspace generated by 
+          %      projection of X on Uunion,col space
+    else
+      B_UX = [] ;
+    end
+
+    [B_UY,dmlam_UY,~] = svd(Ycup_UY,'econ') ;
+    vlam_UY = diag(dmlam_UY) ;
+    vflag_BUY = (vlam_UY > threshXnY) ;
+    [~,r_BUY] = min(vflag_BUY) ;    %  index of first 0
+    r_BUY = r_BUY - 1 ;    %  index of last 1 (0 if none)
+        %  Estimated rank of projection of X 
+        %      on Uunion,col at this step
+    if r_BUY > 0
+      B_UY = B_UY(:,1:r_BUY) ;
+          %  Basis matrix of subspace generated by 
+          %      projection of Y on Uunion,col space
+    else
+      B_UY = [] ;
+    end
+
+    if  r_BUX > 0  &  r_BUY > 0     %  may have U joint directions
+                                    %  Look further by SVD of sum
+                                    %  of projection matrices
+
+      P_UX = B_UX * B_UX' ; 
+      P_UY = B_UY * B_UY' ; 
+          %  Projection matrices onto the 
+          %      X-Uunion,col and Y-Uunion,col subspaces
+          %  Simpler form since B_UX and B_UY are orthonormal basis matrices
+      [mU_UJ,dmlam_UJ,mV_UJ] = svd(P_UX + P_UY,'econ') ;
+      vlam_UJ = diag(dmlam_UJ) ;
+
+      %  Find basis matrix for Union U Joint subspace
+      %
+      vflag_UJ = (vlam_UJ > 1.5) ;
+
+      [~,r_UJ] = min(vflag_UJ) ;    %  index of first 0
+      r_UJ = r_UJ - 1 ;    %  index of last 1 (0 if none)
+      %  Estimated rank of Ujoint space of doubly joint candidates
+
+      if r_UJ > 0     %  Have a Ujoint subspace (could be doubly or singly joint)
+
+        B_UJoint = mU_UJ(:,1:r_UJ) ;
+            %  Basis matrix of U subspace (Doubly or Singly)
+        P_UJoint = B_UJoint * B_UJoint' ;
+            %  d x d Projection Matrix onto U Joint subspace
+
+      end     %  of have UJ subspace if-block
+              %      (if r_UJ > 0)
+
+    else
+
+      r_UJ = 0 ;    %  No U Joint modes
+      vlam_UJ = zeros(d,1) ;
+          %  put all zeros, to show no Horizontal concatenated mode
+
+    end     %  of have both projections on U space
+            %      (if  r_BUX > 0  &  r_BUY > 0)
+
+
+    if iDiagPlot == 1 
+      %  Add to diagnostic graphic
+      %
+      vaxU = [0 (n + 1) 0 2.1] ;
+      subplot(2,3,3) ;    %  U Concatenation
+        plot((1:length(vlam_UJ))',vlam_UJ,'ko-') ;
+        xlabel('k') ;
+        ylabel('lambda UJ') ;
+        title('U Joint Concatenated Singular Values') ;
+        axis(vaxU) ;
+        hold on ;
+          plot([0; (n+1)],[1.5; 1.5],'r-') ;
+          text(vaxU(1) + 0.6 * (vaxU(2) - vax(1)), ...
+               vaxU(3) + 0.9 * (vaxU(4) - vax(3)), ...
+               ['r_{UJ} = ' num2str(r_UJ)]) ;
+        hold off ;
+    end     %  of iDiagPlot if-block
+
+
+  else
+
+      r_UJ = 0 ;    %  No U Joint modes
+
+  end     %  if-block for having U Union directions to work with
+          %       (if r_U > 0)
+
+
+  if r_V > 0     %  Then have V Union directions to work with
+
+    %  Project each of X and Y onto V_union space
+    %
+    L_VX = mX * mV_V(:,1:r_V) ;
+    L_VY = mY * mV_V(:,1:r_V) ;
+        %  r_V x n Inner products (hence loadings)
+        %  of X & Y with basis matrix of V space
+    Xcup_VX = L_VX * mV_V(:,1:r_V)' ;
+    Ycup_VY = L_VY * mV_V(:,1:r_V)' ;
+        %  d x n representations of generated subspaces`
+
+    [~,dmlam_VX,B_VX] = svd(Xcup_VX,'econ') ;
+    vlam_VX = diag(dmlam_VX) ;
+    vflag_BVX = (vlam_VX > threshXnY) ;
+    [~,r_BVX] = min(vflag_BVX) ;    %  index of first 0
+    r_BVX = r_BVX - 1 ;    %  index of last 1 (0 if none)
+        %  Estimated rank of projection of X 
+        %      on Vunion,row at this step
+    if r_BVX > 0
+      B_VX = B_VX(:,1:r_BVX) ;
+          %  Basis matrix of subspace generated by 
+          %      projection of X on Vunion,row space
+    else
+      B_VX = [] ;
+    end
+
+
+
+    [~,dmlam_VY,B_VY] = svd(Ycup_VY,'econ') ;
+    vlam_VY = diag(dmlam_VY) ;
+    vflag_BVY = (vlam_VY > threshXnY) ;
+    [~,r_BVY] = min(vflag_BVY) ;    %  index of first 0
+    r_BVY = r_BVY - 1 ;    %  index of last 1 (0 if none)
+        %  Estimated rank of projection of Y 
+        %      on Vunion,row at this step
+    if r_BVY > 0
+      B_VY = B_VY(:,1:r_BVY) ;
+          %  Basis matrix of subspace generated by 
+          %      projection of Y on Vunion,row space
+    else
+      B_VY = [] ;
+    end
+
+    if  r_BVX > 0  &  r_BVY > 0     %  may have V joint directions
+                                    %  Look further by SVD of sum
+                                    %  of projection matrices
+ 
+      P_VX = B_VX * B_VX' ; 
+      P_VY = B_VY * B_VY' ; 
+          %  Projection matrices onto the 
+          %      X-Vunion,row and Y-Vunion,row subspaces
+          %  Simpler form since B_UX and B_UY are orthonormal basis matrices
+      [mU_VJ,dmlam_VJ,mV_VJ] = svd(P_VX + P_VY,'econ') ;
+      vlam_VJ = diag(dmlam_VJ) ;
+
+      %  Find basis matrix for Union U Joint subspace
+      %
+      vflag_VJ = (vlam_VJ > 1.5) ;
+      [~,r_VJ] = min(vflag_VJ) ;    %  index of first 0
+      r_VJ = r_VJ - 1 ;    %  index of last 1 (0 if none)
+
+      if r_VJ > 0     %  Have a VJ subspace
+
+        B_VJoint = mV_VJ(:,1:r_VJ) ;
+            %  Basis matrix of subspace (Doubly or Singly)
+        P_VJoint = B_VJoint * B_VJoint' ;
+            %  n x n Projection Matrix onto U Joint subspace
+
+      end     %  of have UJ subspace if-block
+              %      (if r_VJ > 0)
+
+
+      if iDiagPlot == 1 
+        %  Add to diagnostic graphic
+        %
+        vaxV = [0 (n + 1) 0 2.1] ;
+        subplot(2,3,6) ;    %  V  Concatenation
+          plot((1:length(vlam_VJ))',vlam_VJ,'ko-') ;
+          xlabel('k') ;
+          ylabel('lambda VJ') ;
+          title('V Joint Concatenated Singular Values') ;
+          axis(vaxV) ;
+          hold on ;
+            plot([0; (n+1)],[1.5; 1.5],'r-') ;
+            text(vaxV(1) + 0.6 * (vaxV(2) - vax(1)), ...
+                 vaxV(3) + 0.9 * (vaxV(4) - vax(3)), ...
+                 ['r_{VJ} = ' num2str(r_VJ)]) ;
+          hold off ;
+      end     %  of iDiagPlot if-block
+
+
+    else ;
+
+      r_VJ = 0 ;    %  No V Joint modes
+      vlam_VJ = zeros(d,1) ;
+          %  put all zeros, to show no significant vertical concatenated mode
+
+    end     %  of have both projections on U space
+            %      (if  r_BVX > 0  &  r_BVY > 0)
+
+
+  else
+
+      r_VJ = 0 ;    %  No V Joint modes
+
+  end     %  if-block for having V Union directions to work with
+          %       (if r_V > 0)
+
+
+%  Need to 
+
+
 
 
 else ;

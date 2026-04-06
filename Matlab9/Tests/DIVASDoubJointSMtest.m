@@ -3,8 +3,8 @@ disp('Running MATLAB script file DIVASDoubJointSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION DIVASDoubJointSM,
 %    Doubly Joint DIVAS
 
-itest = 104 ;     %  1,...,30        Simple parameter tests
-                %  101,...,118    Toy examples from DoublyJointToy8.m
+itest = 122 ;     %  1,...,30        Simple parameter tests
+                %  101,...,122    Toy examples from DoublyJointToy8.m
                 
 
 
@@ -516,6 +516,46 @@ else      %  Toy examples from DoublyJointToy8.m
     mXtrue = cL * u3 * v3' + cM * u2 * v2' ;
     mYtrue = cL * u3 * v3' + cM * u2 * v2' ;
 
+  elseif itest == 119     %  DMM-DMM, Two -DJ Even
+
+    stitle = 'Two -DJ Even' ;
+    ssave = 'DMM-DMM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cM * u3 * v3' + cM * u2 * v2' ;
+    mYtrue = cM * u3 * v3' - cM * u2 * v2' ;
+
+  elseif itest == 120     %  DLM-DLM, Two -DJ Uneven
+
+    stitle = 'Two -DJ Uneven' ;
+    ssave = 'DLM-DLM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cL * u3 * v3' + cM * u2 * v2' ;
+    mYtrue = cM * u3 * v3' - cL * u2 * v2' ;
+
+  elseif itest == 121     %  DMM+JuMM, DoubJ & USingJ
+
+    stitle = 'DoubJ & USingJ' ;
+    ssave = 'DMM+JuMM' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cM * u3 * v4' + cM * u5 * v1' ;
+    mYtrue = cM * u3 * v4' + cM * u5 * v2' ;
+
+  elseif itest == 122     %  DMM+JvLL, DoubJ & VSingJ
+
+    stitle = 'DoubJ & VSingJ' ;
+    ssave = 'DMM+JvLL' ;
+    colbottom = -2.5 ; 
+    coltop = 2.5 ;
+        %  bottom and top of color range
+    mXtrue = cM * u3 * v4' + cL * u5 * v2' ;
+    mYtrue = cM * u3 * v4' + cL * u8 * v2' ;
+
   end
 
   %  Add Noise Matrices
@@ -526,6 +566,7 @@ else      %  Toy examples from DoublyJointToy8.m
   paramstruct = struct('iscreenwrite',1) ;
   outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 
+%{
   disp(' ') ;
   disp('Check caXmodes Output:') ;
   outstruct.caXmodes
@@ -534,6 +575,7 @@ else      %  Toy examples from DoublyJointToy8.m
 
   disp(' ') ;
   disp(['Above results for ' stitle ', ' ssave]) ;
+%}
 
 
 end ;    %  of itest < 0r > 100 if-block

@@ -1662,6 +1662,9 @@ elseif imptype == 2     %  subspace partition based implementation, with QZ
   end     %  if-block for having U Union directions to work with
           %       (if r_U > 0)
 
+  disp(' ') ;
+  disp(['r_UJ = ' num2str(r_UJ)]) ;
+
 
   if r_V > 0     %  Then have V Union directions to work with
 
@@ -1772,6 +1775,8 @@ elseif imptype == 2     %  subspace partition based implementation, with QZ
   end     %  if-block for having V Union directions to work with
           %       (if r_V > 0)
 
+  disp(['r_VJ = ' num2str(r_VJ)]) ;
+
 
 %  Working here
 
@@ -1782,8 +1787,10 @@ if  r_UJ > 0  &  r_VJ > 0
   mX_JJ = P_UJoint * mX * P_VJoint ;
   mY_JJ = P_UJoint * mY * P_VJoint ;
 
-rank(mX_JJ)
-rank(mY_JJ)
+  disp(' ') ;
+  disp('Check Quadratic Form Ranks') ;
+  disp(['rank X_JJ = ' num2str(rank(mX_JJ))]) ;
+  disp(['rank Y_JJ = ' num2str(rank(mY_JJ))]) ;
 
 
 

@@ -3,7 +3,7 @@ disp('Running MATLAB script file DIVASDoubJointSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION DIVASDoubJointSM,
 %    Doubly Joint DIVAS
 
-itest = 2 ;     %  1,...,30        Simple parameter tests
+itest = 104 ;     %  1,...,30        Simple parameter tests
                 %  101,...,118    Toy examples from DoublyJointToy8.m
                 
 

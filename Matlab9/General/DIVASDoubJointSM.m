@@ -1773,7 +1773,21 @@ elseif imptype == 2     %  subspace partition based implementation, with QZ
           %       (if r_V > 0)
 
 
-%  Need to 
+%  Working here
+
+if  r_UJ > 0  &  r_VJ > 0 
+
+  %  Construct quadratic forms
+  %
+  mX_JJ = P_UJoint * mX * P_VJoint ;
+  mY_JJ = P_UJoint * mY * P_VJoint ;
+
+rank(mX_JJ)
+rank(mY_JJ)
+
+
+
+end      %  of both r_UJ > 0 & r_VJ > 0 if-block
 
 
 

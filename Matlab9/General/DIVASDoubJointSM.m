@@ -379,11 +379,10 @@ else    %  Compute simulated thresholds, from DoublyJointSim1.m
   threshU = cquantSM(vHorizLam1,prob) ;
   threshV = cquantSM(vVertLam1,prob) ;
 
-  vthresh = [threshXnY; threshU; threshV] ;
-  outstruct.vthresh = vthresh ;
-
 end     %  of threshold if-block
 
+vthreshout = [threshXnY; threshU; threshV] ;
+outstruct.vthresh = vthreshout ;
 
 
 
@@ -1778,23 +1777,130 @@ elseif imptype == 2     %  subspace partition based implementation, with QZ
   disp(['r_VJ = ' num2str(r_VJ)]) ;
 
 
+  nmodes2date = 0 ;
+  if  r_UJ > 0  &  r_VJ > 0 
+
+    %  Work with 4 potential partitioned spaces
+    %
+
+    %  First Explore potential Doubly Joint Modes
+    %
+    mX_JJ = P_UJoint * mX * P_VJoint' ;
+    mY_JJ = P_UJoint * mY * P_VJoint' ;
+    r_JJ = rank(mX_JJ) ;
+
+    mX_IJ = (eye(d) - P_UJoint) * mX * P_VJoint ;
+    mY_IJ = (eye(d) - P_UJoint) * mY * P_VJoint ;
+    r_IJ = rank(mX_IJ) ;
+
+    mX_JI = P_UJoint * mX * (eye(n) - P_VJoint) ;
+    mY_JI = P_UJoint * mY * (eye(n) - P_VJoint) ;
+    r_JI = rank(mX_JI) ;
+
+    mX_II = (eye(d) - P_UJoint) * mX * (eye(n) - P_VJoint) ;
+    mY_II = (eye(d) - P_UJoint) * mY * (eye(n) - P_VJoint) ;
+    r_II = rank(mX_II) ;
+
+    disp(' ') ;
+    disp('Check Quadratic Form Ranks') ;
+    disp(['rank X_JJ = ' num2str(r_JJ)]) ;
+    disp(['rank Y_JJ = ' num2str(rank(mY_JJ))]) ;
+    if r_JJ == rank(mY_JJ)
+
+      %  Calculate Doubly Joint modes
+      %
+      if r_JJ > 0     %  Then have actual doubly joint modes, so do QZ
+
+        [UX_JJ,SX_JJ,VX_JJ] = svd(mX_JJ,'econ') ;
+        [UY_JJ,SY_JJ,VY_JJ] = svd(mY_JJ,'econ') ;
+        if SY_JJ(1) > SY_JJ(1) ;
+          mU = UX_JJ(:,1:r_JJ) ;          
+          mV = VX_JJ(:,1:r_JJ) ;
+        else
+          mU = UY_JJ(:,1:r_JJ) ;          
+          mV = VY_JJ(:,1:r_JJ) ;
+        end
+        Ahat = mU' * mX_JJ * mV ;
+        Bhat = mU' * mY_JJ * mV ;
+        [mS,mT,mP,mQ] = qz(Ahat,Bhat) ;
+
+disp(' ') ;
+disp('  QZ matrices are') ;
+mS
+mT
+
+
+        nmodes2date = nmodes2date + r_JJ ;
+
+      end ;
+
+      %  Now V Singly Joint Modes
+      %
+      if  (nmodes2date < nmaxstep)  &  (r_IJ > 0)  ;
+
+        disp('V Singly Joint Analysis not yet implemented') ;
+
+      end
+
+
 %  Working here
 
-if  r_UJ > 0  &  r_VJ > 0 
 
-  %  Construct quadratic forms
-  %
-  mX_JJ = P_UJoint * mX * P_VJoint ;
-  mY_JJ = P_UJoint * mY * P_VJoint ;
+      %  Now U Singly Joint Modes
+      %
+      if  (nmodes2date < nmaxstep)  &  (r_JI > 0)  ;
 
-  disp(' ') ;
-  disp('Check Quadratic Form Ranks') ;
-  disp(['rank X_JJ = ' num2str(rank(mX_JJ))]) ;
-  disp(['rank Y_JJ = ' num2str(rank(mY_JJ))]) ;
+        disp('U Singly Joint Analysis not yet implemented') ;
+
+      end
 
 
 
-end      %  of both r_UJ > 0 & r_VJ > 0 if-block
+      %  Now Individual Modes
+      %
+      if  (nmodes2date < nmaxstep)  &  (r_II > 0)  ;
+
+        disp('Individual Analysis not yet implemented') ;
+
+      end
+
+
+
+    else
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+      disp('!!!   Error from DIVASDoubJointSM.m              !!!') ;
+      disp('!!!   Doubly Joint Quadratic Form ranks unequal  !!!') ;
+      disp('!!!   Terminating Execution                      !!!') ;
+      disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
+      outstruct = [] ;
+      return ;
+    end 
+
+
+
+
+  elseif  r_UJ == 0  &  r_VJ > 0
+
+    disp(' ') ;
+    disp('Case of only V joint space not yet implemented') ;
+
+
+
+  elseif  r_UJ > 0  &  r_VJ == 0
+
+    disp(' ') ;
+    disp('Case of only U joint space not yet implemented') ;
+
+
+
+  elseif  r_UJ == 0  &  r_VJ == 0
+
+    disp(' ') ;
+    disp('Case of neither VJ nor UJ space not yet implemented') ;
+
+
+
+  end      %  of both r_UJ > 0 & r_VJ > 0 if-block
 
 
 

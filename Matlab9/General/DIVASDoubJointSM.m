@@ -1805,6 +1805,8 @@ elseif imptype == 2     %  subspace partition based implementation, with QZ
     disp('Check Quadratic Form Ranks') ;
     disp(['rank X_JJ = ' num2str(r_JJ)]) ;
     disp(['rank Y_JJ = ' num2str(rank(mY_JJ))]) ;
+disp(['rank([X_JJ Y_JJ]) = ' num2str(rank([mY_JJ mY_JJ]))]) ;
+disp(['rank([X_JJ; Y_JJ]) = ' num2str(rank([mY_JJ; mY_JJ]))]) ;
     if r_JJ == rank(mY_JJ)
 
       %  Calculate Doubly Joint modes

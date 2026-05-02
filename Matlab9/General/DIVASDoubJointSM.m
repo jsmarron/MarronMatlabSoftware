@@ -36,9 +36,9 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 %
 %    imptype          implementation type:
 %                          1 - original greedy angle based implementation
-%                                  from DoublyJointToy8.m
-%                          2 - subspace partition based implementation adn QZ
-%                                  from DoublyJointToy9.m  (current default)
+%                                  from DoublyJointToy8.m  (current default)
+%                          2 - subspace partition based implementation and QZ
+%                                  from DoublyJointToy9.m
 %    
 %    iScaleStand      indicator for Scale Standardization 
 %                          0 - Do not Scale Standardize
@@ -141,7 +141,7 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 
 %  First set all parameters to defaults
 %
-imptype = 2 ;
+imptype = 1 ;
 iScaleStand = 1 ;
 nThreshSim = 1000 ;
 vthresh = [] ;
@@ -1824,7 +1824,7 @@ disp(['rank([X_JJ; Y_JJ]) = ' num2str(rank([mY_JJ; mY_JJ]))]) ;
         end
         Ahat = mU' * mX_JJ * mV ;
         Bhat = mU' * mY_JJ * mV ;
-        [mS,mT,mP,mQ] = qz(Ahat,Bhat) ;
+        [mS,mT,mP,mQ] = qz(Ahat,Bhat,'real') ;
 
 disp(' ') ;
 disp('  QZ matrices are') ;

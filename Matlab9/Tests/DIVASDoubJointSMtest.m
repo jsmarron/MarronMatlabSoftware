@@ -3,7 +3,7 @@ disp('Running MATLAB script file DIVASDoubJointSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION DIVASDoubJointSM,
 %    Doubly Joint DIVAS
 
-itest = 2 ;     %  1,...,30        Simple parameter tests
+itest = 31 ;     %  1,...,31        Simple parameter tests
                 %  101,...,122    Toy examples from DoublyJointToy8.m
                 
 
@@ -282,6 +282,14 @@ if itest < 100      %  Simple parameter tests
                          'iscreenwrite',1) ;
     outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
     disp('test too small alpha = [-20; 20]') ;
+
+  elseif itest == 31
+    disp('test imptype = 2, QZ decoposition') ;
+    paramstruct = struct('imptype',2, ...
+                         'nThreshSim',0, ...
+                         'iscreenwrite',1) ;
+    outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
+    disp('test imptype = 2, QZ decoposition') ;
 
 
 

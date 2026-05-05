@@ -39,6 +39,8 @@ function outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
 %                                  from DoublyJointToy8.m  (current default)
 %                          2 - subspace partition based implementation and QZ
 %                                  from DoublyJointToy9.m
+%                          3 - subspace partition based implementation and 
+%                                  Tensor Decomposition from DoublyJointToy10.m
 %    
 %    iScaleStand      indicator for Scale Standardization 
 %                          0 - Do not Scale Standardize

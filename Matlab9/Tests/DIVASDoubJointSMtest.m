@@ -289,7 +289,7 @@ if itest < 100      %  Simple parameter tests
                          'nThreshSim',0, ...
                          'iscreenwrite',1) ;
     outstruct = DIVASDoubJointSM(mX,mY,paramstruct)
-    disp('test imptype = 2, QZ decoposition') ;
+    disp('test imptype = 2, QZ decomposition') ;
 
 
 

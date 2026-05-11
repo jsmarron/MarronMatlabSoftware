@@ -1609,7 +1609,7 @@ elseif imptype == 2     %  subspace partition based implementation, with QZ
       [mU_UJ,dmlam_UJ,mV_UJ] = svd(P_UX + P_UY,'econ') ;
       vlam_UJ = diag(dmlam_UJ) ;
 
-      %  Find basis matrix for Union U Joint subspace
+      %  Find basis matrix for U Joint subspace
       %
       vflag_UJ = (vlam_UJ > 1.5) ;
 
@@ -1695,7 +1695,6 @@ elseif imptype == 2     %  subspace partition based implementation, with QZ
     end
 
 
-
     [~,dmlam_VY,B_VY] = svd(Ycup_VY,'econ') ;
     vlam_VY = diag(dmlam_VY) ;
     vflag_BVY = (vlam_VY > threshXnY) ;
@@ -1723,7 +1722,7 @@ elseif imptype == 2     %  subspace partition based implementation, with QZ
       [mU_VJ,dmlam_VJ,mV_VJ] = svd(P_VX + P_VY,'econ') ;
       vlam_VJ = diag(dmlam_VJ) ;
 
-      %  Find basis matrix for Union U Joint subspace
+      %  Find basis matrix for V Joint subspace
       %
       vflag_VJ = (vlam_VJ > 1.5) ;
       [~,r_VJ] = min(vflag_VJ) ;    %  index of first 0
@@ -1815,6 +1814,7 @@ disp(['rank([X_JJ; Y_JJ]) = ' num2str(rank([mY_JJ; mY_JJ]))]) ;
       %
       if r_JJ > 0     %  Then have actual doubly joint modes, so do QZ
 
+%{
         [UX_JJ,SX_JJ,VX_JJ] = svd(mX_JJ,'econ') ;
         [UY_JJ,SY_JJ,VY_JJ] = svd(mY_JJ,'econ') ;
         if SY_JJ(1) > SY_JJ(1) ;
@@ -1827,6 +1827,17 @@ disp(['rank([X_JJ; Y_JJ]) = ' num2str(rank([mY_JJ; mY_JJ]))]) ;
         Ahat = mU' * mX_JJ * mV ;
         Bhat = mU' * mY_JJ * mV ;
         [mS,mT,mP,mQ] = qz(Ahat,Bhat,'real') ;
+%}
+
+        [UX_JJ,SX_JJ,VX_JJ] = svd(mX_JJ,'econ') ;
+        [UY_JJ,SY_JJ,VY_JJ] = svd(mY_JJ,'econ') ;
+
+        Ahat = B_UJoint' * mX_JJ * B_VJoint ;
+        Bhat = B_UJoint' * mY_JJ * B_VJoint ;
+size(Ahat)
+size(Bhat)
+        [mS,mT,mP,mQ] = qz(Ahat,Bhat,'real') ;
+
 
 disp(' ') ;
 disp('  QZ matrices are') ;

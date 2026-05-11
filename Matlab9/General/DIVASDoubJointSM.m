@@ -1814,7 +1814,6 @@ disp(['rank([X_JJ; Y_JJ]) = ' num2str(rank([mY_JJ; mY_JJ]))]) ;
       %
       if r_JJ > 0     %  Then have actual doubly joint modes, so do QZ
 
-%{
         [UX_JJ,SX_JJ,VX_JJ] = svd(mX_JJ,'econ') ;
         [UY_JJ,SY_JJ,VY_JJ] = svd(mY_JJ,'econ') ;
         if SY_JJ(1) > SY_JJ(1) ;
@@ -1827,27 +1826,6 @@ disp(['rank([X_JJ; Y_JJ]) = ' num2str(rank([mY_JJ; mY_JJ]))]) ;
         Ahat = mU' * mX_JJ * mV ;
         Bhat = mU' * mY_JJ * mV ;
         [mS,mT,mP,mQ] = qz(Ahat,Bhat,'real') ;
-%}
-
-        [UX_JJ,SX_JJ,VX_JJ] = svd(mX_JJ,'econ') ;
-        [UY_JJ,SY_JJ,VY_JJ] = svd(mY_JJ,'econ') ;
-
-        Ahat = B_UJoint' * mX_JJ * B_VJoint ;
-        Bhat = B_UJoint' * mY_JJ * B_VJoint ;
-
-disp(['Size of Ahat = ' num2str(size(Ahat))]) ;
-disp(['Size of Bhat = ' num2str(size(Bhat))]) ;
-disp(['Size of B_UJoint'' = ' num2str(size(B_UJoint'))]) ;
-disp(['Size of B_VJoint = ' num2str(size(B_VJoint))]) ;
-Ahat
-Bhat
-Ahat(1)/Ahat(2)
-Bhat(1)/Bhat(2)
-Ahat(1)/Bhat(1)
-Ahat(2)/Bhat(2)
-
-        [mS,mT,mP,mQ] = qz(Ahat,Bhat,'real') ;
-
 
 disp(' ') ;
 disp('  QZ matrices are') ;

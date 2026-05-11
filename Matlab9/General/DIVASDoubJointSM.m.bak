@@ -1843,8 +1843,6 @@ Ahat
 Bhat
 Ahat(1)/Ahat(2)
 Bhat(1)/Bhat(2)
-Ahat(1)/Bhat(1)
-Ahat(2)/Bhat(2)
 
         [mS,mT,mP,mQ] = qz(Ahat,Bhat,'real') ;
 

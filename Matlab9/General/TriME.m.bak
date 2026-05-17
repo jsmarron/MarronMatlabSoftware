@@ -107,7 +107,7 @@ function [sigHatEJC, Rho, sigma] = TriME(c, singVals, number, folderName, alpha1
         crossSigmaGreater = crossSigma(sizeSet >= length(singVals)*omega);
         sigHatEJC = crossSigmaGreater(1); %first element
     else 
-%  Lines replacing below, by JSM
+%  Lines replacing below, by Marron
 %{
         disp('!!!   Error from TriME.m, found no estimable noise, returning 0') ;
         sigHatEJC = 0 ;
@@ -136,7 +136,7 @@ function [sigHatEJC, Rho, sigma] = TriME(c, singVals, number, folderName, alpha1
         
         plotFileName = fullfile(folderName, 'pathPlots', sprintf('RhoPlot_Test%d.png', number));
         saveas(gcf, plotFileName);
-%  Commented out by JSM
+pauseSM
 %        close(gcf); 
 
         % Save crossings 

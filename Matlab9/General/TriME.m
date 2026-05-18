@@ -107,13 +107,9 @@ function [sigHatEJC, Rho, sigma] = TriME(c, singVals, number, folderName, alpha1
         crossSigmaGreater = crossSigma(sizeSet >= length(singVals)*omega);
         sigHatEJC = crossSigmaGreater(1); %first element
     else 
-%  Lines replacing below, by JSM
-%{
-        disp('!!!   Error from TriME.m, found no estimable noise, returning 0') ;
-        sigHatEJC = 0 ;
-%}
-%  Original Lines
-        disp(['error largest cardinality is ', num2str(max(sizeSet)), "when it should be", num2str(length(singVals)*omega)]);
+%  Line replaced below, by JSM
+%       disp(['Warning: largest cardinality is ', num2str(max(sizeSet)), "when it should be", num2str(length(singVals)*omega)]);
+       disp(['Warning: Largest cardinality of singular value window is ', num2str(max(sizeSet)), ', when it should be ', num2str(length(singVals)*omega)]);
         [~, maxIndex] = max(sizeSet);
         sigHatEJC = crossSigma(maxIndex);
     end

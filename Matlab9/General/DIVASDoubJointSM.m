@@ -2046,8 +2046,6 @@ elseif imptype == 3     %  Subspace partition based implementation and
       %  Print first diagnostic plots
       %
       figure(fh1) ;
-%      disp('Somehow need this pause to print proper diagnostic plot') ;
-%      pauseSM
       savestr = [OutPlotStr 'SVdiagnostic1'] ;
       printSM(savestr,savetype) ;
     end
@@ -2290,10 +2288,10 @@ elseif imptype == 3     %  Subspace partition based implementation and
         %  Print second diagnostic plots
         %
         figure(fh2) ;
-%        disp('Somehow need this pause to print proper diagnostic plot') ;
-%        pauseSM
-        savestr = [OutPlotStr 'SVdiagnostic2'] ;
-        printSM(savestr,savetype) ;
+        if ~isempty(OutPlotStr)
+          savestr = [OutPlotStr 'SVdiagnostic2'] ;
+          printSM(savestr,savetype) ;
+        end
       end     %  of iDiagPlot if-block
 
 
@@ -2401,11 +2399,16 @@ T
           %  Loop through Doubly Joint nodes
           %
           iDJmodefig = 0 ;
+          disp(' ') ;
           for imode = 1:L ;
 
             if  Gamma(1,imode) > threshXnY  |  Gamma(2,imode) > threshXnY
                 %  Either X or Y mode is significant,
                 %      so make graphic
+
+              if iscreenwrite == 1 ;
+                disp(['Working on Doubly Joint mode ' num2str(imode)]) ;
+              end ;
 
               nmodes = nmodes + 1 ;
                   %  number of modes of variation found so far
@@ -2511,6 +2514,10 @@ T
           iVSmodefig = 0 ;
           for imode = 1:r_VS ;
 
+            if iscreenwrite == 1 ;
+              disp(['Working on V Singly Joint mode ' num2str(imode)]) ;
+            end ;
+
             vVscores = mV_Vcat(:,imode) ;
                 %  Joint scores
             vXloads = mXs * vVscores ;
@@ -2612,6 +2619,10 @@ T
           iUSmodefig = 0 ;
           for imode = 1:r_US ;
 
+            if iscreenwrite == 1 ;
+              disp(['Working on U Singly Joint mode ' num2str(imode)]) ;
+            end ;
+
             vHloads = mU_Hcat(:,imode) ;
                 %  Joint loadings
             vXscores = (vHloads' * mXs)' ;
@@ -2639,9 +2650,9 @@ T
 
               iUSmodefig = iUSmodefig + 1 ;
 
-              fh4 = figure('WindowStyle','normal') ;
+              fh5 = figure('WindowStyle','normal') ;
               clf ;
-              set(fh4,'Position',[100 100 1000 550]) ;
+              set(fh5,'Position',[100 100 1000 550]) ;
 
               mUSmode_X = c_X * vHloads * VXscoresu' ;
               subplot(1,2,1) ;
@@ -2697,6 +2708,10 @@ T
 
           iXImodefig = 0 ;
           for imode = 1:r_XI
+
+            if iscreenwrite == 1 ;
+              disp(['Working on X Indiv mode ' num2str(imode)]) ;
+            end ;
 
             nmodes = nmodes + 1 ;
 
@@ -2762,6 +2777,10 @@ T
           iYImodefig = 0 ;
           for imode = 1:r_YI
 
+            if iscreenwrite == 1 ;
+              disp(['Working on Y Indiv mode ' num2str(imode)]) ;
+            end ;
+
             nmodes = nmodes + 1 ;
 
             caXmodes(nmodes,1) = {'N'} ;
@@ -2774,13 +2793,13 @@ T
             caYmodes(nmodes,4) = {mV_YI(:,imode)} ;
                 %  cell arrays of significant modes of variation
 
-            if iHeatMap == 1     %  Plot X Individual Mode of variation
+            if iHeatMap == 1     %  Plot Y Individual Mode of variation
 
               iYImodefig = iYImodefig + 1 ;
 
-              fh6 = figure('WindowStyle','normal') ;
+              fh7 = figure('WindowStyle','normal') ;
               clf ;
-              set(fh6,'Position',[100 100 1000 550]) ;
+              set(fh7,'Position',[100 100 1000 550]) ;
 
               mYImode = vlam_YI(imode) * mU_YI(:,imode) * mV_YI(:,imode)' ;
               subplot(1,2,2) ;

@@ -2369,6 +2369,9 @@ elseif imptype == 3     %  Subspace partition based implementation and
           T = tensor(Xraw);
 T
 
+%  First attempt, had coefficients too large,
+%      and non=orthogonal modes
+%{
           %  Call  function
           %
 %          L = 1:min([rU,rV,6]);
@@ -2385,6 +2388,66 @@ T
           C = M.U{3};    % 2 x L
           lambda = M.lambda(:);    % L x 1
           Gamma = C * diag(lambda);    % 2 x L
+          Umodes = UJ * A;    % d x L
+          Vmodes = VJ * B;    % n x L
+%}
+
+          %  Orthogonal modes version
+          %
+          L = min([rU,rV,10]) ;
+          nstarts = 25 ;
+          opts.maxiters = 1000;
+          opts.tol = 1e-10;
+          opts.seed = 1;
+          opts.verbose = false;
+
+          result = fit_dj_orthosvd(C1, C2, L, nstarts, opts);
+              %  Main function call
+
+          %  Write diagnostics to screen
+          %
+          disp(' ')
+          disp(['RawSS                 = ' num2str(result.RawSS,16)])
+          disp(['sum ComponentSS       = ' num2str(sum(result.ComponentSS),16)])
+          disp(['ResidSS direct        = ' num2str(result.ResidSS_direct,16)])
+          disp(['RawSS - components    = ' num2str(result.ResidSS,16)])
+          disp(['additive check        = ' num2str(result.additive_check,16)])
+          disp(['relative residual     = ' num2str(result.RelErr,16)])
+
+          disp(' ')
+          disp('Gamma:')
+          disp(result.Gamma)
+
+          disp('eta:')
+          disp(result.eta)
+
+          disp('Component SS = eta.^2:')
+          disp(result.ComponentSS)
+
+          disp('Explained fractions:')
+          disp(result.ExplainedFraction)
+
+
+          %  Unpack results
+          %
+          A = result.A ;    % rU x L
+          B = result.B ;    % rV x L
+          Gamma = result.Gamma ;    % 2 x L
+          mComponentSS = Gamma.^2 ;    % 2 x L matrix of per comp SS
+          vModelSS = sum(mComponentSS,2) ;    %  2 x 1  vector of per block SS
+          xSS = sum(sum(C1.^2)) ;    %  scalar of X DJ SS
+          ySS = sum(sum(C2.^2)) ;    %  scalar of Y DJ SS
+          vXpropModelSS = mComponentSS(1,:) / vModelSS(1) ;
+              %  Vector of proportions of each comp in DJ X Model
+          vYpropModelSS = mComponentSS(2,:) / vModelSS(2) ;
+              %  Vector of proportions of each comp in DJ Y Model
+          propXModel = vModelSS(1) / xSS ;
+              %  proportion of Model SS in X DJ component
+          propYModel = vModelSS(2) / ySS ;
+              %  proportion of Model SS in Y DJ component
+
+          %  Construct modes of variation
+          %
           Umodes = UJ * A;    % d x L
           Vmodes = VJ * B;    % n x L
 
@@ -2446,6 +2509,14 @@ T
                                        'icolordist',0, ...
                                        'titlestr',titlestr) ;
                   HeatMapSM(mDJmode_X,paramstruct) ;
+                  hold on ;
+                    vax = axis ;
+                    text(vax(1) + 0.01 * (vax(2) - vax(1)), ...
+                         vax(3) + 0.5 * (vax(4) - vax(3)), ...
+                         ['Prop of Model SS = ' ...
+                          num2str(vXpropModelSS(imode)) ...
+                          ',  Model prop of DJ SS = ' num2str(propXModel)]) ;
+                  hold off ;
 
                 mDJmode_Y = c_Y * vu_DJ * vv_DJ' ;
                 subplot(1,2,2) ;
@@ -2456,6 +2527,14 @@ T
                                        'icolordist',0, ...
                                        'titlestr',titlestr) ;
                   HeatMapSM(mDJmode_Y,paramstruct) ;
+                  hold on ;
+                    vax = axis ;
+                    text(vax(1) + 0.01 * (vax(2) - vax(1)), ...
+                         vax(3) + 0.5 * (vax(4) - vax(3)), ...
+                         ['Prop of Model SS = ' ...
+                          num2str(vYpropModelSS(imode)) ...
+                          ',  Model prop of DJ SS = ' num2str(propYModel) ]) ;
+                  hold off ;
 
                 if ~isempty(OutPlotStr)
                   savestr = [OutPlotStr 'DJmode' num2str(iDJmodefig)] ;
@@ -2467,7 +2546,8 @@ T
             else
 
               disp(' ') ;
-              disp('Neither Gamma large enough, so mode thresholded out') ;
+              disp(['Neither Gamma large enough, so DJ mode ' ...
+                         num2str(imode) ' thresholded out']) ;
 
             end     %  of imode significance if-block
 

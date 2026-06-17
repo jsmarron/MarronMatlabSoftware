@@ -2446,7 +2446,7 @@ T
           propYModel = vModelSS(2) / ySS ;
               %  proportion of Model SS in Y DJ component
 
-          %  Construct modes of variation
+          %  Construct loadings and scores of full modes of variation
           %
           Umodes = UJ * A;    % d x L
           Vmodes = VJ * B;    % n x L
@@ -2465,7 +2465,8 @@ T
           disp(' ') ;
           for imode = 1:L ;
 
-            if  Gamma(1,imode) > threshXnY  |  Gamma(2,imode) > threshXnY
+            if  abs(Gamma(1,imode)) > threshXnY  |  ...
+                            abs(Gamma(2,imode)) > threshXnY
                 %  Either X or Y mode is significant,
                 %      so make graphic
 
@@ -2926,6 +2927,14 @@ T
 
 
     else
+
+      %  Print second diagnostic plots
+      %
+      figure(fh2) ;
+      if ~isempty(OutPlotStr)
+        savestr = [OutPlotStr 'SVdiagnostic2'] ;
+        printSM(savestr,savetype) ;
+      end
 
       disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
       disp('!!!   Error from DIVASDoubJointSM.m:   !!!') ;

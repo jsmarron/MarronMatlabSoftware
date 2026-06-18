@@ -2224,7 +2224,7 @@ elseif imptype == 3     %  Subspace partition based implementation and
         disp(['r_{BUY} = ' num2str(r_BUY)]) ;
         disp(['r_{BVX} = ' num2str(r_BVX)]) ;
         disp(['r_{BVY} = ' num2str(r_BVY)]) ;
-        disp('Have UX, UY,VX, VY subspaces, so moving ahead') ;
+        disp('Have UX, UY, VX, VY subspaces, so moving ahead') ;
       end ;
 
       %  Compute projection matrices

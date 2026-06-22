@@ -3,7 +3,7 @@ disp('Running MATLAB script file CanParDirSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION CanParDirSM,
 %    CANonical PARallel DIRection
 
-itest = 10 ;     %  1,...,10
+itest = 12 ;     %  1,...,12
 
 
 if itest == 1 ;
@@ -49,6 +49,10 @@ elseif itest == 11 ;
   teststr = 'Balanced Sample, Strong Signal' ;
   iout = 2 ;
   idata = 6 ;
+elseif itest == 12 ;
+  teststr = 'More Standard Normals' ;
+  iout = 2 ;
+  idata = 7 ;
 end
 
 
@@ -99,6 +103,13 @@ elseif idata == 6     %  Balanced Sample, Strong Signal
   mX = randn(d,n) ;
   mY = 100 * ones(d,n) + randn(d,n) ;
 
+elseif idata == 7     %  More Standard Normals
+
+  n = 50 ;
+  d = 100 ;
+  mX = randn(d,n) ;
+  mY = randn(d,n) ;
+
 end
 
 
@@ -147,6 +158,26 @@ else
   [vCPD,vCOD] = CanParDirSM(mX,mY,iout) ;
   title(['CPD result, for test ' num2str(itest) ', ' teststr]) ;
 
+  if  itest == 9  | ...
+      itest == 12  %  Make CPD plot with markers to see signs
+    markerstr = 'x' ;
+    for i = 1:(n-1) ;
+      markerstr = strvcat(markerstr,'x') ;
+    end
+    for i = 1:n ;
+      markerstr = strvcat(markerstr,'+') ;
+    end
+    figure(3) ;
+    clf ;
+    paramstruct = struct('npcadiradd',1, ...
+                         'icolor','k', ...
+                         'markerstr',markerstr, ...
+                         'idataconn',[(1:n)' ((n + 1):(2 * n))'], ...
+                         'titlecellstr',titlecellstr, ...
+                         'iscreenwrite',0) ;
+    scatplotSM([mX mY],[vCPD,vCOD],paramstruct) ;   
+   
+  end
 
 end
 

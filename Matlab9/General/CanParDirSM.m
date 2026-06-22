@@ -83,7 +83,6 @@ end
 
 if iout >= 1     %  Calculate vCOD
 
-
   if d < 2 * n
       %  Cannot compute vCOD
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
@@ -95,13 +94,7 @@ if iout >= 1     %  Calculate vCOD
     return ;
   end 
 
-
-
-
-
   [mQ,mR] = qr([(mX-mY) mY]) ;
-size(mQ)
-n
   mQ2 = mQ(:,(n + 1):(2 * n)) ;
       %  last n columns of Q
   mXcent = mX - vec2matSM(mean(mX,2),n) ;

@@ -88,7 +88,7 @@ if iout >= 1     %  Calculate vCOD
       %  Cannot compute vCOD
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     disp('!!!   Error from CanParDirSM.m:       !!!') ; 
-    disp(['!!!   (d = ' num2str(d) ')  <  (2n = ' num2str(2 * n) ')']) ;
+    disp(['!!!   (d = ' num2str(d) ')  <  (2n = ' num2str(n) ')']) ;
     disp('!!!   Giving empty return vCOD        !!!') ; 
     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!') ;
     vCOD = [] ;

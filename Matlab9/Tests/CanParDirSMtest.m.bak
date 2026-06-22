@@ -3,7 +3,7 @@ disp('Running MATLAB script file CanParDirSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION CanParDirSM,
 %    CANonical PARallel DIRection
 
-itest = 10 ;     %  1,...,10
+itest = 11 ;     %  1,...,11
 
 
 if itest == 1 ;

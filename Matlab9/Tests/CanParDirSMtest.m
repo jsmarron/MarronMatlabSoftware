@@ -3,7 +3,7 @@ disp('Running MATLAB script file CanParDirSMtest.m') ;
 %    FOR DEVELOPMENT AND TESTING OF MATLAB FUNCTION CanParDirSM,
 %    CANonical PARallel DIRection
 
-itest = 12 ;     %  1,...,12
+itest = 13 ;     %  1,...,13
 
 
 if itest == 1 ;
@@ -53,6 +53,10 @@ elseif itest == 12 ;
   teststr = 'More Standard Normals' ;
   iout = 2 ;
   idata = 7 ;
+elseif itest == 13 ;
+  teststr = 'Test Error from d too small' ;
+  iout = 2 ;
+  idata = 8 ;
 end
 
 
@@ -107,6 +111,13 @@ elseif idata == 7     %  More Standard Normals
 
   n = 50 ;
   d = 100 ;
+  mX = randn(d,n) ;
+  mY = randn(d,n) ;
+
+elseif idata == 8     %  d too small (to check erroe message
+
+  n = 50 ;
+  d = 60 ;
   mX = randn(d,n) ;
   mY = randn(d,n) ;
 

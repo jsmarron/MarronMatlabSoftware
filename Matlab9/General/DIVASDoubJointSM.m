@@ -251,7 +251,7 @@ end
 %  Estimate noise levels for each input and normalize
 %
 beta = min(d,n) / max(d,n) ;
-    %  Marcenko Pasturn parameter
+    %  Marcenko Pastur parameter
 [mU_X,dmlam_X,mV_X] = svd(mX,'econ') ;
 [mU_Y,dmlam_Y,mV_Y] = svd(mY,'econ') ;
     %  minimal rank versions of svd
@@ -2352,10 +2352,14 @@ elseif imptype == 3     %  Subspace partition based implementation and
           [UJ,~,~] = svd(P_UJoint);
           rU = round(trace(P_UJoint));
           UJ = UJ(:,1:rU);
+              %  rU should be same as above r_UJ
+              %  UJ should be same d x r_UJ matrix B_UJoint
 
           [VJ,~,~] = svd(P_VJoint);
           rV = round(trace(P_VJoint));
           VJ = VJ(:,1:rV);
+              %  rV should be same as above r_VJ
+              %  VJ should be same n x r_VJ matrix B_VJoint
 
           C1 = UJ' * mX_JJ * VJ;
           C2 = UJ' * mY_JJ * VJ;
@@ -2469,6 +2473,8 @@ T
                             abs(Gamma(2,imode)) > threshXnY
                 %  Either X or Y mode is significant,
                 %      so make graphic
+%  Perhaps this should be "and", not "or"???
+
 
               if iscreenwrite == 1 ;
                 disp(['Working on Doubly Joint mode ' num2str(imode)]) ;
